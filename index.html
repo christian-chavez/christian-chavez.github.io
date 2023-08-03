@@ -632,26 +632,78 @@
                     Observaciones
                 </h3>
                 <ul>
-                    <li>Esta definición se dió de tal manera que por cada $f: A\to A'$ en $\mathscr{A}$ se pueda contruir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
+                    <li>Esta definición se dió de tal manera que por cada $A\xrightarrow{f} A'$ en $\mathscr{A}$ se pueda contruir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
                     </li>
-                    <li>Cuando $f = 1_A$, tal morfismo es justamente $\alpha_A$
-                    </li>
-                    <li>En general, dicho morfismo es la diagonal del diagrama anterior
-                    </li>
+                    <!-- <li>Cuando $f = 1_A$, tal morfismo es justamente $\alpha_A$</li> -->
+                    <li>En general, dicho morfismo es la diagonal del diagrama anterior</li>
                 </ul>
             </section>     
 
 
-            <section>
+            <section >
                 <h2>Ejemplo</h2>
 
-                see dummit
-
+                <h2>$\left( 1_{F(A)}\right)_{A\in \mathscr{C}}$</h2>
+                <br>
                 
+                La identidad: una transformación natural de $F$ a sí mismo
+                
+                <ul>
+                    <li>para cualquier par de categorías $\mathscr{C}$ y $\mathscr{D}$</li>
+                    <li>y cualquier functor $F$ de $\mathscr{C}$ a $\mathscr{D}$</li>
+                </ul>          
             </section>
 
 
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
 
+                <h2>$\mathrm{\det}$</h2>
+                <!-- <br> -->
+                
+                <!-- El determinante -->
+                
+                <ul>
+                    <li>Sea \(\mathcal{G} \mathcal{L}_n\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$  tal que cada  \(R\in \mathrm{CRing}\) se mapea por \(\mathcal{G} \mathcal{L}_n\) al grupo \(GL_n(R)\) de matrices invertibles \(n \times n\) con entradas de \(R\).</li>
+                    <li>Para cada homomorfismo de anillos \(f: R \rightarrow S\), tenemos que \(\mathcal{G} \mathcal{L}_n(f)\) es el mapeo de matrices que aplica \(f\) a cada entrada de la matriz</li>
+                    <li>Dado que \(f\) envía el elemento neutro 1 a 1, se sigue que \(\mathcal{G} \mathcal{L}_n(f)\) envía matrices invertibles a matrices invertibles</li>
+                </ul>
+            </section>
+
+
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+                <!-- <br> -->
+                
+                <!-- El determinante -->
+                
+                <ul>
+                    <li>Sea \(\mathcal{G} \mathcal{L}_n\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$  tal que cada  \(R\in \mathrm{CRing}\) se mapea por \(\mathcal{G} \mathcal{L}_n\) al grupo \(GL_n(R)\) de matrices invertibles \(n \times n\) con entradas de \(R\).</li>
+                    <li>Para cada homomorfismo de anillos \(f: R \rightarrow S\), tenemos que \(\mathcal{G} \mathcal{L}_n(f)\) es el mapeo de matrices que aplica \(f\) a cada entrada de la matriz</li>
+                    <li>Dado que \(f\) envía el elemento neutro 1 a 1, se sigue que \(\mathcal{G} \mathcal{L}_n(f)\) envía matrices invertibles a matrices invertibles</li>
+                </ul>
+            </section>            
+
+
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+                <!-- <br> -->
+                
+                <!-- El determinante -->
+                
+                <ul>
+                    <li>Sea \(\mathcal{G}\) el funtor de CRing a Grp que mapea cada anillo \(R\) a su grupo de unidades \(R^{\times}\), y cada homomorfismo de anillos \(f\) a su restricción a los grupos de unidades (también denotado por \(f\)).</li>
+                    <li>La determinante es una transformación natural de \(\mathcal{G} \mathcal{L}_n\) a \(\mathcal{G}\) porque la determinante está definida por el mismo polinomio para todos los anillos, de modo que el siguiente diagrama es conmutativo:</li>
+                </ul>
+            </section>            
+
+            
+
+            
 
 
             <section data-auto-animate="">
@@ -678,7 +730,7 @@
                     </ul>
                 </ul>
             </section>
-            
+
  <!-- data-transition="zoom-in fade-out" -->
 
             <section data-background-image="imgs/end.webp">
