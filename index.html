@@ -446,7 +446,7 @@
 
                 <p style="text-align: left">
                     En una categoría $\mathscr{A}$, llamamos <em>isomorfismo</em> a cualquier morfismo $f: A\to B$, con
-                    $A,B\in \mathscr{A}$, tal que este diagrama conmuta, i.e.,
+                    $A,B\in \mathscr{A}$, tal que existe $g: B \to A$ y este diagrama conmuta, i.e.,
                 </p>
                 <ul>
                     <li>$1_A = g \circ f$, y </li>
@@ -606,8 +606,7 @@
             <section data-auto-animate="">
                 <h2>Transformaciones Naturales</h2>
                 <p class="r-frame" style="text-align: left; padding: 10px; font-size: 33px">
-                    <strong>Definición.</strong> Sean $\mathscr{A}, \mathscr{B}$ categorías y $F, G$ functores de $A$ a
-                    $B$. Una transformación natural de $A$ a $B$ es una familia de morfismos $$\left(
+                    <strong>Definición.</strong> Sean $\mathscr{A}, \mathscr{B}$ categorías y $F, G$ functores de $\mathscr{A}$ a $\mathscr{B}$. Una transformación natural $\alpha$ de $\mathscr{A}$ a $\mathscr{B}$ es una familia de morfismos $$\left(
                     F(A)\xrightarrow{\alpha_A} G(A)\right)_{A\in \mathscr{A}}$$ en $\mathscr{B}$ tal que si $f: A \to A'$
                     es un morfismo en $\mathscr{A}$, entonces el siguiente diagrama conmuta:
                 </p>
@@ -635,7 +634,7 @@
                     <li>Esta definición se dió de tal manera que por cada $A\xrightarrow{f} A'$ en $\mathscr{A}$ se pueda contruir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
                     </li>
                     <!-- <li>Cuando $f = 1_A$, tal morfismo es justamente $\alpha_A$</li> -->
-                    <li>En general, dicho morfismo es la diagonal del diagrama anterior</li>
+                    <li>Dicho morfismo es la diagonal del diagrama anterior</li>
                 </ul>
             </section>     
 
@@ -696,7 +695,7 @@
                 <!-- El determinante -->
                 
                 <ul>
-                    <li>Sea \(\mathcal{G}\) el funtor de CRing a Grp que mapea cada anillo \(R\) a su grupo de unidades \(R^{\times}\), y cada homomorfismo de anillos \(f\) a su restricción a los grupos de unidades (también denotado por \(f\)).</li>
+                    <li>Sea \(\mathcal{G}\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$ que mapea cada anillo \(R\) a su grupo de unidades \(R^{\times}\), y cada homomorfismo de anillos \(f\) a su restricción a los grupos de unidades (también denotado por \(f\)).</li>
                     <li>La determinante es una transformación natural de \(\mathcal{G} \mathcal{L}_n\) a \(\mathcal{G}\) porque la determinante está definida por el mismo polinomio para todos los anillos, de modo que el siguiente diagrama es conmutativo:</li>
                 </ul>
             </section>            
@@ -719,6 +718,7 @@
                 </h2>
 
                 <ul>
+                    <li>Álgebra homológica</li>
                     <li>Ciencias de la computación</li>
                     <ul style="list-style-type: none;">
                         <li>Programación fucional, e.g., Haskell </li>
