@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[Gatsby Starter Blog RSS Feed]]></description><link>https://christian-chavez.github.io/my-website</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 31 Dec 2023 10:54:44 GMT</lastBuildDate><item><title><![CDATA[A repository of my undergraduate studies]]></title><description><![CDATA[This post is dedicated to the mathematics students of Yachay Tech that are about to start their third year, the year at which they start to…]]></description><link>https://christian-chavez.github.io/my-website/christian/</link><guid isPermaLink="false">https://christian-chavez.github.io/my-website/christian/</guid><pubDate>Thu, 28 Dec 2023 02:35:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;This post is dedicated to the mathematics students of Yachay Tech that are about to start their third year, the year at which they start to see real mathematics.&lt;/em&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[Gatsby Starter Blog RSS Feed]]></description><link>https://christian-chavez.github.io/my-website</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 31 Dec 2023 12:30:57 GMT</lastBuildDate><item><title><![CDATA[A repository of my undergraduate studies]]></title><description><![CDATA[This post is dedicated to the mathematics students of Yachay Tech that are about to start their third year, the year at which they start to…]]></description><link>https://christian-chavez.github.io/my-website/repository/</link><guid isPermaLink="false">https://christian-chavez.github.io/my-website/repository/</guid><pubDate>Thu, 28 Dec 2023 02:35:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;This post is dedicated to the mathematics students of Yachay Tech that are about to start their third year, the year at which they start to see real mathematics.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Before the begining of a new semester, it is common ammong students to ask for study material to other students that have already passed certain classes. With the newcomers in mind, I have collected below study resources of the most important courses I have taken as an undergradute mathematics student. Based on discussions with classmates and professors, I also share specific insights and  general recommendations on certain subjects of the  mathematics program of Yachay Tech.&lt;/p&gt;
 &lt;p&gt;Among other things, you will find:&lt;/p&gt;
 &lt;ul&gt;
@@ -97,19 +97,27 @@ Both subjects  demand a lot of time.  A good understanding of topology is essent
 &lt;/ul&gt;
 &lt;p&gt;There were two presentation we had to prepare for this course. I chose to make the first one on  &lt;a href=&quot;../../../presentation-crypto/index.html&quot;&gt;cryptography&lt;/a&gt; and the latter on category theory.&lt;/p&gt;
 &lt;h1&gt;Functional Analysis&lt;/h1&gt;
-&lt;p&gt;I took this course last semester.
-Prof. Juan Mayorga. He has his own book.&lt;/p&gt;
+&lt;p&gt;I took this course last semester (2023, second semester) with Prof. Juan Mayorga. A good understanding of topology was crucial for taking this class, but also  knowledge of Real Analysis and Linear Algebra.  We  covered all the material the professor had devised and more. The course was very well organized. &lt;a href=&quot;https://drive.google.com/file/d/1zho8xn0V234D_U7TqIInsZ4hbxsqof5i/view?usp=sharing&quot;&gt;Here&lt;/a&gt; you can find the syllabus.&lt;/p&gt;
+&lt;p&gt;This course is  supposed to be an introductory class on Functional Analysis. Basically, here we study vector spaces but in infinite dimensions. The main part of the course consist of the Fundamental Theorems of Functional Analysis. (Yes, they have  a special name.) It turns out these theorems are consequences of Baire&apos;s Theorem, a result of general topology. (Topology again!) Except the Hahn Banach Theorem, which is an algebraic result in its more general form. Anyways, they are all consequences of the axiom of choice.&lt;/p&gt;
+&lt;p&gt;Some resources you may find useful:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;I liked very much Promislow. It is very rigorous but nevertheless  a very accessible introduction to Functional Analysis.&lt;/li&gt;
-&lt;li&gt;Kreyszig: it is among to most popular books on the subject. I didn&apos;t like certain aspects on the notation used.&lt;/li&gt;
-&lt;li&gt;Brezis: do not use it as an introductory textbook, but as a reference.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Past quices &amp;#x26; exams&lt;/strong&gt;: &lt;a href=&quot;https://drive.google.com/drive/folders/12KRoyBdsY0YopjF7Cy5VDDjbPEzBclxO?usp=drive_link&quot;&gt;here&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Some notes and other stuff&lt;/strong&gt;: &lt;a href=&quot;https://drive.google.com/drive/folders/1eJu7fCnGjq_xBC13dIdWdKcedZSlxSHL?usp=sharing&quot;&gt;here&lt;/a&gt;. For this course, I decided (was required to) &lt;a href=&quot;https://www.proquest.com/openview/f4a902f61aff2f2dc5087fe83ac33629/1?pq-origsite=gscholar&amp;#x26;cbl=18750&amp;#x26;diss=y&quot;&gt;take notes on&lt;/a&gt; paper.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Book&lt;/strong&gt;:  A Course of Functional Analysis with Calculus of Variations by Juan Mayorga. This was the main reference for our class, especially chapter 5. A preliminary version is available &lt;a href=&quot;https://drive.google.com/file/d/1jx5h8zaNepFacnXWbHEbIGgcrpznxr2y/view?usp=sharing&quot;&gt;here&lt;/a&gt;, kindly provided by the author. Other books I used are listed below.
+&lt;ul&gt;
+&lt;li&gt;Introductory functional Analysis with Applications by Erwin Kreyszig. Basically this was our second main reference. It is an excellent book. However, I didn&apos;t like some notation he uses throughout (e.g., &apos;sum from 1 to n&apos;).&lt;/li&gt;
+&lt;li&gt;A First Course in Functional Analysis by David Promislow. I liked very much this book. I used it for studying the fundamental theorems. The author outlines the logic behind the steps needed to prove the results so one can get the general idea at the begining. It is available in Yachay&apos;s library.&lt;/li&gt;
+&lt;li&gt;Functional Analysis, Sobolev Spaces and Partial Differential Equations by Haim Brezis. This is a classic and very popular book, but do not use it not  an introductory textbook. Use it  as a reference. It starts straight with the Hahn Banach Theorem.&lt;/li&gt;
+&lt;li&gt;Elements of the Theory of Functions and Functional Analysis by Kolmogorov &amp;#x26; Fomin. It goes very fast. I only used to compare results and proofs.&lt;/li&gt;
+&lt;li&gt;Handbook of Analysis and its Foundations by Eric Schechter. This book is not on Functional Analysis but I founded when I searched for a related topic. Actually it is a handbook on analyis, a must have reference. It has a lot of content. A &apos;bible&apos; of analyis.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;You have to learn the fundamental theorems of functional analysis, which are all consequences of Baire&apos;s theorem, which happens to be a main result of topology. (Yes, topology again.)&lt;/p&gt;
-&lt;p&gt;Some thoughts: sheldon axler&apos;s linear algebra done right must be the go to reference to use for the course of advanced linear algebra (or the newer course: linear and multilinear algebra), if an analysis point of view is keep in mind. actually it must be regardless of any enfoque para los futuros estudiantes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Some thoughts&lt;/strong&gt;: Linear Algebra Done Right by Sheldon Axler must be the go to reference to use for the course of Advanced Linear Algebra (or the newer course: Linear and Multilinear Algebra). It is freely available here. A glance at the table of contents reveils it would be a very good preparation for (but not limited to) Functional Analysis.&lt;/p&gt;
 &lt;h1&gt;Other courses&lt;/h1&gt;
 &lt;p&gt;I will soon add some other courses.&lt;/p&gt;
 &lt;!-- You will find material for other courses I&apos;ve taken in my _Lecture Notes_ page, with not so detail though. --&gt;
-&lt;h1&gt;Other kind of  material&lt;/h1&gt;
+&lt;h1&gt;Other stuff&lt;/h1&gt;
 &lt;p&gt;Comming soon: LaTeX templates&lt;/p&gt;
 &lt;!-- ### My LaTeX templates
 
@@ -121,4 +129,4 @@ Article --&gt;
 &lt;h1&gt;Close&lt;/h1&gt;
 &lt;p&gt;This is just my opinion.
 Feel free to look for your own resources.
-Feel free to contact me if you have any question or suggestion: &lt;a href=&quot;mailto:kevin.chavez@yachaytech.edu.ec&quot;&gt;kevin.chavez@yachaytech.edu.ec&lt;/a&gt;, 0994819015&lt;/p&gt;</content:encoded></item></channel></rss>
+Also, feel free to contact me if you have any question or suggestion: &lt;a href=&quot;mailto:kevin.chavez@yachaytech.edu.ec&quot;&gt;kevin.chavez@yachaytech.edu.ec&lt;/a&gt;, 0994819015&lt;/p&gt;</content:encoded></item></channel></rss>
