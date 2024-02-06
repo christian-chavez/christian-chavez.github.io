@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Teoría de Categorías</title>
+    <link rel="icon" type="image/x-icon" href="imgs/profile.ico">
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/dracula.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+
+<style>
+    .fragment.blur {
+        filter: blur(5px);
+    }
+
+    .fragment.blur.visible {
+        filter: none;
+    }
+
+    .blurred-paragraph {
+        filter: blur(5px);
+    }
+</style>
+<body>    
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- <section data-background-image="imgs/back2.png" data-background-opacity="0.05"> -->
+            <!-- data-background-iframe="https://lab.hakim.se/particles/02/" data-background-opacity="0.15"> -->
+            <section>  
+                <h2>Teoría de Categorías</h2>
+
+                <img src="imgs/mate-rojo.png" width="400" style="float: center;">
+
+                <p style="text-align: left;">
+                    <!-- <br> -->
+                    Christian Chávez <br>
+                    Universidad Yachay Tech
+                    <span style="float: right;">2023</span>
+                </p>
+            </section>
+
+
+            <section data-transition="zoom-in fade-out">
+                <h3>Un poco de historia</h3>
+                <p style="font-size: 30px;">
+                    Samuel Eilenberg (izquierda) y Saunders Mac Lane introducieron la teoría de la categoría a mediados
+                    del siglo XX, como parte de su trabajo en topología algebraica.
+                </p>
+                <img src="imgs/samuel.jpeg" alt="Samuel the Dog" height="400" style="float: center;">
+                <img src="imgs/MacLane.jpg" height="400" style="float: center;">
+            </section>
+
+
+
+
+
+            <section>
+                <h3>¿De qué se trata la Teoría de Categorías?</h3>
+                <p style="color: #0766b3;">
+                    Empecemos por lo que no es
+                </p>
+
+                <ul>
+                    <li>No es una teoría para categorizar objetos matemáticos</li>
+                    <li>No se limita al estudio de un solo tipo de estructura matemática</li>
+                    <li>No es una teoría del todo</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>A breves rasgos, la teoría de categorías es...</h3>
+                <ul>
+                    <li>una teoría matemática sobre estructura</li>
+                    <li>un lenguaje para estudiar diferentes áreas de las matemáticas</li>
+                    <!-- <li>independientemente del contenido</li> -->
+                    <li>"la matemática de las matemáticas" (Eugenia Cheng)</li>
+                </ul>
+            </section>
+
+
+            <section style="padding: 0px;">
+                <h3>Motivación</h3>
+                <p style="color: #0766b3;">Diferentes áreas tienen similitudes fundamentales</p>
+                <!-- <br> -->
+                <style>
+                    .column {
+                        width: 33.333%;
+                        float: left;
+                    }
+
+                    /* .image-with-shadow {
+                        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+                    } */
+                </style>
+
+                <div class="column">
+                    <h4>Teoría de Grupos</h4>
+                    <br>
+                    <img class="image-with-shadow" src="imgs/Cyclic_group.svg.png" height="300" style="float: center;">
+
+                </div>
+
+
+                <div class="column">
+                    <h4>Topología</h4><br>
+                    <img class="image-with-shadow" src="imgs/400px-Klein_bottle.svg.png" height="325"
+                        style="float: center;">
+
+
+
+                </div>
+
+
+                <div class="column">
+                    <h4>Álgebra Lineal</h4>
+                    <br><br>
+                    <img class="image-with-shadow" src="imgs/linear-algebra.png" height="250" style="float: center;">
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </section>
+
+
+
+
+            <section>
+                <p style="padding: 50px;">
+                    Antes que nada, necesitamos algunos conceptos preliminares
+                </p>
+
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h2>1</h2>
+
+
+                <h3>Los conjuntos no son suficientes</h3>
+
+                <ul>
+                    <li>No toda colección de objetos que se puede describir con una propiedad es un conjunto</li>
+                    <li>El problema es que tales descripciones pueden dar lugar a colecciones "muy grandes" para ser
+                        consideradas conjuntos</li>
+                    <!-- <li></li> -->
+                </ul>
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h2>1</h2>
+                <h3>Los conjuntos no son suficientes</h3>
+                <!-- <style>
+                    .r-frame {
+                        /* text-align: left; */
+                        padding: 10px;
+                        /* Adjust the value to increase or decrease the margins */
+                    }
+                </style> -->
+                <p class="r-frame" style="text-align: left; padding: 10px;">
+                    <strong>Definición.</strong> Una clase es una colección de objetos matemáticos, que se puede
+                    describir mediante una propiedad.
+                </p>
+
+                <ul>
+                    <li>Todo conjunto es una clase, pero no al revés</li>
+                    <li>Todo conjunto es elemento de algún otro conjunto, pero... </li>
+                    <li>hay clases que no son elementos de ninguna otra clase</li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate>
+                <h2>2</h2>
+                <h3>Terminología, notación y más terminología</h3>
+
+                <br>
+
+                <ul>
+                    <li class="fragment" data-fragment-index="1"><strong>Morfismo, mapa (mapping):</strong> una
+                        función, grosso modo
+                    </li>
+                    <li class="fragment" data-fragment-index="2"><strong>$\longrightarrow$</strong> representa un
+                        morfismo</li>
+
+                    <li class="fragment" data-fragment-index="3"><strong>Objeto:</strong> cualquier cosa definida
+                        formalmente</li>
+                    <li class="fragment" data-fragment-index="4"><strong>$\bigcirc$</strong> representa un objeto</li>
+
+                    <li class="fragment" data-fragment-index="5"><strong>Diagrama:</strong> representación visual de
+                        relaciones entre objetos por medio de flechas</li>
+
+                </ul>
+            </section>
+
+
+            <section data-auto-animate>
+                <h2>2</h2>
+                <h3>Terminología, notación y más terminología</h3>
+
+                <br>
+
+                <ul>
+                    <li><strong>Un morfismo entre objetos $A$ y $B$:</strong> se denota
+                        $$
+                        f : A \to B\qquad\text{o} \qquad A \xrightarrow{f} B
+                        $$
+                    </li>
+                </ul>
+            </section>
+
+
+            <section>
+                <p>
+                    <span style="color: #0766b3;">Ejemplo:</span> un diagrama (conmutativo)
+                </p>
+                <img src="imgs/diagram.png" width="800" style="float: center;">
+                <br>
+                <p style="color: #0766b3;"><em>En la teoría de categorías, los diagramas conmutativos son análogos a las
+                        ecuaciones en álgebra.</em></p>
+            </section>
+
+            <section data-auto-animate>
+                Ahora sí!
+
+                <h2 data-id="text">Categorías</h2>
+            </section>
+
+
+            <!-- <section data-background-iframe="https://lab.hakim.se/particles/02/" data-background-opacity="0.1"> -->
+            <section data-auto-animate>
+                <h2 data-id="text">Categorías</h2>
+                <p class="r-frame" style="text-align: left; padding: 10px;">
+                    <strong>Definición.</strong> Una categoría $\mathscr{C}$ consiste de $4$ partes y $2$ reglas:
+                <ol style="font-size: 30px;">
+                    <li>Una clase de objetos $\mathbf{ob}(\mathscr{C})$</li>
+                    <li>Una clase de morfismos $\mathbf{hom}(A, B)$ por cada par de objetos $A, B \in
+                        \mathbf{ob}(\mathscr{C})$</li>
+                    <li>Composición: por cada $A, B, C\in \mathbf{ob}(\mathscr{C})$, existe un morfismo $$
+                        \begin{array}{ccc}
+                        \mathbf{hom}(B, C) \times \mathbf{hom}(A, B) &\to& \mathbf{hom}(A, C) \\
+                        (g, f) &\mapsto& g \circ f
+                        \end{array}
+                        $$
+                    </li>
+                    <li>Una identidad $1_A \in \mathbf{hom}(A, A)$ por cada $A\in \mathbf{ob}(\mathscr{C})$</li>
+                </ol>
+                </p>
+            </section>
+
+
+            <section data-auto-animate>
+                <h2>Categorías</h2>
+                <p class="r-frame" style="text-align: left; padding: 10px;">
+                    <strong>Definición.</strong> Una categoría $\mathscr{C}$ consiste de $4$ partes y $2$ reglas:
+                </p>
+                <ul start="6" style="font-size: 33px;">
+                    <li seq="20">Asociatividad: para todo $f\in \mathbf{hom}(A, B)$, $g\in \mathbf{hom}(B, C)$, y $h\in
+                        \mathbf{hom}(C, D)$ se cumple $$
+                        (h\circ g) \circ f = h\circ (g\circ f)
+                        $$
+                    </li>
+                    <li>Para todo $f\in \mathbf{hom}(A, B)$, se tiene $$
+                        f\circ 1_A = f = 1_B \circ f
+                        $$
+                    </li>
+                </ul>
+
+            </section>
+
+
+
+
+            <section>
+                <h3>Categorías (en resumen)</h3>
+                <br>
+
+                <ul>
+                    <li class="fragment custom blur" data-fragment-index="1">Objetos</li>
+                    <li class="fragment custom blur" data-fragment-index="1">Morfismos</li>
+                    <li class="fragment custom blur" data-fragment-index="1">Composición</li>
+                    <li class="fragment custom blur" data-fragment-index="1">Identidades</li>
+
+                    <br>
+                    <li class="fragment custom blur" data-fragment-index="2">La composición es asociativa</li>
+                    <li class="fragment custom blur" data-fragment-index="2">Propiedad de identidad</li>
+                </ul>
+            </section>
+
+            <!-- data-background-gradient="radial-gradient(#ffffff, #f5d951)" -->
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+            </section>
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+                <h1>$\mathbf{Set}$</h1>
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+                <h1>$\mathbf{Set}$</h1>
+
+                <p>
+                    La categoría de todos los conjuntos
+                </p>
+
+                <ul>
+                    <li><strong>Objetos:</strong> conjuntos</li>
+                    <li><strong>Morfismos:</strong> funciones entre conjuntos</li>
+                    <li><strong>Composición:</strong> usual, $(f \circ g) (x) = f(g(x))$</li>
+                    <li><strong>Identidades:</strong> $1_A(x) = x, \forall x\in A$, por cada conjunto $A$</li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate="">
+                <!-- <h2>Ejemplos de Categorías</h2> -->
+
+                <h1>$\mathbf{Set}$</h1>
+                <!-- 
+                <p>
+                    La categoría de todos los conjuntos
+                </p> -->
+
+                <ul>
+                    <li><strong>$\circ$ es asociativa: </strong>para todo $f\in \mathbf{hom}(A, B)$, $g\in
+                        \mathbf{hom}(B, C)$, y $h\in\mathbf{hom}(C, D)$, tenemos
+                        $$
+                        \begin{align*}
+                        ((f\circ g) \circ h) (x) &= (f\circ g)(h(x))\\
+                        &= f(g(h(x)))\\
+                        &= f((g\circ h)(x))\\
+                        &= (f\circ (g\circ h))(x)
+                        \end{align*}
+
+                        $$
+                    </li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate="">
+                <!-- <h2>Ejemplos de Categorías</h2> -->
+
+                <h1>$\mathbf{Set}$</h1>
+                <li><strong>Composición de identidades:</strong> si $f\in \mathbf{hom}(A,B),$
+                    $$
+                    \begin{align*}
+                    (f \circ 1_A) (x) &= f(1_A(x)) \\
+                    &= f(x) \\
+                    &= 1_B(f(x)) \\
+                    &= (1_B \circ f) (x)
+                    \end{align*}
+                    $$
+                </li>
+                </ul>
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+                <h1>$\mathbf{Grp}$</h1>
+
+                <p>
+                    La categoría de todos los grupos $(G, \cdot)$
+                </p>
+
+                <ul>
+                    <li><strong>Objetos:</strong> grupos</li>
+                    <li><strong>Morfismos:</strong> homomorfismos de grupos</li>
+                    <li><strong>Composición:</strong> usual, $(f \circ g) (x) = f(g(x))$</li>
+                    <li><strong>Identidades:</strong> $1_A(x) = x$, por cada conjunto $A$</li>
+                </ul>
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+                <h1>$\mathbf{Top}$</h1>
+
+                <p>
+                    La categoría de todos los espacios topologicos $(X, \mathcal{T})$
+                </p>
+
+                <ul>
+                    <li><strong>Objetos:</strong> espacios topologicos</li>
+                    <li><strong>Morfismos:</strong> funciones continuas</li>
+                    <li><strong>Composición:</strong> usual, $(f \circ g) (x) = f(g(x))$</li>
+                    <li><strong>Identidades:</strong> $1_A(x) = x$, por cada conjunto $A$</li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Categorías</h2>
+
+                <h1>$(\mathbb{R}, \leq)$</h1>
+
+                <p>
+                    Una categoría "del orden"
+                </p>
+
+                <ul>
+                    <li><strong>Objetos:</strong> números reales</li>
+                    <li><strong>Morfismos:</strong> un único $\varphi : x\to y$ t.q. $x\leq y$</li>
+                    <li><strong>Composición:</strong> $x\rightarrow{} y \rightarrow{} z$ da lugar $x\rightarrow{} z$
+                        t.q. $x\leq z$</li>
+                    <li><strong>Identidades:</strong> $1_x = x$ para todo $x\in \mathbb{R}$. Claramente $x\leq x$</li>
+                    <li>Las reglas de composición e identidades son inmediatas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Morfismos especiales</h3>
+
+                <img src="imgs/isomor.png" width="500" style="float: center;">
+
+                <p style="text-align: left">
+                    En una categoría $\mathscr{A}$, llamamos <em>isomorfismo</em> a cualquier morfismo $f: A\to B$, con
+                    $A,B\in \mathscr{A}$, tal que existe $g: B \to A$ y este diagrama conmuta, i.e.,
+                </p>
+                <ul>
+                    <li>$1_A = g \circ f$, y </li>
+                    <li>$ 1_B = f\circ g $. </li>
+                    <!-- <br> -->
+                    <!-- <li></li> -->
+                </ul>
+                <p style="text-align: left">
+                    Escribimos $g= f^{-1}$
+                </p>
+
+            </section>
+
+            <section data-transition="zoom-in fade-out">
+                <h1>Funtores</h1>
+
+                <img src="imgs/functors.jpg" height="400" style="float: center;">
+
+            </section>
+
+            <section data-auto-animate>
+                <h2>Funtor</h2>
+                <ul>
+                    <li>En teoría de categorías, siempre nos preguntamos por los mappings entre pares de objetos</li>
+                    <li>Incluso si esos objetos son categorías</li>
+                    <li>Un mapeo entre categorías se denomina <strong>funtor</strong></li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate>
+                <h2>Funtor</h2>
+                <p class="r-frame" style="text-align: left; padding: 10px; font-size: 33px;">
+                    <strong>Definición.</strong> Sean $\mathscr{A}$ y $\mathscr{B}$ categorías. Un
+                    <strong>funtor</strong> $F : \mathscr{A} \to \mathscr{B}$ consiste de dos objetos que satisfacen
+                    dos condiciones:
+                <ul style="font-size: 30px;">
+                    <li>una función de objetos $\mathbf{ob}(\mathscr{A}) \to \mathbf{ob}(\mathscr{B})$, tal que
+                        $X\mapsto F(X)$ </li>
+                    <li>una función de morfismos $\mathbf{hom}(X, Y) \to \mathbf{hom}(F(X), F(Y))$ </li>
+                    <br>
+                    <li>Se respeta la composición: $$F(f\circ g) = F(f)\circ F(g)$$ siempre que $X\xrightarrow{g}
+                        Y\xrightarrow{f} Z$ en $\mathscr{A}$</li>
+                    <li>Se preservan las identidades: $F(1_A) = 1_{F(A)},\forall A\in \mathscr{A}$</li>
+                </ul>
+                </p>
+            </section>
+
+
+
+            <!-- <section data-background-gradient="radial-gradient(#ffffff, #d4d2d2)">
+                <h2>Ejemplos de Funtores</h2>
+            </section> -->
+
+
+            <section data-auto-animate-restart data-auto-animate="">
+                <h2>Ejemplos de Funtores</h2>
+                <h2>$\mathcal{I}: \mathscr{C} \to \mathscr{C}$</h2>
+
+                <p>
+                    El funtor identidad
+                </p>
+
+                <br>
+
+
+                <ul>
+                    <li>Envía cada objeto y cada morfismo a sí mismo</li>
+                </ul>
+
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h2>Ejemplos de Funtores</h2>
+                <h2>$U: \mathbf{Grp} \to \mathbf{Set}$</h2>
+
+                <p>
+                    El funtor que remueve la estructura
+
+                </p>
+
+                <br>
+                <ul style="font-size: 30px;">
+                    <li><strong></strong>Si $G$ es un grupo, $U(G)$ es el conjunto del grupo, i.e.,
+                        $ (G, \cdot) \mapsto G
+                        $</li>
+                    <li><strong></strong>Si $\varphi : G \to H$ es un homomorfismo de grupos, $U(\varphi)$ es la función
+                        $\varphi$, i.e.,
+                        $$
+                        (G,\cdot) \xrightarrow{\varphi} (H, *) \quad\mapsto\quad G\xrightarrow{\varphi} H
+                        $$
+                    </li>
+                    <br>
+                </ul>
+                <!-- Así que $U$ elimina la estructura de grupo y de homomorfismo de grupo. De manera similar, podemos considerar $U$ con $\mathbf{Top}$, $\mathbf{Vect}$, etc -->
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+            <section data-transition="zoom-in fade-out" data-background-image="imgs/white-bac.webp"
+                data-background-opacity="0.3" data-background-gradient="radial-gradient(#ffffff, #e8e8e6)">
+
+                <audio src="audio/explosion.m4a" data-autoplay></audio>
+
+                <h1 style="font-size: 120px;">Transformaciones Naturales</h1>
+                <p>
+                    Mapas entre funtores
+                </p>
+
+                <img src="imgs/0x215.webp" height="200" style="float: center;">
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h2>Transformaciones Naturales</h2>
+
+                <p>
+                    <!-- <ul>
+                    <li>Es un concepto muy importante</li>
+                    <li>La motivación para introducir categorías y funtores fue    formalizar esta idea</li>
+                </ul> -->
+                    En un principio, la motivación para introducir categorías y funtores fue formalizar esta idea
+                </p>
+            </section>
+
+
+            <section data-auto-animate="">
+                <h2>Transformaciones Naturales</h2>
+                <p>
+                    La noción de morfismos entre funtores solo tiene sentido cuando los funtores tienen el mismo
+                    dominio y codominio.
+                </p>
+                <p style="color: #0766b3;">
+                    $$
+                    \mathscr{A} \xrightarrow{F,\,G} \mathscr{B}
+                    $$
+                </p>
+
+                <p class="fragment custom blur">
+                    Queremos "transformar" un funtor en otro pero manteniendo la estructura interna (del dominio y
+                    codominio).
+                </p>
+            </section>
+            <!-- style="text-align: left; padding: 10px; ;" -->
+
+            <section data-auto-animate="">
+                <h2>Transformaciones Naturales</h2>
+                <p class="r-frame" style="text-align: left; padding: 10px; font-size: 33px">
+                    <strong>Definición.</strong> Sean $\mathscr{A}, \mathscr{B}$ categorías y $F, G$ funtores de $\mathscr{A}$ a $\mathscr{B}$. Una transformación natural $\alpha$ de $\mathscr{A}$ a $\mathscr{B}$ es una familia de morfismos $$\left(
+                    F(A)\xrightarrow{\alpha_A} G(A)\right)_{A\in \mathscr{A}}$$ en $\mathscr{B}$ tal que si $f: A \to A'$
+                    es un morfismo en $\mathscr{A}$, entonces el siguiente diagrama conmuta:
+                </p>
+
+                <aside class="notes">
+                    Así como los funtores son transformaciones entre categorías, las transformaciones Naturales son
+                    tralaciones entre funtores. 📝
+                </aside>
+
+            </section>   
+
+
+            <section data-auto-animate="">
+                <h2>Transformaciones Naturales</h2>
+                <img src="imgs/nat_transform.png" height="400" style="float: center;">
+            </section>
+
+
+            <section data-auto-animate="">
+                <h2>Transformaciones Naturales</h2>
+                <h3 style="text-align: left; padding: 10px; color:rgb(240, 168, 12)">
+                    Observaciones
+                </h3>
+                <ul>
+                    <li>Esta definición se dió de tal manera que por cada $A\xrightarrow{f} A'$ en $\mathscr{A}$ se pueda contruir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
+                    </li>
+                    <!-- <li>Cuando $f = 1_A$, tal morfismo es justamente $\alpha_A$</li> -->
+                    <li>Dicho morfismo es la diagonal del diagrama anterior</li>
+                </ul>
+            </section>     
+
+
+            <section >
+                <h2>Ejemplo</h2>
+
+                <h2>$\left( 1_{F(A)}\right)_{A\in \mathscr{C}}$</h2>
+                <br>
+                
+                La identidad: una transformación natural de $F$ a sí mismo
+                
+                <ul>
+                    <li>para cualquier par de categorías $\mathscr{C}$ y $\mathscr{D}$</li>
+                    <li>y cualquier funtor $F$ de $\mathscr{C}$ a $\mathscr{D}$</li>
+                </ul>          
+            </section>
+
+
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+                <!-- <br> -->
+                
+                <!-- El determinante -->
+                
+                <ul>
+                    <li>Sea \(\mathcal{G} \mathcal{L}_n\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$  tal que cada  \(R\in \mathrm{CRing}\) se mapea por \(\mathcal{G} \mathcal{L}_n\) al grupo \(GL_n(R)\) de matrices invertibles \(n \times n\) con entradas de \(R\).</li>
+                    <li>Para cada homomorfismo de anillos \(f: R \rightarrow S\), tenemos que \(\mathcal{G} \mathcal{L}_n(f)\) es el mapeo de matrices que aplica \(f\) a cada entrada de la matriz</li>
+                    <li>Dado que \(f\) envía el elemento neutro 1 a 1, se sigue que \(\mathcal{G} \mathcal{L}_n(f)\) envía matrices invertibles a matrices invertibles</li>
+                </ul>
+            </section>
+
+
+            
+
+
+            <!-- <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+                <br>
+                
+                El determinante
+                
+                <ul>
+                    <li>Sea \(\mathcal{G} \mathcal{L}_n\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$  tal que cada  \(R\in \mathrm{CRing}\) se mapea por \(\mathcal{G} \mathcal{L}_n\) al grupo \(GL_n(R)\) de matrices invertibles \(n \times n\) con entradas de \(R\).</li>
+                    <li>Para cada homomorfismo de anillos \(f: R \rightarrow S\), tenemos que \(\mathcal{G} \mathcal{L}_n(f)\) es el mapeo de matrices que aplica \(f\) a cada entrada de la matriz</li>
+                    <li>Dado que \(f\) envía el elemento neutro 1 a 1, se sigue que \(\mathcal{G} \mathcal{L}_n(f)\) envía matrices invertibles a matrices invertibles</li>
+                </ul>
+            </section>             -->
+
+
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+                <!-- <br> -->
+                
+                <!-- El determinante -->
+                
+                <ul>
+                    <li>Sea \(\mathcal{G}\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$ que mapea cada anillo \(R\) a su grupo de unidades \(R^{\times}\), y cada homomorfismo de anillos \(f\) a su restricción a los grupos de unidades (también denotado por \(f\)).</li>
+                    <li>La determinante es una transformación natural de \(\mathcal{G} \mathcal{L}_n\) a \(\mathcal{G}\) porque la determinante está definida por el mismo polinomio para todos los anillos, de modo que el siguiente diagrama es conmutativo:</li>
+                </ul>
+            </section>            
+
+            
+            <section  style="font-size: 30px;" data-auto-animate="">
+                <h2>Ejemplo</h2>
+
+                <h2>$\mathrm{\det}$</h2>
+
+                <img src="imgs/gln.png" height="350" style="float: center;">
+                
+            </section>     
+            
+
+
+            <section data-auto-animate="">
+                <h2>
+                    Aplicaciones de la Teoría de Categorías
+                </h2>
+            </section>
+
+
+            <section data-auto-animate="">
+                <h2>
+                    Aplicaciones de la Teoría de Categorías
+                </h2>
+
+                <ul>
+                    <li>Álgebra homológica</li>
+                    <li>Ciencias de la computación</li>
+                    <ul style="list-style-type: none;">
+                        <li>Programación fucional, e.g., Haskell </li>
+                    </ul>
+                    <li>Teoría de cARTEgorías</li>
+                    <ul style="list-style-type: none;">
+                        <li><a href="https://scholarship.claremont.edu/cgi/viewcontent.cgi?article=1519&context=jhm">Framing
+                                Aesthetics of Mathematics</a></li>
+                    </ul>
+                </ul>
+            </section>
+
+ <!-- data-transition="zoom-in fade-out" -->
+
+            <section data-background-image="imgs/end.webp">
+                <!-- <h2 >
+                    ¡Gracias!
+                </h2> -->
+            </section>
+
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+                controls: false,
+                slideNumber: true,
+                backgroundTransition: 'slide',
+                // transition: 'zoom-in fade-out',
+                // Learn about plugins: https://revealjs.com/plugins/
+
+                plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+            });
+        </script>
+        <script src="plugin/math/math.js"></script>
+        <script>
+            Reveal.initialize({ plugins: [RevealMath.KaTeX] });
+        </script>
+</body>
+
+</html>
