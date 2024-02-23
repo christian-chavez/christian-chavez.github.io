@@ -27,12 +27,12 @@ section.has-light-background, section.has-light-background h1, section.has-light
  *********************************************/
 :root {
   --r-background-color: #ffffff;  /*#111730;*/
-  --r-main-font: "Computer Modern Serif", serif;
+  --r-main-font: "Computer Modern Sans", helvetica;
   --r-main-font-size: 35px;
   --r-main-color: #2e2d2d;
   --r-block-margin: 20px;
   --r-heading-margin: 0 0 20px 0;
-  --r-heading-font: 'CMUSerifRoman';
+  --r-heading-font: "Computer Modern Serif", serif;
   --r-heading-color:  #000000; /* #0081d6;*/ /*#07b378;*/
   --r-heading-line-height: 1.2;
   --r-heading-letter-spacing: normal;
