@@ -20,6 +20,9 @@
           {% if site.author.email -%}
             <li><a class="u-email" href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
           {%- endif %}
+          {% if site.copyright -%}
+          <li> &copy; {{ 'now' | date: "%Y"}} | Christian Chávez</li>
+          {%- endif %}
         </ul>
       {%- endif %}
       </div>

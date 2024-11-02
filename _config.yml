@@ -1,7 +1,7 @@
 title: Christian Chávez
 author:
   name: Christian Chávez
-  email: kevin.chavez@yachaytech.e
+  email: kevin.chavez@yachaytech.edu.ec
 
 # The `>` after `description:` means to ignore line-breaks until next key.
 # If you want to omit the line-break after the end of text, use `>-` instead.
@@ -28,6 +28,7 @@ plugins:
 # in order as they should show up.
 header_pages:
   - CV.md
+  - talks.md
   - notes.md  
   - about.md
 
@@ -73,3 +74,4 @@ minima:
    - { platform: youtube,        user_url: "https://www.youtube.com/jekyll" }
 
 
+copyright: "here"

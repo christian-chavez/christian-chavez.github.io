@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/dracula.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <section>
+                <h2 style="font-family: 'CMU Serif'">Criptografía</h2>
+
+                <img src="imgs/mate.png" width="400" style="float: center;">
+
+                <p style="text-align: left;">
+                    <!-- <br> -->
+                    Christian Chávez <br>
+                    Erick Altamirano <br><br>
+                    Universidad Yachay Tech
+                    <span style="float: right;">2023</span>
+                </p>
+            </section>
+
+
+
+            <section>
+                <h3 style="text-align: left;top: 0; left: 0;">
+                    Contenido
+                </h3>
+                <br>
+                <p> </p>
+                <ol>
+                    <li>Conceptos Básicos de Criptografía</li>
+                    <li>Cifrado Monográfico</li>
+                    <li>Cifrado por Bloques</li>
+                    <li>Cifrado Exponencial</li>
+                    <!-- <li>Algoritmo para Calcular P y Módulo P</li> -->
+                    <li>Sistemas de Clave Pública</li>
+                </ol>
+            </section>
+
+
+
+            <section data-markdown data-auto-animate>
+                <textarea data-template>
+                    <!-- <img src="imgs/g890.png" alt="drawing" width="300"/> -->
+                    ## Preliminares
+
+                    <br>
+            
+                    <p class="r-frame">
+                        <strong>
+                            En resumen...
+                        </strong>
+                        la criptografía trata sobre la comunicación segura, enfocándose en protocolos seguros que evitan que otros vean mensajes privados.
+                    </p>
+                </textarea>
+            </section>
+
+
+            <style>
+                .fragment.blur {
+                  filter: blur(5px);
+                }
+                .fragment.blur.visible {
+                  filter: none;
+                }
+              </style>
+
+
+            <section data-auto-animate>
+                <h2>Preliminares</h2>
+
+                <br>
+
+                <ul>
+                    <li class="fragment custom blur"><strong>Texto plano</strong>. El mensaje (leible) que será transmitido.</li>
+                    <li class="fragment custom blur"><strong>Texto cifrado</strong>. El mensaje codificado (secreto).</li>
+                    <li class="fragment custom blur"><strong>Clave</strong>: lo que te permite cifrar o descifrar.</li>
+                    <li class="fragment custom blur"><strong>Alfabeto</strong>: Sistema de símbolos (letras, números, etc.).</li>
+                  </ul>
+            </section>
+
+            <!-- <section data-markdown data-auto-animate>
+                <textarea data-template>
+                        <img src="imgs/g1461.png" alt="drawing" width="1200"/>
+
+                        ## Preliminares<br>
+  
+                        - **Cifrar**: texto plano $\to$ texto cifrado
+                        - **Descifrar**: texto cifrado $\to$ texto plano
+                        - **Clave**: lo que te permite cifrar o descifrar
+
+                </textarea>
+            </section> -->
+
+
+            <section data-markdown data-auto-animate>
+                <textarea data-template>
+                        <img src="imgs/g1461.png" alt="drawing" width="1200"/>
+                </textarea>
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h2>Cifrados Monográficos</h2>
+                Los mas sencillos
+
+
+                <br>
+                <img src="imgs/g854.png" alt="drawing" width="350" />
+
+            </section>
+
+            <section data-auto-animate>
+                <h2>Cifrados Monográficos</h2>
+
+                <p class="r-frame">
+                    <b>Cifrado de Julio César:</b> desplaza las letras del alfabeto por un número fijo de posiciones.
+                </p>
+
+                <img src="imgs/g854.png" alt="drawing" width="300" />
+
+            </section>
+
+            <section>
+                <h3>Cifrado y Decifrado</h3>
+                <ul>
+                    <li>A cada letra $\ell$ se le asigna un valor $n$ entre $0$ y $26$</li>
+                    <li>Desplazar cada valor por $3$ significa $$n \mapsto n + 3 \!\!\! \mod 27$$</li>
+                    <li>Para recuperar el mensaje, $$n \mapsto n - 3 \!\!\! \mod 27$$</li>
+                </ul>
+
+
+            </section>
+
+            <section data-auto-animate>
+                <h7 style="color: rgb(247, 198, 40);">Procedimiento...</h7>
+                <h4>Asigne un valor entero a cada letra</h4>
+                <style>
+                    table {
+                        width: 20%;
+                        /* Adjust the width as desired */
+                    }
+
+                    table th,
+                    table td {
+                        /* width: 20%; */
+                        font-size: 35px;
+                        /* Adjust the font size as desired */
+                    }
+                </style>
+                <table>
+                    <tr>
+                        <th>$\mathrm{A}$</th>
+                        <th>$\mathrm{B}$</th>
+                        <th>$\mathrm{C}$</th>
+                        <th>$\mathrm{D}$</th>
+                        <th>$\mathrm{E}$</th>
+                        <th>$\mathrm{F}$</th>
+                        <th>$\mathrm{G}$</th>
+                        <th>$\mathrm{H}$</th>
+                        <th>$\mathrm{I}$</th>
+                        <th>$\mathrm{J}$</th>
+                        <th>$\mathrm{K}$</th>
+                        <th>$\mathrm{L}$</th>
+                        <th>$\mathrm{M}$</th>
+                        <th>$\mathrm{N}$</th>
+                    </tr>
+                    <tr>
+                        <td>$0$</td>
+                        <td>$1$</td>
+                        <td>$2$</td>
+                        <td>$3$</td>
+                        <td>$4$</td>
+                        <td>$5$</td>
+                        <td>$6$</td>
+                        <td>$7$</td>
+                        <td>$8$</td>
+                        <td>$9$</td>
+                        <td>$10$</td>
+                        <td>$11$</td>
+                        <td>$12$</td>
+                        <td>$13$</td>
+
+                    </tr>
+                </table>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <th>$\mathrm{Ñ}$</th>
+                        <th>$\mathrm{O}$</th>
+                        <th>$\mathrm{P}$</th>
+                        <th>$\mathrm{Q}$</th>
+                        <th>$\mathrm{R}$</th>
+                        <th>$\mathrm{S}$</th>
+                        <th>$\mathrm{T}$</th>
+                        <th>$\mathrm{U}$</th>
+                        <th>$\mathrm{V}$</th>
+                        <th>$\mathrm{W}$</th>
+                        <th>$\mathrm{X}$</th>
+                        <th>$\mathrm{Y}$</th>
+                        <th>$\mathrm{Z}$</th>
+                    </tr>
+                    <tr>
+                        <td>$14$</td>
+                        <td>$15$</td>
+                        <td>$16$</td>
+                        <td>$17$</td>
+                        <td>$18$</td>
+                        <td>$19$</td>
+                        <td>$20$</td>
+                        <td>$21$</td>
+                        <td>$22$</td>
+                        <td>$23$</td>
+                        <td>$24$</td>
+                        <td>$25$</td>
+                        <td>$26$</td>
+                    </tr>
+                </table>
+
+
+            </section>
+
+
+            <section data-auto-animate>
+                <h7 style="color: rgb(247, 198, 40);">Procedimiento...</h7>
+                <h4>Recorra $3$ cada valor</h4>
+                <style>
+                    table {
+                        width: 20%;
+                        /* Adjust the width as desired */
+                    }
+
+                    table th,
+                    table td {
+                        /* width: 20%; */
+                        font-size: 35px;
+                        /* Adjust the font size as desired */
+                    }
+                </style>
+                <table>
+                    <tr>
+                        <th>$\mathrm{A}$</th>
+                        <th>$\mathrm{B}$</th>
+                        <th>$\mathrm{C}$</th>
+                        <th>$\mathrm{D}$</th>
+                        <th>$\mathrm{E}$</th>
+                        <th>$\mathrm{F}$</th>
+                        <th>$\mathrm{G}$</th>
+                        <th>$\mathrm{H}$</th>
+                        <th>$\mathrm{I}$</th>
+                        <th>$\mathrm{J}$</th>
+                        <th>$\mathrm{K}$</th>
+                        <th>$\mathrm{L}$</th>
+                        <th>$\mathrm{M}$</th>
+                        <th>$\mathrm{N}$</th>
+                    </tr>
+                    <tr>
+                        <td>$3$</td>
+                        <td>$4$</td>
+                        <td>$5$</td>
+                        <td>$6$</td>
+                        <td>$7$</td>
+                        <td>$8$</td>
+                        <td>$9$</td>
+                        <td>$10$</td>
+                        <td>$11$</td>
+                        <td>$12$</td>
+                        <td>$13$</td>
+                        <td>$14$</td>
+                        <td>$15$</td>
+                        <td>$16$</td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <th>$\mathrm{Ñ}$</th>
+                        <th>$\mathrm{O}$</th>
+                        <th>$\mathrm{P}$</th>
+                        <th>$\mathrm{Q}$</th>
+                        <th>$\mathrm{R}$</th>
+                        <th>$\mathrm{S}$</th>
+                        <th>$\mathrm{T}$</th>
+                        <th>$\mathrm{U}$</th>
+                        <th>$\mathrm{V}$</th>
+                        <th>$\mathrm{W}$</th>
+                        <th>$\mathrm{X}$</th>
+                        <th>$\mathrm{Y}$</th>
+                        <th>$\mathrm{Z}$</th>
+                    </tr>
+                    <tr>
+                        <td>$17$</td>
+                        <td>$18$</td>
+                        <td>$19$</td>
+                        <td>$20$</td>
+                        <td>$21$</td>
+                        <td>$22$</td>
+                        <td>$23$</td>
+                        <td>$24$</td>
+                        <td>$25$</td>
+                        <td>$26$</td>
+                        <td>$0$</td>
+                        <td>$1$</td>
+                        <td>$2$</td>
+                    </tr>
+                </table>
+
+
+            </section>
+
+
+
+
+
+
+
+            <section>
+                <h3 style="color: rgb(247, 198, 40);">Ejemplo</h3>
+                <style>
+                    table {
+                        border-collapse: collapse;
+                    }
+
+                    /* th:first-child, */
+                    /* td:first-child {
+                        border-right: 1px solid rgb(255, 255, 255);
+                    } */
+
+                    /* td {
+                        text-align:center;
+                        vertical-align:middle;
+                    } */
+                </style>
+
+                <div class="table-container" class="r-stretch">
+                    <table>
+                        <tr>
+                            <th><b>Texto plano</b></th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{C}$</th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{H}$</th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                            <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                        </tr>
+                        <tr>
+                            <td>Valor numérico</td>
+                            <td style='text-align:center; vertical-align:middle'>$25$</td>
+                            <td style='text-align:center; vertical-align:middle'>$0$</td>
+                            <td style='text-align:center; vertical-align:middle'>$2$</td>
+                            <td style='text-align:center; vertical-align:middle'>$7$</td>
+                            <td style='text-align:center; vertical-align:middle'>$0$</td>
+                            <td style='text-align:center; vertical-align:middle'>$25$</td>
+                        </tr>
+                        <tr>
+                            <td>Transformación</td>
+                            <td style='text-align:center; vertical-align:middle'>$1$</td>
+                            <td style='text-align:center; vertical-align:middle'>$3$</td>
+                            <td style='text-align:center; vertical-align:middle'>$5$</td>
+                            <td style='text-align:center; vertical-align:middle'>$10$</td>
+                            <td style='text-align:center; vertical-align:middle'>$3$</td>
+                            <td style='text-align:center; vertical-align:middle'>$1$</td>
+                        </tr>
+                        <tr>
+                            <td><b>Texto cifrado</b></td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{F}$</td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{K}$</td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                            <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                        </tr>
+                    </table>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- <section data-auto-animate="">
+                <h3>How to decipher?</h3>
+                Apply $n - 3 \!\!\! \mod 26$
+            </section> -->
+
+            <!-- <section data-auto-animate="">
+                <h3>How to decipher?</h3>
+                To each value $n$ of the cipher text,  
+            </section>             -->
+
+            <section data-auto-animate>
+                <h4>Cifrados monográficos más sofisticados</h4>
+                <ul>
+                    <li>Por agrupación</li>
+                    <li>Transformaciones afines</li>
+                    <li>Transposición</li>
+                    <li>$\cdots$</li>
+                    <!-- <li>Sustitución polialfabética</li> -->
+                </ul>
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h4>Cifrados monográficos más sofisticados</h4>
+                <h7 style="color: rgb(247, 198, 40);">Por agrupación: hacer groupos de $k$ letras. Por ejemplo con
+                    $k=2$,</h7>
+
+
+                <table>
+                    <!-- <td></td> -->
+                    <tr>
+                        <th>Plain text</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                        <!-- <th></th>  -->
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                        <th></th>
+                        <th></th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{C}$</th>
+                        <!-- <th></th>  -->
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{H}$</th>
+                        <th></th>
+                        <th></th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                        <!-- <th></th>  -->
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                    </tr>
+                    <tr>
+                        <td>Numeric value</td>
+                        <td style='text-align:center; vertical-align:middle'>$25$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$0$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$2$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$7$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$0$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$25$</td>
+                    </tr>
+                    <tr>
+                        <td>Transformation</td>
+                        <td style='text-align:center; vertical-align:middle'>$1$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$3$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$5$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$10$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$3$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$1$</td>
+                    </tr>
+                    <tr>
+                        <td>Ciphered text</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{F}$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{K}$</td>
+                        <td></td>
+                        <td></td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                        <!-- <td></td> -->
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                    </tr>
+                </table>
+
+            </section>
+
+
+            <section data-auto-animate>
+                <h3>Cifrados monográficos más sofisticados</h3>
+                <h7 style="color: rgb(247, 198, 40);">Transformación afín: escalar (por $a$) y desplazar (por $b$)</h7>
+
+                <p class="r-frame">
+                    $$
+                    n \mapsto a n + b \!\!\! \mod 27
+                    $$
+                </p>
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h3>Cifrados monográficos más sofisticados</h3>
+                <!-- <h7 style="color: rgb(247, 198, 40);">Transformación afín: escalar y desplazar</h7> -->
+
+                <!-- <p class="r-frame">
+                    $$
+                    n \mapsto a n + m \!\!\! \mod k
+                    $$
+                </p> -->
+
+                <p>
+                    Requerimos que $(a,27) = 1$ para poder descifrar con
+                </p>
+
+
+                <p class="r-frame">
+                    $$
+                    n \mapsto a^{-1}(n-b) \!\!\! \mod 27
+                    $$
+                </p>
+            </section>
+
+
+            <section data-auto-animate>
+                <h3>Cifrados monográficos más sofisticados</h3>
+                <h7 style="color: rgb(247, 198, 40);">Transposición: reordenar las letras del texto plano</h7>
+
+                <table>
+                    <tr>
+                        <th><b>Texto plano</b></th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{C}$</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{H}$</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{Y}$</th>
+                        <th style='text-align:center; vertical-align:middle'>$\mathrm{A}$</th>
+                    </tr>
+                    <tr>
+                        <td>Valor numérico</td>
+                        <td style='text-align:center; vertical-align:middle'>$25$</td>
+                        <td style='text-align:center; vertical-align:middle'>$2$</td>
+                        <td style='text-align:center; vertical-align:middle'>$0$</td>
+                        <td style='text-align:center; vertical-align:middle'>$7$</td>
+                        <td style='text-align:center; vertical-align:middle'>$25$</td>
+                        <td style='text-align:center; vertical-align:middle'>$0$</td>
+                    </tr>
+                    <tr>
+                        <td>Transformación</td>
+                        <td style='text-align:center; vertical-align:middle'>$1$</td>
+                        <td style='text-align:center; vertical-align:middle'>$5$</td>
+                        <td style='text-align:center; vertical-align:middle'>$3$</td>
+                        <td style='text-align:center; vertical-align:middle'>$10$</td>
+                        <td style='text-align:center; vertical-align:middle'>$1$</td>
+                        <td style='text-align:center; vertical-align:middle'>$3$</td>
+                    </tr>
+                    <tr>
+                        <td><b>Texto cifrado</b></td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{F}$</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{K}$</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{B}$</td>
+                        <td style='text-align:center; vertical-align:middle'>$\mathrm{D}$</td>
+                    </tr>
+                </table>
+
+            </section>
+
+
+
+
+
+            <!-- <section>
+                <h3>Vulnerabilidades</h3>
+                <ul>
+                    <li>Análisis de Frecuencia</li>
+                    <li>Espacio de Clave Limitado</li>
+                    <li>Texto Plano Conocido</li>
+                    <li>Falta de Transposición</li>
+                </ul>
+            </section> -->
+
+
+            <section data-auto-animate>
+                <h2>Cifrado en bloques</h2>
+
+
+            </section>
+
+            <section data-auto-animate>
+                <h2>Cifrado en bloques</h2>
+
+                <ul>
+                    <!-- <li>Sistema poligráfico</li> -->
+                    <li>Tomamos el equivalente numérico de un texto plano y lo dividimos en grupos de $n$ letras, que
+                        tratamos como un vector $P$ de
+                        $\mathbb{R}^n$</li>
+                    <li>Luego multiplicamos cada vector $P$ por una matriz $A$ de tamaño $n\times n$ y tomamos residuos
+                        módulo $k$. </li>
+                    <!-- <li>Es decir, los vectores cifrados son de la forma $$C \equiv A P \pmod{k}$$</li>
+                    <li>donde $k$ es el tamaño del alfabeto</li> -->
+                </ul>
+
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h2>Cifrado en bloques</h2>
+
+                <ul>
+                    <li>Es decir, los vectores cifrados son de la forma $$C \equiv A P \pmod{k}$$</li>
+                    <li>donde $k$ es el tamaño del alfabeto</li>
+                </ul>
+
+            </section>
+
+
+            <section data-auto-animate>
+                <h2>Cifrado en bloques</h2>
+
+                <h7 style="color: rgb(247, 198, 40);">¿Cómo escogemos la matriz de cifrado $A$?</h7>
+
+                <p>$A$ debe ...</p>
+
+                <ul>
+                    <!-- <li>Sistema poligráfico</li> -->
+                    <li> tener componentes en $\mathbb{Z}_k$ </li>
+                    <li> ser invertible y además $(\det A, k)=1$</li>
+                </ul>
+
+            </section>
+
+
+            <section data-auto-animate>
+                <h3>Ejemplo</h3>
+
+                <h7 style="color: rgb(247, 198, 40);">Cifremos "YACHAY" poligráficamente</h7>
+
+                <p>Consideremos la matriz $
+                    A = \begin{bmatrix}
+                    7 & 11\\
+                    3 & 2
+                    \end{bmatrix}
+                    $
+
+                    con componentes en $\mathbb{Z}_{27}$ y $$(\det A, 27) = (8,27)=1$$
+
+                </p>
+            </section>
+
+
+            <section data-auto-animate>
+                <h3>Ejemplo</h3>
+
+                <h7 style="color: rgb(247, 198, 40);">Cifremos "YACHAY" poligráficamente</h7>
+
+                <ul>
+                    <li>Dividimos el texto plano en grupos de $n=2$ letras</li>
+                    <li>y lo transformamos en su equivalente numérico</li>
+                </ul>
+
+                <p>
+
+                    YA $\to$ $\begin{bmatrix} 24\\0 \end{bmatrix}\quad$
+
+                    CH $\to$ $\begin{bmatrix} 2\\7 \end{bmatrix}\quad$
+
+                    AY $\to$ $\begin{bmatrix} 0\\24 \end{bmatrix}$
+
+                </p>
+
+            </section>
+
+
+
+
+            <section data-auto-animate>
+                <h3>Ejemplo</h3>
+
+                <h7 style="color: rgb(247, 198, 40);">Cifremos "YACHAY" poligráficamente</h7>
+
+                <ul>
+                    <li>Aplicamos la transformación $C \equiv A P \pmod{27}$</li>
+                    <li>Por facilidad, ponemos los vectores $C$ como columnas de una matriz y la multiplicamos por $A$
+                    </li>
+                </ul>
+
+                $$
+                \begin{bmatrix}
+                7 & 11\\
+                3 & 2
+                \end{bmatrix}
+                \begin{bmatrix}
+                24 & 2 & 0\\
+                0 & 7 & 24
+                \end{bmatrix} =
+                \begin{bmatrix}
+                6 & 10 & 21\\
+                18 & 20 & 21
+                \end{bmatrix}
+                $$
+
+
+            </section>
+
+
+
+
+            <section data-auto-animate>
+                <h3>Ejemplo</h3>
+
+                <h7 style="color: rgb(247, 198, 40);">Cifremos "YACHAY" poligráficamente</h7>
+
+                <ul>
+                    <li>Utilizando el alfabeto encontramos el texto cifrado</li>
+                    $$
+                    \mathrm{GR}\ \mathrm{KT} \ \mathrm{UU}
+                    $$
+                    <li>Un texto plano que difiera por una única letra del original puede tener
+                        asociado un texto cifrado muy diferente</li>
+                </ul>
+
+
+
+
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h3>Decifrado</h3>
+                <ul>
+                    <li>Hallamos $A^{-1}$ y aplicamos la transformación inversa $$P \equiv A^{-1} C \pmod{27}$$</li>
+                    <li>La matriz $A^{-1}$ existe pues $(\det A, 27) = 1$</li>
+                </ul>
+
+            </section>
+
+
+
+            <section data-auto-animate>
+                <h3>Decifrado</h3>
+                <ul>
+                    <!-- <li>Hallamos $A^{-1}$ y aplicamos la transformación inversa $$P \equiv A^{-1} C$$</li>
+                    <li>La matriz A^{-1} existe pues (det A, k) = 1</li> -->
+                    <li>En el ejemplo anterior, $$
+                        \begin{align*}
+
+                        A^{-1} &= (\det A)^{-1} \begin{bmatrix}
+                        2 & -11\\
+                        -3 & 7
+                        \end{bmatrix}\\
+                        &=17 \begin{bmatrix}
+                        2 & -11\\
+                        -3 & 7
+                        \end{bmatrix}\\
+                        &\equiv \begin{bmatrix}
+                        7 & 25\\
+                        3 & 11
+                        \end{bmatrix} \pmod {27}
+                        \end{align*}
+                        $$
+                    </li>
+                </ul>
+
+            </section>
+
+
+            <section data-auto-animate>
+                <h5 style="color: rgb(247, 198, 40);">Observaciones</h5>
+
+                <ul>
+                    <li>Como en el caso de cifrado de caracteres, una forma más general de cifrar
+                        por bloques, es aplicando a los vectores una transformación afín de la forma $$ C \equiv AP + B
+                        \pmod{27}$$</li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate>
+                <h5 style="color: rgb(247, 198, 40);">Observaciones</h5>
+
+                <ul>
+                    <li>El cifrado de Hill fue el primer cifrado de sustitución poligráfico basado en álgebra lineal,
+                    </li>
+                    <!-- <li></li> -->
+                    <li>aunque es suceptible al criptoanálisis.</li>
+                    <li>Pero podemos aumentar su seguridad tomando $n$ suficientemente grande.</li>
+                </ul>
+            </section>
+
+
+            <!-- <section>
+                <h5 style="color: rgb(247, 198, 40);">Vulnerabilidades ... </h5>
+
+                <ul>
+
+                </ul>
+            </section> -->
+
+
+            <!-- EXPONENCIALES -->
+
+
+            <section data-auto-animate>
+                <h2 style="color: rgb(255, 255, 255); font-family: 'CMU Serif'"">Cifrados Exponenciales</h2>
+
+            </section>
+
+            <section data-auto-animate>
+                <h2>Cifrados Exponenciales</h2>
+                <br>
+
+                <ul>
+                    <li>Son relativamente resistentes al criptoanálisis</li>
+                    <li>Ciframos y deciframos mensajes utilizando exponenciación modular</li>
+                </ul>
+            </section>
+
+            <section data-auto-animate>
+                <h4>Consideremos el siguiente alfabeto</h4>
+                <table>
+                    <tr>
+                        <th>$\mathrm{A}$</th>
+                        <th>$\mathrm{B}$</th>
+                        <th>$\mathrm{C}$</th>
+                        <th>$\mathrm{D}$</th>
+                        <th>$\mathrm{E}$</th>
+                        <th>$\mathrm{F}$</th>
+                        <th>$\mathrm{G}$</th>
+                        <th>$\mathrm{H}$</th>
+                        <th>$\mathrm{I}$</th>
+                        <th>$\mathrm{J}$</th>
+                        <th>$\mathrm{K}$</th>
+                        <th>$\mathrm{L}$</th>
+                        <th>$\mathrm{M}$</th>
+                        <th>$\mathrm{N}$</th>
+                    </tr>
+                    <tr>
+                        <td>$00$</td>
+                        <td>$01$</td>
+                        <td>$02$</td>
+                        <td>$03$</td>
+                        <td>$04$</td>
+                        <td>$05$</td>
+                        <td>$06$</td>
+                        <td>$07$</td>
+                        <td>$08$</td>
+                        <td>$09$</td>
+                        <td>$10$</td>
+                        <td>$11$</td>
+                        <td>$12$</td>
+                        <td>$13$</td>
+
+                    </tr>
+                </table>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <th>$\mathrm{Ñ}$</th>
+                        <th>$\mathrm{O}$</th>
+                        <th>$\mathrm{P}$</th>
+                        <th>$\mathrm{Q}$</th>
+                        <th>$\mathrm{R}$</th>
+                        <th>$\mathrm{S}$</th>
+                        <th>$\mathrm{T}$</th>
+                        <th>$\mathrm{U}$</th>
+                        <th>$\mathrm{V}$</th>
+                        <th>$\mathrm{W}$</th>
+                        <th>$\mathrm{X}$</th>
+                        <th>$\mathrm{Y}$</th>
+                        <th>$\mathrm{Z}$</th>
+                    </tr>
+                    <tr>
+                        <td>$14$</td>
+                        <td>$15$</td>
+                        <td>$16$</td>
+                        <td>$17$</td>
+                        <td>$18$</td>
+                        <td>$19$</td>
+                        <td>$20$</td>
+                        <td>$21$</td>
+                        <td>$22$</td>
+                        <td>$23$</td>
+                        <td>$24$</td>
+                        <td>$25$</td>
+                        <td>$26$</td>
+                    </tr>
+                </table>
+            </section>            
+            
+
+
+
+            <section data-auto-animate>
+                <!-- <h2>Cifrados Exponenciales</h2> -->
+                <h3  style=" color: rgb(247, 198, 40);">Cifrado</h3>
+
+                    <ol>
+                        <li>Dividimos al texto plano en grupos de $2n$ letras</li>
+                        <li>Tratamos a cada bloque $P$ como un único entero</li>
+                        <li>Escogemos un primo $p$ tal que $ 2626 < p < 262626$ Recordar: nuestro alfabeto es de tamaño
+                                $k=27$</li>
+                        <li>Escogemos un entero $e$ tal que $(e,p-1) = 1$</li>
+                        <li>Calculamos los bloques cifrados $C \equiv P^e \pmod{p}$</li>
+                    </ol>
+            </section>
+
+
+
+            <section data-auto-animate>
+                <!-- <h2>Cifrados Exponenciales</h2> -->
+                <h3 style="color: rgb(247, 198, 40);">Cifrado</h3>
+
+                <ul>
+                    <li>El texto cifrado es la lista enteros $C$</li>
+                    <li>No se convierte a letras</li>
+                    <li>La clave de cifrado es $e$</li>
+                    <li>Calcular $C \equiv P^e \pmod{p}$ requiere esfuerzo, pero no es nada difícil para una computadora
+                        de hoy en día</li>
+                </ul>
+            </section>
+
+
+
+
+
+            <section>
+                <h4 style="color: rgb(247, 198, 40);">Algoritmo para calcular $P^e\pmod{p}$</h4>
+
+                <ol>
+                    <li>Encontramos la representación de $e$ en base $2$, digamos $e=(r_k r_{k-1} \cdots r_0)_2$</li>
+                    <li>Calculamos $P, P^2, P^4, \ldots, P^{2^k}$ reduciendo $\text{mod} \,p$</li>
+                    <!-- <li>Multiplicamos $P^{2^i} \pmod{k}$  por los $i$ tales que $r_i \neq 0$, y tomamos residuos módulo $p$.</li> -->
+                    <li>Escribimos $P^e$ como el producto $$P^{r_{k}2^k}P^{r_{k-1}2^{k-1}} \cdots P^{r_0 2^0}$$</li>
+                    <li>Simplificamos y tomamos residuos módulo $p$</li>
+                </ol>
+
+            </section>
+
+
+            <section>
+                <h4>Ejemplo 1: Calculemos $2743^{21}\pmod{2897}$</h4>
+                <!-- <br> -->
+                <ol>
+                    <li>La representación de $21$ en base $2$ es $(1,0,1,0,1)_2$ </li>
+                    <li>Calculamos $$
+                        \begin{align*}
+                        2743 &\equiv 2743 &&\pmod{2897}\\
+                        2743^2 &\equiv 540&&\pmod {2897} \\
+                        2743^4 &\equiv 1900&&\pmod {2897} \\
+                        2743^8 &\equiv 338&&\pmod {2897} \\
+                        2743^{16} &\equiv 1261&&\pmod {2897}
+                        \end{align*}
+                        $$</li>
+                </ol>
+            </section>
+
+
+            <section>
+                <h4>Ejemplo 1: Calculemos $2743^{21}\pmod{2897}$</h4>
+                <!-- <br> -->
+                <p style="text-align: left;">
+                    3. Como $$21=1\cdot 2^4 + 0\cdot 2^3 + 1 \cdot 2^2 + 0 \cdot 2^1 + 1\cdot 2^0,$$ tenemos
+                </p>
+                <p style="font-size: 30px;">
+                    $$
+                    \begin{align*}
+                    2743^{21} &\equiv 2743^{ 2^4} \cdot 2743^{ 2^2} \cdot 2743^{ 2^0} \pmod{2897}\\
+                    &\equiv 1261 \cdot 1900 \cdot 2743 \pmod{2897}\\
+                    &\equiv 81 \cdot 2743 \pmod{2897}\\
+                    &\equiv 2011 \pmod{2897}
+                    \end{align*}
+                    $$
+                </p>
+            </section>
+
+
+            <section>
+                <h3>Ejemplo 2</h3>
+                Cifremos exponencialmente el texto
+                <p style="color: rgb(247, 198, 40);">
+                    $$
+                    \mathrm{
+                    ''GENERALIZAR\>\> ES\>\> SIEMPRE
+                    }$$
+                    $$
+                    \mathrm{EQUIVOCARSE''
+                    }
+                    $$
+                </p>
+                con $p =2707$ y $e=17$.
+            </section>
+
+
+
+            <section data-auto-animate="">
+                <h3>Ejemplo 2</h3>
+                <ul style="font-size: 30px;">
+                    <li>Convertimos las letras del texto en su equivalente numérico y formamos bloques de longitud
+                        cuatro obteniendo
+                        $$
+                        \begin{array}{llllllll}0604 & 1304 & 1800 & 1108 & 2600 & 1804 & 1919 & 0804 \\ 1216 & 1804 &
+                        0417 & 2108 & 2215 & 0200 & 1819 & 0424\end{array}
+                        $$
+                        donde adicionamos al final los dos dígitos $24$, correspondientes a la letra \(\mathrm{X}\),
+                        para que todos los bloques tengan cuatro dígitos.</li>
+                </ul>
+            </section>
+
+
+            <section data-auto-animate="">
+                <h3>Ejemplo 2</h3>
+                <ul start="30" style="font-size: 30px;">
+                    <li>Aplicamos la transformación $P^{17} \pmod{2707}$ a cada bloque $P$</li>
+                    <li>Después de algún trabajo obtenemos, usando el algoritmo anterior, el texto cifrado que es
+                        \[\begin{array}{cccccccc}0185 & 2343 & 1853 & 0912 & 1316 & 2524 & 2645 & 1781 \\ 2653 & 2524 &
+                        1325 & 2111 & 1615 & 0084 & 1543 & 0504\end{array}\]</li>
+                    <li>Recordar: el texto cifrado lo dejamos en valores numéricos, no lo convertimos a letras</li>
+                </ul>
+
+            </section>
+
+
+            <section data-auto-animate="">
+                <h3 style="color: rgb(247, 198, 40);">Decifrado</h3>
+                <br>
+                <p style="text-align: left;">
+                <ul>
+                    <li>Aplicamos $P\equiv C^d\pmod{p}$ donde $d=e^{-1} \pmod{p-1}$.
+                    </li>
+                </ul>
+                </p>
+            </section>
+
+
+            <section data-auto-animate="">
+                <h3 style="color: rgb(247, 198, 40);">Observaciones</h3>
+                <ul>
+                    <li>Para que un criptoanalista descifre un mensaje se necesita un gran tiempo de computación.</li>
+                    <li>Aún conociendo el primo $p$, se necesitan años para determinar $e$, cuando $p > 100$.</li>
+                </ul>
+            </section>
+
+
+            <section>
+                <h2 style="font-family: 'CMU Serif'; color: rgb(255, 255, 255);">Sistemas de Clave Pública
+                </h2>
+                <!-- class=" r-fit-text" -->
+            </section>
+
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+                controls: false,
+                slideNumber: true,
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+                autoSlide: 60000,
+                loop: true,
+
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+            });
+        </script>
+        <script src="plugin/math/math.js"></script>
+        <script>
+            Reveal.initialize({ plugins: [RevealMath.KaTeX] });
+        </script>
+</body>
+
+</html>

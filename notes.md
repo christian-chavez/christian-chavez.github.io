@@ -4,4 +4,6 @@ title: Notes
 permalink: /notes/
 ---
 
-This is  
+Some notes and proofs
+
+- [Induced cohomology functor in an abelian category](/assets/docs/InducedHFunctor.pdf)
