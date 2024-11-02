@@ -6,7 +6,7 @@ $base-font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Se
 $code-font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace;
 $base-font-size:   16px !default;
 $base-font-weight: 400 !default;
-$small-font-size:  $base-font-size * 0.875 !default;
+$small-font-size:  $base-font-size * 0.85 !default;
 $base-line-height: 1.5 !default;
 
 $spacing-unit:     30px !default;
@@ -14,7 +14,7 @@ $spacing-unit:     30px !default;
 $table-text-align: left !default;
 
 // Width of the content area
-$content-width:    800px !default;
+$content-width:    900px !default;
 
 $on-palm:          600px !default;
 $on-laptop:        800px !default;
