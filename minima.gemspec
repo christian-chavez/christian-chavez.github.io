@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+Gem::Specification.new do |spec|
+    spec.name     = "minima"
+    spec.version  = "3.0.0.dev"
+    spec.authors  = ["Joel Glovier"]
+    spec.email    = ["jglovier@github.com"]
+  
+    spec.summary  = "A beautiful, minimal theme for Jekyll."
+    spec.homepage = "https://github.com/jekyll/minima"
+    spec.license  = "MIT"
+  
+    spec.metadata["plugin_type"] = "theme"
+  
+    spec.files = `git ls-files -z`.split("\x0").select do |f|
+      f.match(%r!^(assets|_(includes|layouts|sass)/|(LICENSE|README)((\.(txt|md|markdown)|$)))!i)
+    end
+  
+    spec.add_runtime_dependency "jekyll", "4.3.4"
+    spec.add_runtime_dependency "jekyll-feed", "0.12"
+    spec.add_runtime_dependency "jekyll-seo-tag", "2.8.0"
+  
+    spec.add_development_dependency "bundler"
+  end
