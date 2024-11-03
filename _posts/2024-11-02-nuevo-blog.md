@@ -20,9 +20,9 @@ This theorem beautifully connects geometry and topology, providing deep insights
 
 Moreover
 
-$$
+\\[
 \begin{align*}
    a&=b+c \\
    d+e&=f\int_S K \, dA + 2\pi \chi(S)
 \end{align*}
-$$
+\\]
