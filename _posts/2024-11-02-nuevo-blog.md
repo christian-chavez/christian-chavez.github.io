@@ -1,7 +1,10 @@
 ---
 layout: post
 title: new blog
+published: false
 ---
+
+Este blog solo sirve para testear LaTeX.
 
 Differential \\(eudj\\) geometry studies smooth manifolds and the structures defined on them, such as metrics, connections, and curvature. A smooth manifold \(ueh + \in_A^b = Z + \mathcal{Z}\) of dimension $n$ locally resembles $\mathbb{R}^n$, allowing us to define tangent spaces $T_pM$ at each point $p \in M$. Given a smooth map $f : M \rightarrow N$ between manifolds, the derivative $$df_p : T_pM \rightarrow T_{f(p)}N$$ maps tangent vectors in $M$ to tangent vectors in $N$. One key object of study is the Riemannian metric $g$, a smoothly varying positive-definite inner product on the tangent bundle. This allows us $$c+cd=d0d$$ to measure distances and angles on $M$, and to define the length of a curve $\gamma : [a, b] \rightarrow M$ as
 
