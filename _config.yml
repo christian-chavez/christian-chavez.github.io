@@ -21,6 +21,7 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-katex
 
 # Theme-specific settings
 
@@ -78,5 +79,5 @@ copyright: "here"
 
 # soporte de latex
 # markdown: kramdown
-# kramdown:
-#     math_engine: katex
+kramdown:
+    math_engine: katex

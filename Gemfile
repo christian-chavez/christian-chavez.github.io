@@ -17,3 +17,10 @@ gem "logger"
 gem "csv"
 gem "ostruct"
 gem "base64"
+
+
+# latex
+gem 'jekyll-katex'
+gem 'kramdown-math-katex'
+gem 'katex'
+gem 'execjs'
