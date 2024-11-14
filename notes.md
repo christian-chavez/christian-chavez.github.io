@@ -7,4 +7,4 @@ permalink: /notes/
 Some notes and proofs
 
 - 2024-11-01 [Induced cohomology functor in an abelian category](/assets/docs/InducedHFunctor.pdf)
-- 2024-09-30 [The category of cochain complexes over an abelian category is abelian](/assets/docs/CatOfCochainComplexesIsAbelian.pdf)
+- 2024-09-30 [The category $\mathcal{C}(\mathcal{A})$ of cochain complexes over an abelian category $\mathcal{A}$ is abelian (in Spanish)](/assets/docs/CatOfCochainComplexesIsAbelian.pdf)
