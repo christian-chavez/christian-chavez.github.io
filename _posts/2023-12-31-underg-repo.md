@@ -2,6 +2,7 @@
 layout: post
 title: A repository of my undergraduate studies
 date: "2023-12-27T21:35"
+author: "Christian Chávez"
 description: "This is a collection of resources, suggestions and  recommendations. Here I have collected a lot of study material of the courses I have taken as an undergrad. I also share insights and  general recommendations on certain subjects,  specific to the mathematics program of Yachay Tech. This collection is designed to assist fellow students in building a stronger math background."
 ---
 
@@ -179,13 +180,16 @@ Some resources you may find useful:
 
 # Differential Geometry
 
-<div style="float: left; margin: 5px 15px 0px 0;">
-  <img src="/assets/media/surface.png" alt="Differential Geometry Diagram" style="width:325px;">
+<div style="overflow: hidden;">
+  <figure style="float: left; margin: 5px 15px 0px 0; width: 45%;">
+    <img src="/assets/media/surface.png" alt="Differential Geometry Diagram" style="width: 100%;">
+  </figure>
+  <p>
+    I took this course in the first semester of 2024 with Professor Bladismir Ruiz. It was one of the best courses I’ve ever taken. The prerequisites include multivariable calculus and some real analysis. The focus of the course is on the geometry of curves and surfaces, rather than the differential geometry of smooth manifolds.
+    The reason for this point of view is that the plane and space curves and surfaces in ℝ³ are the simplest examples of smooth spaces. Thus, their study serves as a good introduction for advanced differential geometry.
+    One of the most important results we studied was the Gauss-Bonnet theorem, which we covered towards the end of the course.
+  </p>
 </div>
-I took this course in the first semester of 2024 with Professor Bladismir Ruiz. It was one of the best courses I've ever taken. The prerequisites include multivariable calculus and some real analysis. The focus of the course is on the geometry of curves and surfaces, rather than the differential geometry of smooth manifolds.
-The reason for this point of view  is that the plane and space curves and surfaces in ℝ³ are the simplest examples of smooth spaces.
-Thus their study serves as a good introduction for advanced differential geometry.
-One of the most important results we studied was the Gauss-Bonnet theorem, which we covered towards the end of the course.
 
 
 - [**Syllabus**](https://drive.google.com/uc?export=download&id=1OhgDGPE-4QgQD82U1u8XepXv0Ptken7X)
