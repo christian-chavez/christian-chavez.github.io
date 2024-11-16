@@ -84,3 +84,6 @@ kramdown:
 
 # google analytics
 google_analytics: G-32N0EM3DL1
+
+# Enabling Excerpts on the Home Page
+show_excerpts: true

@@ -6,7 +6,7 @@ published: true
 ---
 
 
-The definition of homotopy for two maps in the classical setting of algebraic topology is as follows.
+The definition of homotopy between two maps in the classical setting of algebraic topology is as follows.
 
 > **Definition.**     Let \\(f\\) and \\(g\\) be two continuous maps from a topological space \\(X\\) into a topological space \\(Y\\). An homotopy from \\(f\\) to \\(g\\) is   a continuous map \\(H \colon X\times I \to Y\\) such that 
 > 
