@@ -3,7 +3,7 @@ layout: post
 title: A repository of my undergraduate studies
 date: "2023-12-27T21:35"
 author: "Christian Chávez"
-description: "This is a collection of resources, suggestions and  recommendations. Here I have collected a lot of study material of the courses I have taken as an undergrad. I also share insights and  general recommendations on certain subjects,  specific to the mathematics program of Yachay Tech. This collection is designed to assist fellow students in building a stronger math background."
+excerpt: "This is a collection of resources, suggestions and  recommendations. Here I have collected a lot of study material of the courses I have taken as an undergrad. I also share insights and  general recommendations on certain subjects,  specific to the mathematics program of Yachay Tech. This collection is designed to assist fellow students in building a stronger math background."
 ---
 
 _This post is dedicated to the mathematics students of Yachay Tech that are about to start their third year, the year at which they start to see real mathematics._
