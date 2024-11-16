@@ -127,7 +127,7 @@ Some resources you may want to review are:
     - This [playlist](https://www.youtube.com/playlist?list=PLelIK3uylPMGzHBuR3hLMHrYfMqWWsmx5) on a  course of Abstract Algebra at Harvard by Professor Benedict Gross.
     - [Visual group theory](https://web.bentley.edu/empl/c/ncarter/vgt/), a book with a visual approach to abstract algebra.
 
-There were two presentation we had to prepare for this course. I chose to make the first one on  [cryptography](/assets/presentations/cryptography/index.html) and the latter on [category theory](/assets/presentations/cryptography/index.html).
+There were two presentation we had to prepare for this course. I chose to make the first one on  [cryptography](/assets/presentations/cryptography/index.html) and the latter on [category theory](/assets/presentations/categories/index.html).
 
 
 # Probability and stochatic processes
