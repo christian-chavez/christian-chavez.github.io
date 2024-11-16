@@ -127,7 +127,7 @@ Some resources you may want to review are:
     - This [playlist](https://www.youtube.com/playlist?list=PLelIK3uylPMGzHBuR3hLMHrYfMqWWsmx5) on a  course of Abstract Algebra at Harvard by Professor Benedict Gross.
     - [Visual group theory](https://web.bentley.edu/empl/c/ncarter/vgt/), a book with a visual approach to abstract algebra.
 
-There were two presentation we had to prepare for this course. I chose to make the first one on  [cryptography](../../presentation-crypto/index.html) and the latter on [category theory](../../presentation-categories/index.html).
+There were two presentation we had to prepare for this course. I chose to make the first one on  [cryptography](/assets/presentations/cryptography/index.html) and the latter on [category theory](/assets/presentations/cryptography/index.html).
 
 
 # Probability and stochatic processes
@@ -173,7 +173,7 @@ Some resources you may find useful:
     - Handbook of Analysis and its Foundations by Eric Schechter. This book is not on Functional Analysis but I founded when I searched for a related topic. Actually it is a handbook on analysis, a must have reference. It has a lot of content. A 'bible' of analysis.
 
 
-**Some thoughts**: Linear Algebra Done Right by Sheldon Axler must be the go to reference to use for the course of Advanced Linear Algebra (or the newer course: Linear and Multilinear Algebra). It is freely available [here](https://link.springer.com/content/pdf/10.1007/978-3-031-41026-0.pdf). A glance at the table of contents reveils it would be a very good preparation for (but not limited to) Functional Analysis.
+**Some thoughts**: Linear Algebra Done Right by Sheldon Axler must be the go to reference to use for the course of Advanced Linear Algebra (or the newer course: Linear and Multilinear Algebra). It is freely available [here](https://link.springer.com/book/10.1007/978-3-031-41026-0). A glance at the table of contents reveils it would be a very good preparation for (but not limited to) Functional Analysis.
 
 
 
