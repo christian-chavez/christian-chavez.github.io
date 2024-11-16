@@ -173,7 +173,7 @@ Some resources you may find useful:
     - Handbook of Analysis and its Foundations by Eric Schechter. This book is not on Functional Analysis but I founded when I searched for a related topic. Actually it is a handbook on analysis, a must have reference. It has a lot of content. A 'bible' of analysis.
 
 
-**Some thoughts**: Linear Algebra Done Right by Sheldon Axler must be the go to reference to use for the course of Advanced Linear Algebra (or the newer course: Linear and Multilinear Algebra). It is freely available [here](https://link.springer.com/book/10.1007/978-3-031-41026-0). A glance at the table of contents reveils it would be a very good preparation for (but not limited to) Functional Analysis.
+**Some thoughts**: Linear Algebra Done Right by Sheldon Axler must be the go to reference to use for the course of Advanced Linear Algebra (or the newer course: Linear and Multilinear Algebra). It is freely available [here](https://linear.axler.net/), provided by the author. A glance at the table of contents reveils it would be a very good preparation for (but not limited to) Functional Analysis.
 
 
 
