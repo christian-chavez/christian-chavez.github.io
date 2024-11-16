@@ -81,3 +81,6 @@ copyright: "here"
 # markdown: kramdown
 kramdown:
     math_engine: katex
+
+# google analytics
+google_analytics: G-32N0EM3DL1
