@@ -233,7 +233,6 @@ Article -->
 
 This is just my opinion.
 Feel free to look for your own resources.
-Also, feel free to contact me if you have any question or recommendation, or of you need any specific material.
-
-kevin.chavez@yachaytech.edu.ec
+Also, feel free to contact me if you have any question or recommendation, or if you need any specific material.
+ 
 
