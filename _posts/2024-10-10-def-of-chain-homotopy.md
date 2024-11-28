@@ -32,3 +32,5 @@ Although these definitions of homotopy arise in  different contexts, and in fact
 
 Browsing the internet, I found [this excellent post](https://grossack.site/2022/06/24/chain-homotopies.html) that describes it.
 When I have more time, I will come back to this post  and expand on the details further.
+
+<!-- [Click Here](https://example.com){: .button } -->
