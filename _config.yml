@@ -91,3 +91,5 @@ show_excerpts: true
 # disqus 2024-11-28 % no funciona si no se añade el url, ver docs de minima
 disqus:
   shortname: disqus_oAiPO8hIE5
+
+url: https://christian-chavez.github.io
