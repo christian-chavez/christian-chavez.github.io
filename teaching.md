@@ -12,14 +12,13 @@ permalink: /teaching/
 ### 2024 
 
 Yachay Tech University
-- Teaching assistant of Abstract Algebra (first semester of 2024)
-- Teaching assistant of Abstract Algebra (second semester of 2024)
+- Teaching assistant for Abstract Algebra  (first and second semester, 2024) 
 
 ### 2023
 
 Yachay Tech University
-- Teaching assistant of General Topology (first semester of 2024)
-- Teaching assistant of Linear  Algebra (second semester of 2024)
+- Teaching assistant for General Topology 
+- Teaching assistant for Linear  Algebra 
 
 
 
