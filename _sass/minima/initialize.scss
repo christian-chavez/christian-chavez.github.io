@@ -3,7 +3,7 @@
 // Define defaults for each variable.
 
 $base-font-family: -apple-system, sans-serif,system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial !default;
-$code-font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace;
+$code-font-family: "Iosevka", monospace, "Ubuntu Mono", "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Liberation Mono", "Courier New";
 $base-font-size:   18px !default;
 $base-font-weight: 400 !default;
 $small-font-size:  $base-font-size * 0.85 !default;
