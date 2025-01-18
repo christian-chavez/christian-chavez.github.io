@@ -13,6 +13,11 @@ dl, dd, ol, ul, figure {
 
 }
 
+// added 2025-01-18
+h1 {
+    // margin-top: $spacing-unit * 5.5;
+    padding-top:  $spacing-unit *1;
+}
 
 
 /**
@@ -104,7 +109,8 @@ li {
  */
 h1, h2, h3, h4, h5, h6 {
   font-weight: $base-font-weight;
-  color:#464545;
+//   color:#464545;
+    color: #434c5e
 }
 
 
