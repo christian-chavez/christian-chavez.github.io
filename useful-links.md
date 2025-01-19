@@ -24,7 +24,7 @@ A list of stuff that I find interesting
 - [math.utah.edu/~milicic/](https://www.math.utah.edu/~milicic/)
 - [math.utah.edu/~milicic/Eprints/dercat.pdf](https://www.math.utah.edu/~milicic/Eprints/dercat.pdf)
 - [alpha.math.uga.edu/~pete/expositions2012.html](http://alpha.math.uga.edu/~pete/expositions2012.html)
-
+- [simonwillerton.staff.shef.ac.uk/TheCatsters/](http://www.simonwillerton.staff.shef.ac.uk/TheCatsters/)
 
 ### More stuff
 
