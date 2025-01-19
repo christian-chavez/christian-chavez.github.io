@@ -8,26 +8,27 @@ published: true
 <!-- ## Blogs  -->
 A list of stuff that I find interesting
 
-### Blogs & websites 
+### Blogs & websites
 
-- [sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/](https://sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/)
-- [math3ma.com/categories/category-theory](https://www.math3ma.com/categories/category-theory)
-- [terrytao.wordpress.com/](https://terrytao.wordpress.com/)
-- [gowers.wordpress.com/2008/08/12/how-to-use-zorns-lemma/](https://gowers.wordpress.com/2008/08/12/how-to-use-zorns-lemma/)
-- [math.stackexchange.com/a/684007/1032174](https://math.stackexchange.com/a/684007/1032174)
-- [golem.ph.utexas.edu/category/](https://golem.ph.utexas.edu/category/)
-
-
+- <a href="https://sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/" target="_blank">sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/</a>
+- <a href="https://www.math3ma.com/categories/category-theory" target="_blank">math3ma.com/categories/category-theory</a>
+- <a href="https://terrytao.wordpress.com/" target="_blank">terrytao.wordpress.com/</a>
+- <a href="https://gowers.wordpress.com/2008/08/12/how-to-use-zorns-lemma/" target="_blank">gowers.wordpress.com/2008/08/12/how-to-use-zorns-lemma/</a>
+- <a href="https://math.stackexchange.com/a/684007/1032174" target="_blank">math.stackexchange.com/a/684007/1032174</a>
+- <a href="https://golem.ph.utexas.edu/category/" target="_blank">golem.ph.utexas.edu/category/</a>
 
 ### Academic Resources
 
-- [math.utah.edu/~milicic/](https://www.math.utah.edu/~milicic/)
-- [math.utah.edu/~milicic/Eprints/dercat.pdf](https://www.math.utah.edu/~milicic/Eprints/dercat.pdf)
-- [alpha.math.uga.edu/~pete/expositions2012.html](http://alpha.math.uga.edu/~pete/expositions2012.html)
-- [simonwillerton.staff.shef.ac.uk/TheCatsters/](http://www.simonwillerton.staff.shef.ac.uk/TheCatsters/)
+- <a href="https://www.math.utah.edu/~milicic/" target="_blank">math.utah.edu/~milicic/</a>
+- <a href="https://www.math.utah.edu/~milicic/Eprints/dercat.pdf" target="_blank">math.utah.edu/~milicic/Eprints/dercat.pdf</a>
+- <a href="http://alpha.math.uga.edu/~pete/expositions2012.html" target="_blank">alpha.math.uga.edu/~pete/expositions2012.html</a>
+- <a href="http://www.simonwillerton.staff.shef.ac.uk/TheCatsters/" target="_blank">simonwillerton.staff.shef.ac.uk/TheCatsters/</a>
 
 ### More stuff
 
-- [castel.dev/](https://castel.dev/)
-- [youtube.com/@DrAndyStapleton](https://www.youtube.com/@DrAndyStapleton)
-- [lukesmith.xyz/](https://lukesmith.xyz/)
+- <a href="https://castel.dev/" target="_blank">castel.dev/</a>
+- <a href="https://lukesmith.xyz/" target="_blank">lukesmith.xyz/</a>
+
+<!-- - [youtube.com/@DrAndyStapleton](https://www.youtube.com/@DrAndyStapleton) -->
+
+
