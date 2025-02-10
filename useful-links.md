@@ -19,6 +19,7 @@ A list of stuff that I find interesting
 
 ### Academic Resources
 
+- <a href="https://users.math.msu.edu/users/ruiterj2/Math/" target="_blank">users.math.msu.edu/users/ruiterj2/Math/</a>
 - <a href="http://therisingsea.org/" target="_blank">therisingsea.org/</a>
 - <a href="https://www.math.utah.edu/~milicic/" target="_blank">math.utah.edu/~milicic/</a>
 - <a href="https://www.math.utah.edu/~milicic/Eprints/dercat.pdf" target="_blank">math.utah.edu/~milicic/Eprints/dercat.pdf</a>
