@@ -1,6 +1,18 @@
 ---
 layout: base
 ---
+<script src="/assets/global/anchor.min.js"></script>
+<script src="/assets/global/jquery-3.7.1.min.js"></script>
+<script>
+	$(function() {
+		anchors.options.visible = 'always'; 
+        anchors.options.placement = 'left';
+        anchors.options.visible = 'hover';
+		anchors.add('.post-content > h1, h2, h3, h4, h5, h6');
+	});
+</script>
+
+
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
