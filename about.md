@@ -8,7 +8,7 @@ permalink: /about/
  
 <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 15px;">
     <img src="/assets/media/christian.jpeg" alt="Description" 
-         style="width: 40%; height: auto; margin-left: 15px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
+         style="width: 40%; height: auto; margin-left: 15px; margin-right: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
 
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
         <p>I am a final-year mathematics student at Yachay Tech University (Ecuador). 
