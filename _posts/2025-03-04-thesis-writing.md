@@ -134,6 +134,7 @@ If you want to get started with Inkscape, take a look a this [video series](http
 
 ## Bonus
 
+- **[tikzcd-editor](https://tikzcd.yichuanshen.de/)**: for making commutative diagrams. It has a visual interface where you draw, and an option to export the \\(\\LaTeX\\) code.
 - **[Xournalpp](https://xournalpp.github.io/)**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
 - **[Obsidian](https://obsidian.md/)**: for taking digital notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc. It also has a plugin to back up your notes to a GitHub repository.
 - **[Flameshot](https://flameshot.org/)**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
