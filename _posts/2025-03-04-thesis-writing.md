@@ -13,11 +13,11 @@ In this post I want to share the tools I used to write my bachelor thesis.
 I wrote my thesis using \\(\\LaTeX\\) with Tex Live, locally on my computer running   Linux.
 
 In summary, I used the following tools:
-- VS Code & Neovim, as my editors
-- Zathura, as pdf viewer
-- Git(Hub), for version control and backup
-- Aspell, for spell checking
-- Inkscape, for drawing figures
+- VS Code & Neovim as my editors
+- Zathura as pdf viewer
+- Git(Hub) for version control and backups
+- Aspell for spell checking
+- Inkscape for drawing figures
 
 
 
