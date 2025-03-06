@@ -29,7 +29,7 @@ I used the extension  [LaTeX Workshop](https://github.com/James-Yu/latex-worksho
   <img src="/assets/media/snippet-example.gif" alt="Snippet Example">
 </p>
 
-Although I liked VS Code a lot, I discovered Vim a year ago, and Neovim quickly became my preferred editor. Reason? I like shortcuts so much. (But the real power of Vim lies in macros.)   If you're unfamiliar with Vim, check out [this video](https://youtu.be/-txKSRn0qeA), and for a practical example, watch [this one](https://youtu.be/NzD2UdQl5Gc). There's a lot to say about Vim, but I won't go into details for now—just know that (Neo)Vim makes me far more efficient.
+Although I liked VS Code a lot, I discovered Vim a year ago, and Neovim quickly became my preferred editor. Reason? I like shortcuts so much. (Although the real power of Vim lies in macros.)   If you're unfamiliar with Vim, check out [this video](https://youtu.be/-txKSRn0qeA), and for a practical example, watch [this one](https://youtu.be/NzD2UdQl5Gc). There's a lot to say about Vim, but I won't go into details for now—just know that (Neo)Vim makes me far more efficient.
 
 
 ## Zathura 
@@ -39,26 +39,28 @@ Here is  a screenshot of VS Code alongside  Zathura on the right. (Btw: I use ar
  
 ![VS Code on the left and Zathura on the right](/assets/media/vscode-zathura.png)
 
-Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). Latex Workshop comes with a predefined pdf viewer, but it is easy to change it to any other one. 
+Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). LaTeX Workshop comes with a built-in pdf viewer, but you can easily  change it to the one you like. 
 
 ## Git & GitHub  
 
-Version control is essential for managing projects, and Git makes it seamless. I use GitHub to back up my work. For my \\(\\LaTeX\\)  documents, Git allows me to keep a clean history of edits, revert to previous versions, and sync across devices. I usually follow a simple workflow when I make a change to a `*.tex` file:  
+Version control is essential for managing projects, and Git makes it seamless. I use GitHub to back up my work. For my \\(\\LaTeX\\)  documents, Git allows me to keep a clean history of edits, revert to previous versions, and sync across devices. (If something happens to my computer, I still have my thesis project in the cloud).  When I make a change to a `.tex` file and want to save   a version at this time, I run this:
 
 ```bash
 git add -A
-git commit -m "fixed typo in page x"
+git commit -m "reviewed chapter homotopy"
 git push origin main
 ```
 
-To simplify the process, I  created this bash function
+To simplify the process, I  created this bash function:
 
 ```bash
 function git-commit () {
     git add -A && git commit -m "$@"
 }
 ```
-Now, I can quickly commit changes with `git-commit "fix typo in page x"`. This way, the source code of my thesis is always safely backed up in a github repository. The integrated terminal in VS Code makes it very easy to create backups.
+Now, I can quickly commit changes with `git-commit "reviewed chapter homotopy"`. This way, the source code of my thesis is always safely backed up in a github repository. The integrated terminal in VS Code makes it very easy to create backups. It is even easier with Vim.
+
+
 
 ## Aspell 
  
@@ -67,7 +69,7 @@ Now, I can quickly commit changes with `git-commit "fix typo in page x"`. This w
 aspell -t -c chap02-category-theory.tex
 ```
 
-Since ``.tex`` files contain commands that should not be checked, we use the `-t` flag to ignore \\(\\LaTeX\\) syntax. The `-c` flag opens an interactive mode, allowing you to review and correct misspelled words on the fly.
+Since ``.tex`` files contain commands that should not be checked, we use the `-t` flag to ignore \\(\\LaTeX\\) syntax. The `-c` flag opens an interactive mode, allowing you to review and correct misspelled words on the fly. Press any number from 1 to 9 to replace the word with the suggested correction.
 
 <p align="center">
   <img src="/assets/media/aspell-example.gif" alt="Aspell checking example">
@@ -93,7 +95,7 @@ The process is quite simple: draw anything you want, select `File > Export > PDF
 </p>
 
 
-To render the text in the figure, open the export dialog and choose to _Omit text in PDF and create LaTeX file_. You get a file with extension `.pdf_tex`, which is later  imported into the \\(\\LaTeX\\) document.
+Open the export dialog and choose to _Omit text in PDF and create LaTeX file_. You get a file with extension `.pdf_tex`, which is later  imported into the \\(\\LaTeX\\) document.
 
 <p align="center">
   <img src="/assets/media/inkscape-example.png" alt="Inkscape export example">
@@ -131,8 +133,8 @@ I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-
 
 ## Bonus
 
-- **Obsidian**: for taking notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc.
-- **Xournalpp**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
-- **Flameshot**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
+- **[Obsidian](https://obsidian.md/)**: for taking notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc.
+- **[Xournalpp](https://xournalpp.github.io/)**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
+- **[Flameshot](https://flameshot.org/)**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
 
 ![](/assets/media/flameshot-example.gif)
