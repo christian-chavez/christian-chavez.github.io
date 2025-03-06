@@ -144,4 +144,4 @@ If you want to get started with Inkscape, take a look a this [video series](http
 
 ## Conclusion 
 
-These tools significantly improved my efficiency and organization while writing my thesis. It may take some time to get used to them, but once you do, you can produce high-quality results and save a lot of time in the future (trust me).  
+These tools significantly improved my efficiency and organization while writing my thesis. It may take some time to get used to them, but once done, it is possible to  produce high-quality results and save a lot of time in the future.
