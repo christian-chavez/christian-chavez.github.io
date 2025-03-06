@@ -129,6 +129,7 @@ Then you can use the command `\incfig{width}{figure-name}` to include the figure
 
 I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-2/) by Gilles Castel, from which I learned this stuff. Read that blog for more details.
 
+If you want to get started with Inkscape, take a look a this [video series](https://www.youtube.com/watch?v=7rUWdltsr1A&list=PLdr5XE6u9kEpOlqaxqaE9y41ac0FBYAZk).
 
 
 ## Bonus
@@ -138,3 +139,8 @@ I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-
 - **[Flameshot](https://flameshot.org/)**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
 
 ![](/assets/media/flameshot-example.gif)
+
+
+## Conclusion 
+
+These tools significantly improved my efficiency and organization while writing my thesis. It may take some time at first to get familiar with them, but once you learn, you can produce high quality results. 
