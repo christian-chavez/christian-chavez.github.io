@@ -58,7 +58,7 @@ function git-commit () {
     git add -A && git commit -m "$@"
 }
 ```
-Now, I can quickly commit changes with `git-commit "reviewed chapter homotopy"`. This way, the source code of my thesis is always safely backed up in a github repository. The integrated terminal in VS Code makes it very easy to create backups. It is even easier with Vim.
+Now, I can quickly commit changes with `git-commit "reviewed chapter homotopy"`, and then push to GitHub. This way, the source code of my thesis is always safely backed up in a GitHub repository. The integrated terminal in VS Code makes it very easy to create backups. It is even easier with Vim.
 
 
 
@@ -134,8 +134,8 @@ If you want to get started with Inkscape, take a look a this [video series](http
 
 ## Bonus
 
-- **[Obsidian](https://obsidian.md/)**: for taking notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc.
 - **[Xournalpp](https://xournalpp.github.io/)**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
+- **[Obsidian](https://obsidian.md/)**: for taking digital notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc. It also has a plugin to back up your notes to a GitHub repository.
 - **[Flameshot](https://flameshot.org/)**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
 
 ![](/assets/media/flameshot-example.gif)
