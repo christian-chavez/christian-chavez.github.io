@@ -41,6 +41,7 @@ header_pages:
 
 # Minima specific settings, which are only available from Minima 3.0 onward.
 minima:
+  syntax_highlighter_theme: igorpro
   # Minima skin selection.
   # Available skins are:
   # classic	           Default, light color scheme.
@@ -95,3 +96,7 @@ disqus:
   shortname: christian-chavez
 
 url: christian-chavez.github.io/
+
+after_footer_scripts:
+  - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
+  - assets/js/clipboardrouge.js

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: How I wrote my bachelor thesis
+title: The tools I used to write  my bachelor thesis
 author: Christian Chávez
 excerpt: "Tools and tips that helped me with the writing process of my bachelor thesis."
 published: true
@@ -9,9 +9,8 @@ toc: true
 
 <base target="_blank">
 
-In this post I want to share the tools I used to write my bachelor thesis.
-I won't discuss the process of completing a research project or such.
-I wrote my thesis using \\(\\LaTeX\\) with Tex Live, locally on my computer running Arch Linux.
+In this post I want to share the tools I used to write my bachelor thesis. 
+I wrote my thesis using \\(\\LaTeX\\) with Tex Live, locally on my computer running   Linux.
 
 In summary, I used the following tools:
 - VS Code & Neovim, as my editors
@@ -35,10 +34,12 @@ Although I liked VS Code a lot, I discovered Vim a year ago, and Neovim quickly 
 
 ## Zathura 
 
-I love this PDF viewer for its    minimality. Take a look at its [webpage](https://pwmt.org/projects/zathura/). It has vim-like keybindings, so it is very easy to navigate around a pdf, no need to use a mouse at all.
-Here is  a screenshot of VS Code alongside  Zathura on the right. (Btw: I use arch linux with bspwm as my tiling window manager.)
-
+I like this  PDF viewer for its    minimality. Take a look at its [webpage](https://pwmt.org/projects/zathura/). It has vim-like keybindings, so it is very easy to navigate around a pdf, no need to use a mouse at all.
+Here is  a screenshot of VS Code alongside  Zathura on the right. (Btw: I use arch linux with bspwm as my tiling window manager.) 
+ 
 ![VS Code on the left and Zathura on the right](/assets/media/vscode-zathura.png)
+
+Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). Latex Workshop comes with a predefined pdf viewer, but it is easy to change it to any other one. 
 
 ## Git & GitHub  
 
@@ -46,7 +47,7 @@ Version control is essential for managing projects, and Git makes it seamless. I
 
 ```bash
 git add -A
-git commit -m "fix typo in page x"
+git commit -m "fixed typo in page x"
 git push origin main
 ```
 
@@ -57,20 +58,81 @@ function git-commit () {
     git add -A && git commit -m "$@"
 }
 ```
-Now, I can quickly commit changes with `git-commit "fix typo in page x"`. This way, the source code of my thesis is always safely backed up in a github repository.
+Now, I can quickly commit changes with `git-commit "fix typo in page x"`. This way, the source code of my thesis is always safely backed up in a github repository. The integrated terminal in VS Code makes it very easy to create backups.
 
 ## Aspell 
+ 
+[Aspell](http://aspell.net/)  is a command line program that lets you check the spelling of each word in a text file. It supports multiple languages and markup languages. For instance, to check a file named `chap02-category-theory.tex`, we use the command 
+```bash
+aspell -t -c chap02-category-theory.tex
+```
 
-_Editing..._
+Since ``.tex`` files contain commands that should not be checked, we use the `-t` flag to ignore \\(\\LaTeX\\) syntax. The `-c` flag opens an interactive mode, allowing you to review and correct misspelled words on the fly.
+
+<p align="center">
+  <img src="/assets/media/aspell-example.gif" alt="Aspell checking example">
+</p>
+
+
 
 ## Inkscape
 
-_Editing..._
+We can draw in \\( \LaTeX \\) using TikZ or PGFPlots, but this method isn't very user-friendly since it's entirely command-based. Drawing is a visual process, and that's where [Inkscape](https://inkscape.org/) comes in handy. It allows us to export figures in \\( \LaTeX \\) format, rendering text directly at compilation time. Here are some examples:
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom:15px">
+    <img src="/assets/media/klein-bottle.png" alt="Klein Bottle" style="max-width: 20%; height: auto;">
+    <img src="/assets/media/torus.png" alt="Torus" style="max-width: 35%; height: auto;">
+    <img src="/assets/media/functor-illustration.png" alt="Functor Diagram" style="max-width: 27%; height: auto;">
+</div>
+
+The process is quite simple: draw anything you want, select `File > Export > PDF file`, and then import the PDF as you would with any figure in \\( \LaTeX \\). However, to compile the text with \\( \LaTeX \\), we need an additional step. The text you see in the figures above is written directly in Inkscape using \\( \LaTeX \\) commands. For instance, the second one looks like this before exporting:
 
 
-## Bonus:
-- **Obsidian**: for taking notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas and notes.
+<p style="text-align: center;">
+  <img src="/assets/media/torus-drawing.png" alt="Drawing in Inkscape" style="width: 50%; display: block; margin: auto;">
+</p>
+
+
+To render the text in the figure, open the export dialog and choose to _Omit text in PDF and create LaTeX file_. You get a file with extension `.pdf_tex`, which is later  imported into the \\(\\LaTeX\\) document.
+
+<p align="center">
+  <img src="/assets/media/inkscape-example.png" alt="Inkscape export example">
+</p>
+
+In your preamble, include the following:
+{% raw %}
+````tex
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\newcommand{\incfig}[2]{%
+    \def\svgwidth{#1\linewidth}
+    \import{./images/}{#2.pdf_tex}
+}
+````
+{% endraw %}
+
+Then you can use the command `\incfig{width}{figure-name}` to include the figure in your   document, where `width` is a number from 0 to 1. For example, to include the drawing above in a figure environment,  use something like this 
+
+```tex
+\begin{figure}
+    \centering
+    \incfig{0.95}{figure-name}
+    \caption{}
+    \label{fig:ref}
+\end{figure}
+```
+
+I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-2/) by Gilles Castel, from which I learned this stuff. Read that blog for more details.
+
+
+
+## Bonus
+
+- **Obsidian**: for taking notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc.
 - **Xournalpp**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
-- **Flameshot**: for screenshots. I mention it because it has a great feature that allows pinning a screenshot to the screen.  
+- **Flameshot**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
 
 ![](/assets/media/flameshot-example.gif)
