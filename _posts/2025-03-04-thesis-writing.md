@@ -39,7 +39,7 @@ Here is  a screenshot of VS Code alongside  Zathura on the right. (Btw: I use ar
  
 ![VS Code on the left and Zathura on the right](/assets/media/vscode-zathura.png)
 
-Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). LaTeX Workshop comes with a built-in pdf viewer, but you can easily  change it to the one you like. 
+Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). LaTeX Workshop comes with a built-in pdf viewer, but you can easily  change it to the one you like. My Zathura config can be found  at my [dotfiles repo](https://github.com/christian-chavez/dotfiles/blob/current/.config/zathura/zathurarc).
 
 ## Git & GitHub  
 
