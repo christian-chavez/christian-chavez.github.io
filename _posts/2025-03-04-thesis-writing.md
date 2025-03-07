@@ -21,24 +21,24 @@ In summary, I used the following tools:
 
 
 ## VS Code and Neovim
-I used the extension  [LaTeX Workshop](https://github.com/James-Yu/latex-workshop/wiki/Install){:target="_blank_"} for VS Code. Its usefulness comes down to the shortcuts and snippets it provides, significantly speeding up the typesetting process. For instance, selecting a word and typing `fbf` makes it bold. In math mode, `@` brings up a list of symbols—e.g., `@a` expands to `\alpha` (see [here](https://github.com/James-Yu/latex-workshop/wiki/Snippets){:target="_blank_"}). There are plenty of [predefined snippets](https://github.com/James-Yu/latex-workshop/wiki/Snippets){:target="_blank_"}, but we can add custom ones as well. For example, I use one that inserts an environment template and another that expands `fun` to `f:\R\to\R`.
+I used the extension  [LaTeX Workshop](https://github.com/James-Yu/latex-workshop/wiki/Install){:target="_blank"} for VS Code. Its usefulness comes down to the shortcuts and snippets it provides, significantly speeding up the typesetting process. For instance, selecting a word and typing `fbf` makes it bold. In math mode, `@` brings up a list of symbols—e.g., `@a` expands to `\alpha` (see [here](https://github.com/James-Yu/latex-workshop/wiki/Snippets){:target="_blank"}). There are plenty of [predefined snippets](https://github.com/James-Yu/latex-workshop/wiki/Snippets){:target="_blank"}, but we can add custom ones as well. For example, I use one that inserts an environment template and another that expands `fun` to `f:\R\to\R`.
 
 
 <p align="center">
   <img src="/assets/media/snippet-example.gif" alt="Snippet Example">
 </p>
 
-Although I liked VS Code a lot, I discovered Vim a year ago, and Neovim quickly became my preferred editor. Reason? I like shortcuts so much. (Although the real power of Vim lies in macros.)   If you're unfamiliar with Vim, check out [this video](https://youtu.be/-txKSRn0qeA){:target="_blank_"}, and for a practical example, watch [this one](https://youtu.be/NzD2UdQl5Gc){:target="_blank_"}. There's a lot to say about Vim, but I won't go into details for now—just know that (Neo)Vim makes me far more efficient.
+Although I liked VS Code a lot, I discovered Vim a year ago, and Neovim quickly became my preferred editor. Reason? I like shortcuts so much. (Although the real power of Vim lies in macros.)   If you're unfamiliar with Vim, check out [this video](https://youtu.be/-txKSRn0qeA){:target="_blank"}, and for a practical example, watch [this one](https://youtu.be/NzD2UdQl5Gc){:target="_blank"}. There's a lot to say about Vim, but I won't go into details for now—just know that (Neo)Vim makes me far more efficient.
 
 
 ## Zathura 
 
-I like this  PDF viewer for its    minimality. Take a look at its [webpage](https://pwmt.org/projects/zathura/){:target="_blank_"}. It has vim-like keybindings, so it is very easy to navigate around a pdf, no need to use a mouse at all.
+I like this  PDF viewer for its    minimality. Take a look at its [webpage](https://pwmt.org/projects/zathura/){:target="_blank"}. It has vim-like keybindings, so it is very easy to navigate around a pdf, no need to use a mouse at all.
 Here is  a screenshot of VS Code alongside  Zathura on the right. (Btw: I use arch linux with bspwm as my tiling window manager.) 
  
 ![VS Code on the left and Zathura on the right](/assets/media/vscode-zathura.png)
 
-Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). LaTeX Workshop comes with a built-in pdf viewer, but you can easily  change it to the one you like. My Zathura config can be found  at my [dotfiles repo](https://github.com/christian-chavez/dotfiles/blob/current/.config/zathura/zathurarc){:target="_blank_"}.
+Moreover, Zathura supports backward search (clicking on a specific location in the PDF will take you directly to the corresponding position in the source code). LaTeX Workshop comes with a built-in pdf viewer, but you can easily  change it to the one you like. My Zathura config can be found  at my [dotfiles repo](https://github.com/christian-chavez/dotfiles/blob/current/.config/zathura/zathurarc){:target="_blank"}.
 
 ## Git & GitHub  
 
@@ -63,7 +63,7 @@ Now, I can quickly commit changes with `git-commit "reviewed chapter homotopy"`,
 
 ## Aspell 
  
-[Aspell](http://aspell.net/){:target="_blank_"}  is a command line program that lets you check the spelling of each word in a text file. It supports multiple languages and markup languages. For instance, to check a file named `chap02-category-theory.tex`, we use the command 
+[Aspell](http://aspell.net/){:target="_blank"}  is a command line program that lets you check the spelling of each word in a text file. It supports multiple languages and markup languages. For instance, to check a file named `chap02-category-theory.tex`, we use the command 
 ```bash
 aspell -t -c chap02-category-theory.tex
 ```
@@ -78,7 +78,7 @@ Since ``.tex`` files contain commands that should not be checked, we use the `-t
 
 ## Inkscape
 
-We can draw in \\( \LaTeX \\) using TikZ or PGFPlots, but this method isn't very user-friendly since it's entirely command-based. Drawing is a visual process, and that's where [Inkscape](https://inkscape.org/){:target="_blank_"} comes in handy. It allows us to export figures in \\( \LaTeX \\) format, rendering text directly at compilation time. Here are some examples:
+We can draw in \\( \LaTeX \\) using TikZ or PGFPlots, but this method isn't very user-friendly since it's entirely command-based. Drawing is a visual process, and that's where [Inkscape](https://inkscape.org/){:target="_blank"} comes in handy. It allows us to export figures in \\( \LaTeX \\) format, rendering text directly at compilation time. Here are some examples:
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom:15px">
     <img src="/assets/media/klein-bottle.png" alt="Klein Bottle" style="max-width: 20%; height: auto;">
@@ -126,17 +126,17 @@ Then you can use the command `\incfig{width}{figure-name}` to include the figure
 \end{figure}
 ```
 
-I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-2/){:target="_blank_"} by Gilles Castel, from which I learned this stuff. Read that blog for more details.
+I have to give credit to [this blog post](https://castel.dev/post/lecture-notes-2/){:target="_blank"} by Gilles Castel, from which I learned this stuff. Read that blog for more details.
 
-If you want to get started with Inkscape, take a look a this [video series](https://www.youtube.com/watch?v=7rUWdltsr1A&list=PLdr5XE6u9kEpOlqaxqaE9y41ac0FBYAZk){:target="_blank_"}.
+If you want to get started with Inkscape, take a look a this [video series](https://www.youtube.com/watch?v=7rUWdltsr1A&list=PLdr5XE6u9kEpOlqaxqaE9y41ac0FBYAZk){:target="_blank"}.
 
 
 ## Bonus
 
-- **[tikzcd-editor](https://tikzcd.yichuanshen.de/){:target="_blank_"}**: for making commutative diagrams. It has a visual interface where you draw, and an option to export the \\(\\LaTeX\\) code.
-- **[Xournalpp](https://xournalpp.github.io/){:target="_blank_"}**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
-- **[Obsidian](https://obsidian.md/){:target="_blank_"}**: for taking digital notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc. It also has a plugin to back up your notes to a GitHub repository.
-- **[Flameshot](https://flameshot.org/){:target="_blank_"}**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
+- **[tikzcd-editor](https://tikzcd.yichuanshen.de/){:target="_blank"}**: for making commutative diagrams. It has a visual interface where you draw, and an option to export the \\(\\LaTeX\\) code.
+- **[Xournalpp](https://xournalpp.github.io/){:target="_blank"}**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
+- **[Obsidian](https://obsidian.md/){:target="_blank"}**: for taking digital notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc. It also has a plugin to back up your notes to a GitHub repository.
+- **[Flameshot](https://flameshot.org/){:target="_blank"}**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  
 
 ![](/assets/media/flameshot-example.gif)
 
