@@ -27,16 +27,9 @@ permalink: /about/
     </div>
 </div>
 
-
-<p>
-
-</p>
-
  
-
-
-
-
-**Contact me**: `kevin.chavez@yachaytech.edu.ec`
-
-**Adress**: San José 4-74, Ibarra 100113, Ecuador
+<div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
+    <p style="margin-top: 20px; margin-bottom: 0"> <strong>Contact me</strong>: <code>kevin.chavez@yachaytech.edu.ec</code></p> 
+    <p style="margin-bottom: 0;"><strong>Address</strong>: San José 4-74, Ibarra 100113, Ecuador</p>
+</div>
+ 
