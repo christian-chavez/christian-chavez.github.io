@@ -262,22 +262,28 @@ table {
   width: 100%;
   text-align: $table-text-align;
   color: $table-text-color;
-  border-collapse: collapse;
+  border-collapse: separate;
+    border-spacing: 0;  // Remove gaps between cells
+  border-radius: 5px; // Add rounded corners
   border: 1px solid $table-border-color;
+  overflow: hidden;
   tr {
     &:nth-child(even) {
       background-color: $table-zebra-color;
     }
   }
   th, td {
-    padding: ($spacing-unit * 33.3333333333 * .01) ($spacing-unit * .5);
+    padding: ($spacing-unit * 33.3333333333 * .005) ($spacing-unit * .5);
+    border: none;   
   }
   th {
     background-color: $table-header-bg-color;
     border: 1px solid $table-header-border;
+    border: none;
   }
   td {
-    border: 1px solid $table-border-color;
+    // border: 1px solid $table-border-color;
+    border: none;
   }
 
   @include media-query($on-laptop) {
@@ -286,4 +292,5 @@ table {
     -webkit-overflow-scrolling: touch;
             -ms-overflow-style: -ms-autohiding-scrollbar;
   }
+  
 }
