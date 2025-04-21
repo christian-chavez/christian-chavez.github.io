@@ -8,6 +8,7 @@ Some notes and proofs
 
 | Date       | Title |
 |------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `2025-01-31` | [Notes from the introductory course to point set topology - Math Cub YT](assets/docs/basic-topology.pdf) |
 | `2024-11-01` | [Induced cohomology functor in an abelian category](assets/docs/InducedHFunctor.pdf) |
 | `2024-10-10` | [Homotopy of cochain complexes is an equivalence relation on $$\text{Hom}_{\mathcal{C}(\mathcal{A})} (A^\bullet, B^\bullet)$$](assets/docs/HomotopyEquivRelCochComp.pdf) |
 | `2024-09-30` | [The category $$\mathcal{C}(\mathcal{A})$$ of cochain complexes over an abelian category $$\mathcal{A}$$ is abelian (in Spanish)](assets/docs/CatOfCochainComplexesIsAbelian.pdf) |
