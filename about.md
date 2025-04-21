@@ -13,7 +13,7 @@ permalink: /about/
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
         <p>I am a final-year mathematics student at Yachay Tech University (Ecuador). 
         I am interested in algebraic topology, category theory, representation theory, and homological algebra. 
-        I will be graduating in April 2025.</p>
+        I  graduated on April 4, 2025.</p>
 
         <p>I created this blog to share some thoughts and some other stuff. I love maths, linux, reading, and nature.</p>
 
