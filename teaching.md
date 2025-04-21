@@ -7,7 +7,7 @@ permalink: /teaching/
 
 ### 2025 
 
-- [Introduction to Topology (from the Math Club at Yachay Tech)](https://sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/cursos/topolog%C3%ADa-2025s1?authuser=0). [Lecture notes](assets/docs/basic-topology.pdf).
+- [Introduction to Topology](https://sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/cursos/topolog%C3%ADa-2025s1?authuser=0) (from the Math Club at Yachay Tech). [Lecture notes](assets/docs/basic-topology.pdf).
 
 ### 2024 
 
