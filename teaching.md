@@ -12,7 +12,8 @@ permalink: /teaching/
 ### 2024 
 
 Yachay Tech University
--  [Teaching assistant for Abstract Algebra](https://github.com/christian-chavez/algebra-notes) (first and second semester, 2024) 
+-  [Teaching assistant for Abstract Algebra](https://github.com/christian-chavez/algebra-notes) (first and second semester, 2024). [Lecture notes](https://github.com/christian-chavez/algebra-notes).
+
 
 
 
