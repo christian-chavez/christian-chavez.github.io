@@ -11,7 +11,7 @@ permalink: /about/
          style="width: 40%; height: auto;  margin-right: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
 
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
-        <p>I am a final-year mathematics student at Yachay Tech University (Ecuador). 
+        <p>I am a mathematician from  Yachay Tech University (Ecuador). 
         I am interested in algebraic topology, category theory, representation theory, and homological algebra. 
         I  graduated on April 4, 2025.</p>
 
