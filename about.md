@@ -40,7 +40,7 @@ permalink: /about/
             spanish
         </a>                     
     </p>
-    <p style="margin-top: 0px; margin-bottom: 0"> <strong>Get in touch at</strong>: <code>kevin.chavez@usherbrooke.ca</code> or at my office, D4-1026</p> 
+    <p style="margin-top: 0px; margin-bottom: 0"> <strong>Get in touch at</strong>: <code>kevin.chavez@usherbrooke.ca</code> or at my office at D4-1026</p> 
     <!-- <p style="margin-bottom: 0;"><strong>Address</strong>: 515 Wellington Sud, Sherbrooke QC, Canada</p> -->
 </div>
  
