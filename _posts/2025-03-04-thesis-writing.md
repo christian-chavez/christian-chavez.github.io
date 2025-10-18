@@ -8,7 +8,7 @@ toc: true
 ---
  
 
-In this post I want to share the tools I used to write my bachelor thesis. 
+In this post I want to share the tools I used to write [my bachelor thesis](/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf). 
 I wrote my thesis using \\(\\LaTeX\\) with Tex Live, locally on my computer running   Linux.
 
 In summary, I used the following tools:
