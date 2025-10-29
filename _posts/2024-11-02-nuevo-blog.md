@@ -1,7 +1,7 @@
 ---
 layout: post
 title: new blog
-published: false
+published: true
 ---
 
 Este blog solo sirve para testear LaTeX.
@@ -12,7 +12,7 @@ $$
 \text{Length}(\gamma) = \int_a^b \sqrt{g(\dot{\gamma}(t), \dot{\gamma}(t))} \, dt.
 $$
 
-From the metric, we can derive the Levi-Civita connection, which allows us to differentiate vector fields along curves, and the Riemann curvature tensor $R$, which measures the failure of second covariant derivatives to commute. One important result in differential geometry is the Gauss-Bonnet theorem, which relates the integral of the Gaussian curvature $K$ over a surface $S$ to the Euler characteristic $\chi(S)$:
+From the metric, we can derive the Levi-Civita connection, which allows us to differentiate vector fields along curves, and the Riemann curvature tensor $R$, which measures the failure of second covariant derivatives to commute. One important result in differential geometry is the Gauss-Bonnet theorem, which relates the integral of the Gaussian curvature $K$ over a surface $S$ to the Euler characteristic \\( \\chi(S)\\) :
 
 $$
 .

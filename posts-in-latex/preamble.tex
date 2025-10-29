@@ -1,0 +1,54 @@
+\pdfcompresslevel=0
+\pdfobjcompresslevel=0
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{
+	geometry,
+	amsthm,
+	amsmath,
+	amssymb,
+	enumitem,
+    microtype,
+	setspace,
+    xcolor,
+    mlmodern,
+    % lmodern,
+    tikz-cd,
+    dsfont,
+}
+
+\geometry{
+margin=1.5in % i keep it in 1.5in for the only reason that the title fit in one line
+}
+% \onehalfspacing
+% \setstretch{1.15}    
+\theoremstyle{definition}
+\newtheorem{prop}{Proposition}
+\newtheorem{defi}{Définition}
+\raggedbottom
+% \setlength{\parindent}{0cm}
+\addto\captionsfrench{\renewcommand\proofname{\textbf{\upshape Démonstration.}}}
+% \renewcommand{\proofname}{\textbf{Démonstration}}
+\color{black!90}
+% \renewcommand{\emph}[1]{{\slshape #1}}
+
+
+\usepackage{hyperref}
+\hypersetup{
+pdfauthor = {Christian Chávez},
+pdfsubject = {MAT729},
+hidelinks,
+}
+
+% ----------------------------------------
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\renewcommand{\mathbb}[1]{\mathds{#1}}
+
+ 
+
