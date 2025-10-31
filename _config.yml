@@ -21,7 +21,6 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-  - jekyll-katex
 
 # Theme-specific settings
 
@@ -81,9 +80,9 @@ minima:
 copyright: "here"
 
 # soporte de latex
-# markdown: kramdown
+markdown: kramdown
 kramdown:
-    math_engine: katex
+  input: GFM
 
 # google analytics
 google_analytics: G-32N0EM3DL1
