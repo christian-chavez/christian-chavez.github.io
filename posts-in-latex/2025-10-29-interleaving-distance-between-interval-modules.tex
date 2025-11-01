@@ -26,7 +26,7 @@ A \textbf{persistence module} is a functor \(\mathbb{R}\to \mathrm{Vect}(\mathbf
 
 \begin{example}[Important]
 Let \(I\subseteq \R\) be an interval.
-Define \(\mathcal{I}\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\)
+Define \(\mathbf{k}^I\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\)
 by
 \[
 t\mapsto \begin{cases}
@@ -40,7 +40,7 @@ r\to s\; \mapsto \begin{cases}
 \end{cases}
 \]
 on objects and morphisms, respectively.
-We call \(\mathcal{I}\) the \textbf{interval module} over \(I\).
+We call \(\mathbf{k}^I\) the \textbf{interval module} over \(I\).
 \end{example}
 
 \paragraph{Remark.}
@@ -93,7 +93,7 @@ Yes, this category is fun.
 Concretely,
 a morphism of persistence modules \(\alpha\colon U\to V\)
 is a family of linear maps 
-\((\alpha_t\colon U_t\to V_t)_{t\in \R}\)
+\((\alpha_r\colon U_r\to V_r)_{r\in \R}\)
 such that 
 the diagram 
 \[
@@ -104,6 +104,7 @@ V_s \arrow[r, "v_t^s"]                        & V_t
 \]
 commutes for all \(s\leq t\).
 \subsection{The shift functor}
+
 
 Let \(U\) be a persistence module.
 Define a new persistence module \(U[t]\) by 
@@ -117,11 +118,70 @@ U[t](r)  = U_{t+r}
 U[t](r\to s) = u_{t+r}^{t+s}.
 \]
 We say that \(U[t]\) is a \textbf{shifted module}.
+
 Suppose we've made two shifts of \(U\), say \(U[s]\) and \(U[t]\), where \(s\leq t\).
 We might ask ourserlves: what is the relationship between these shifted modules?
 Since these are functors, we wonder if there is a canonical natural transformation
 \(\alpha\colon U[s]\to U[t]\),
 and in fact there is.
+To find out, consider any \(p\to q\) and apply both  \(U[s]\) and \(U[t]\) to this arrow.
+We get 
+$$
+U[s](p\to q)\; =\; U_{p+s}\xrightarrow{u_{q+s}^{p+s}} U_{q+s}
+$$
+and 
+$$
+U[t](p\to q) \;=\; U_{p+t}\xrightarrow{u_{q+t}^{p+t}} U_{q+t}
+$$
+% Since \(\alpha=(\alpha_r\colon U[s](r) \to U[t](r))_{r\in \R}\) 
+Since \(\alpha=(\alpha_r )_{r\in \R}\) 
+is determined by its components,
+we need to find the vertical arrows 
+that make the square
+$$
+\begin{tikzcd}
+U_{p+s} \arrow[r, "u_{q+s}^{p+s}"] \arrow[d, "\alpha_p"'] & U_{q+s} \arrow[d, "\alpha_q"] \\
+U_{p+t} \arrow[r, "u_{q+t}^{p+t}"']                       & U_{q+t}                      
+\end{tikzcd}
+$$
+%
+commute. 
+Set \(\alpha_p = u_{p+t}^{p+s}\) and \(\alpha_{q}=u_{q+t}^{q+s}\).
+Then the composition law give us 
+\[
+u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},
+\]
+which means the square commutes.
+Thus \(\alpha\) is indeed a natural transformation, that we'll denote \(U[s\to t]\).
+To sum up, we have the following natural transformation 
+% $$
+% \begin{tikzcd}
+%   \R
+%     \arrow[r, bend left=35,  "U[s]" name=Us,  below]
+%     \arrow[r, bend right=35, "U[t]"' name=Ut]
+%   & \mathrm{Vect}(\mathbf{k})
+%     \arrow[Rightarrow, from=Us, to=Ut, "\alpha"]
+% \end{tikzcd}
+% $$
+
+
+% \[
+% \begin{tikzcd}[column sep=huge]
+% \R  \arrow[bend left=50]{r}[name=0,anchor=center, inner sep=0, "U[s]"]
+%   \arrow[bend right=50]{r}[name=1,label=below:$\scriptstyle U$] &
+% \mathrm{Vect}(\mathbf{k} )
+%   \arrow[shorten <=10pt,shorten >=10pt,Rightarrow,to path={(0) -- node[label=right:$\det$] {} (1)}]
+% \end{tikzcd}
+% \]
+% where 
+$$
+U[s\to t] = \left( u_{t+r}^{s+r} \right)_{r\in \R}.
+$$
+On the other hand, note that 
+$$
+U[t][t'] = U[t+t']
+$$
+for any \(t,t'\in R\).
 
 % Note that \([t]\) is a functor \(X\to X\) . THIS IS FALSE.
 
@@ -133,7 +193,10 @@ The functor \(T = [\,\cdot\,]\colon \R\to \mathrm{End}(X)\)
 is defined as follows
 \begin{itemize}
 \item Objects: for each \(t\in \R\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = (\alpha_{r+t})_{r\in \R}\) on morphisms \(\alpha=(\alpha_r)_{r\in \R}\). (Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\))
-\item Morphisms: for each \(r\to s\), define \(T(r\to s)\colon T_r\to T_s\) as 
+\item Morphisms: for each \(r\to s\), define    a natural transformation $T(r\to s)\colon T_r\to T_s$ by
+$$
+T(r\to s)\colon T_r\to T_s = \left( U[r\to s] \right)_{U\in X}
+$$
 \end{itemize}
  
 \subsection{The interleaving distance between persistence modules}
@@ -155,12 +218,32 @@ If such a pair exists, we say that \(U\) and \(V\) are \(t\)-interleaved.
 
 \begin{defi}
 The  interleaving distance 
-between two intervalmodules is
+between two interval modules is
 \[
 d_T (U, V)=\inf \left\{t\geq 0 \mid \text { there exists a } t\text {-interleaving of } U \text { and } V\right\}.
 \]
 \end{defi} 
+This is the smallest shift we'd need to do for...
 
 \section{The computation}
+
+We'll do the computation for the case of closed intervals.
+Let \(I=[a,b]\) and \(J=[c,d]\).
+Denote by  $\mathcal{I}=\mathbf{k}^I$ and $\mathcal{J}=\mathbf{k}^J$   the corresponding 
+interval modules.
+
+Our strategy is  to find some apropriate bounds for $d_T (U, V)$.
+Befor going into the search for the pair of morphisms 
+that would make the triangles above commute,
+we need to know how are the morphisms between interval modules,
+because then we can characterize the morphisms between
+shifted interval modules.
+
+
+
+\subsection{Bound above}
+
+
+\subsection{Bound below}
 
 \end{document}
