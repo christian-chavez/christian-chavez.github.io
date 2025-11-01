@@ -19,3 +19,13 @@ In this block I want to show
 between two intervalmodules is # 
 
 ## The computation
+
+<p align="center">
+  <img src="/assets/media/interval_module.gif" alt="Interval module">
+</p>
+
+lorem ipsum
+
+<p align="center">
+  <img src="/assets/media/nt_between_interval_modules.gif" alt="Interval module">
+</p>
