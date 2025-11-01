@@ -41,12 +41,30 @@ hello Kevin Christian Chávez Cadena
 
 Kevin Christian Chávez Cadena
 
-<!-- {% raw %}
-<script type='text/tikz'
-        data-preamble='\usepackage{tikz-cd}'>
-\begin{tikzcd}[scale=3]
-X \arrow[r, "\phi"] \arrow[d, swap, "f"] & B \arrow[d, "g"] \\
-C \arrow[r, "\psi"] & D
-\end{tikzcd}
-</script>
-{% endraw %} -->
+
+let try 
+
+\[
+\begin{aligned}
+  a &= b + c \\
+  d + e &= f
+\end{aligned}
+\]
+
+
+does it work?
+
+\\begin{align}
+  a &= b + c \\\\
+  d + e &= f 
+\\end{align}
+
+now? now not number
+ 
+a commutative diagram
+
+\\begin{CD}
+   A @>a>> B \\
+@VbVV @AAcA \\
+   C @= D
+\\end{CD}
