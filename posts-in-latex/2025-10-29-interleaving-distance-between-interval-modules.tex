@@ -10,27 +10,136 @@
 
 I found nowhere the explicit computation of the interleaving distance between
 interval modules, tough it is well known that it equals the bottleneck distance.
-
-In this block I want to show 
+ 
 
 \section{Preliminaries}
 
-We take \(\R\) as the category induced by the poset \((\R,\leq)\).
+Let \(\mathbf{k}\) be an arbitrary field, fixed throughout.
+We   denote by  \(\R\)
+either the real line or 
+the category induced by the poset \((\R,\leq)\).
+All functors are covariant.
 
 \subsection{The category of persistence modules}
 
-A persistence module is 
+A \textbf{persistence module} is a functor \(\mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\).
 
+\begin{example}[Important]
+Let \(I\subseteq \R\) be an interval.
+Define \(\mathcal{I}\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\)
+by
+\[
+t\mapsto \begin{cases}
+\mathbf{k} &\text{ if } t\in I\\
+0&\text{ else }
+\end{cases}
+\qquad\text{and}\qquad
+r\to s\; \mapsto \begin{cases}
+\mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k} &\text{ if } r,s\in I\\
+0&\text{ else }
+\end{cases}
+\]
+on objects and morphisms, respectively.
+We call \(\mathcal{I}\) the \textbf{interval module} over \(I\).
+\end{example}
 
-An interval module is a functor \(\mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\).
-Let \(\mathbf{k}\) be an arbitrary field, fixed throughout.
+\paragraph{Remark.}
+Interval modules are the building blocks of persistence modules.
+In fact, one objective of persistence theory is to understand 
+persistence modules by decomposing them into interval modules.
+However, this is not always possible.
+A situation when such a decomposition is   guaranteed is 
+when   we work with finite dimentional vector spaces,
+that is, if we work over \(\mathrm{vect}(\mathbf{k} )\)
+instead of \(\mathrm{Vect}(\mathbf{k} )\).
 
+The   concise definition of persistence module can be expanded to aide 
+comprehension.
+Let \(V\colon \R\to \mathrm{Vect}(\mathbf{k} )\) be a persistence module.
+\begin{itemize} 
+\item For each \(t\in \R \) and each arrow \(r\to s\) denote \(V(t)=V_t\) and   \(V(r\to s) = v_s^r\).
+\item Since \(V\) is a functor, we have the so-called \textbf{composition law}:
+\[
+ v_t^s\circ v_s^r = v_t^r\quad\text{ whenever } r\leq s\leq t
+\]
+and \(V(t\to t) = v_t^t = \mathrm{Id}_{V_t}\).
+\end{itemize}
+Thus, a persistence module \(V\) is a  family of vector spaces \((V_t)_{t\in \R}\)
+together with a family
+\((v_t^s \colon V_s\to V_t\mid s\leq t)_{s,t\in\R}\)
+of \( \mathbf{k} \)-linear maps 
+that satisfy the composition law. 
 
+We got a  set theorical definition from the  categorical one above.
+In fact, the  two are equivalent.
+We will use the first, but   prefer the notation of the second.
+
+Since persistence modules are functors, we can consider the natural transformations
+between them, and since those can be composed (using vertical composition)
+we obtain a category.
+
+\begin{defi}
+The \textbf{category of persistence modules} is 
+\(\mathbf{X} = \mathrm{Fun}(\R, \mathrm{Vect}(\mathbf{k} ))\).
+% whose 
+% \begin{itemize}
+% \item objects are functors \(\mathbb{R}\to \mathrm{Vect}(\mathbf{k} )\), and 
+% \item morphisms are natural transformations
+% \end{itemize}
+%
+\end{defi}
+
+Yes, this category is fun.
+Concretely,
+a morphism of persistence modules \(\alpha\colon U\to V\)
+is a family of linear maps 
+\((\alpha_t\colon U_t\to V_t)_{t\in \R}\)
+such that 
+the diagram 
+\[
+\begin{tikzcd}
+U_s \arrow[r, "u_t^s"] \arrow[d, "\alpha_s"'] & U_t \arrow[d, "\alpha_t"] \\
+V_s \arrow[r, "v_t^s"]                        & V_t                      
+\end{tikzcd}
+\]
+commutes for all \(s\leq t\).
 \subsection{The shift functor}
 
+Let \(U\) be a persistence module.
+Define a new persistence module \(U[t]\) by 
+\[
+% U[t](r)=(U[t])_r = U_{t+r}
+% \quad\text{and}\quad 
+% U[t](r\to s)=(u[t])_r^s = u_{t+r}^{t+s}
+%
+U[t](r)  = U_{t+r}
+\quad\text{and}\quad 
+U[t](r\to s) = u_{t+r}^{t+s}.
+\]
+We say that \(U[t]\) is a \textbf{shifted module}.
+Suppose we've made two shifts of \(U\), say \(U[s]\) and \(U[t]\), where \(s\leq t\).
+We might ask ourserlves: what is the relationship between these shifted modules?
+Since these are functors, we wonder if there is a canonical natural transformation
+\(\alpha\colon U[s]\to U[t]\),
+and in fact there is.
+
+% Note that \([t]\) is a functor \(X\to X\) . THIS IS FALSE.
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{../assets/media/nt.png}
+\end{figure}
+
+The functor \(T = [\,\cdot\,]\colon \R\to \mathrm{End}(X)\) 
+is defined as follows
+\begin{itemize}
+\item Objects: for each \(t\in \R\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = (\alpha_{r+t})_{r\in \R}\) on morphisms \(\alpha=(\alpha_r)_{r\in \R}\). (Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\))
+\item Morphisms: for each \(r\to s\), define \(T(r\to s)\colon T_r\to T_s\) as 
+\end{itemize}
+ 
 \subsection{The interleaving distance between persistence modules}
 
-A \(t\)-interleaving of \(U\) and \(V\) is a pair of morphisms 
+Let \(U\) and \(V\) be persistence modules.
+A \(t\)-\textbf{interleaving} of \(U\) and \(V\) is a pair of morphisms 
 \((\phi, \psi )\)
 that make the   diagrams 
 \[
@@ -41,6 +150,8 @@ U \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_U"] &                         
 \]
 commute.
 If such a pair exists, we say that \(U\) and \(V\) are \(t\)-interleaved.
+
+
 
 \begin{defi}
 The  interleaving distance 
