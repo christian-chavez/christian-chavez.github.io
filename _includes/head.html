@@ -27,23 +27,12 @@
       delimiters: [
         { left: '$$', right: '$$', display: true },
         { left: '$',  right: '$',  display: false },
-        // { left: '\(', right: '\)', display: false },
-        // { left: '\[', right: '\]', display: true },
         { left: '\\(', right: '\\)', display: false },
         { left: '\\[', right: '\\]', display: true },
         { left: "\\begin{align}", right: "\\end{align}", display: true},
         { left: "\\begin{CD}", right: "\\end{CD}", display: true}
       ],
-      ignoredTags: ['script','noscript','style','textarea','pre','code'],
-      ignoredClasses: ['katex','katex-display','katex-html'],
       throwOnError: false
     });
   });
-</script>
-
-<!-- in your layout <head> or at the top of the post -->
-<!-- <link rel="stylesheet" type="text/css" href="http://tikzjax.com/v1/fonts.css">
-<script defer src='https://tikzjax.com/v1/tikzjax.js'></script>
-<style>
-  .tikzjax svg { transform: scale(5); zoom:2}
-</style> -->
+</script> 

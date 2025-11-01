@@ -46,3 +46,50 @@ $$
 $$
 
 it does work. be sure to add an empty line before the display mathblock. Unfortunately, align* does not work (but i could make align work).
+i wish align would work. try this 
+
+```latex
+$$
+\begin{align*}
+  a &= b + c \\
+  d + e &= f\\
+  A/(fX-1) &\cong A_f
+\end{align*}
+$$
+```
+this gives 
+
+$$
+\begin{align*}
+  a &= b + c \\
+  d + e &= f\\
+  A/(fX-1) &\cong A_f
+\end{align*}
+$$
+
+omg, i got it working! it also work without the star (try it).
+The trick was to put the envs inside the double dollars.
+
+now lets try a  commutative diagram.
+
+```tex 
+$$
+\begin{CD}
+   A @>a>> B \\
+@VbVV @AAcA \\
+   C @= D
+\end{CD}
+$$
+```
+this gives 
+
+$$
+\begin{CD}
+   A @>a>> B \\
+@VbVV @AAcA \\
+   C @= D
+\end{CD}
+$$
+
+Unfortunately, the vertical arrows look bad, like broken.
+maybe convert cds to svgs anyways.
