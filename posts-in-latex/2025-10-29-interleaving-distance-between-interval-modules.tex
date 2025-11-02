@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \input{preamble.tex}
 % Title info ---------------------------------------
-\title{Computing the interleaving distance between two interval modules}
+\title{The interleaving distance between two interval modules}
 \author{Christian Chavez} 
 \date{}
 \begin{document}
@@ -31,20 +31,21 @@ by
 \[
 t\mapsto \begin{cases}
 \mathbf{k} &\text{ if } t\in I\\
-0&\text{ else }
+\mathbf{0}&\text{ else }
 \end{cases}
 \qquad\text{and}\qquad
 r\to s\; \mapsto \begin{cases}
 \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k} &\text{ if } r,s\in I\\
-0&\text{ else }
+\mathbf{0}&\text{ else }
 \end{cases}
 \]
 on objects and morphisms, respectively.
+Here \(\mathbf{0}\) denotes the zero vector space of course.
 We call \(\mathbf{k}^I\) the \textbf{interval module} over \(I\).
-\begin{figure}[!h]
-\centering
-\includegraphics[width=\linewidth]{../assets/media/interval_module.gif} 
-\end{figure}
+% \begin{figure}[!h]
+% \centering
+% \includegraphics[width=\linewidth]{../assets/media/interval_module.gif} 
+% \end{figure}
 
 \end{example}
 
@@ -101,17 +102,29 @@ is a family of linear maps
 \((\alpha_r\colon U_r\to V_r)_{r\in \R}\)
 such that 
 the diagram 
-\[
+\begin{equation}\label{eq:naturality-morphism-persistence-modules}
 \begin{tikzcd}
 U_s \arrow[r, "u_t^s"] \arrow[d, "\alpha_s"'] & U_t \arrow[d, "\alpha_t"] \\
 V_s \arrow[r, "v_t^s"]                        & V_t                      
 \end{tikzcd}
-\]
-commutes for all \(s\leq t\).
+\end{equation}
+commutes for all \(s\leq t\),
+i.e., \(v_t^s \circ \alpha_s=\alpha_t\circ u_t^s\).
+
+\red{Explain composition with a diagram.}
+
+% \begin{example}
+% Let \(U\) be a persistence module and fix \(t\in \R\).
+% By the composition law, the square
+
+% commutes for every \(\)
+% \end{example}
+
+
 \subsection{The shift functor}
 
 
-Let \(U\) be a persistence module.
+Let \(U\) be a persistence module and fix  any \(t\in \R\).
 Define a new persistence module \(U[t]\) by 
 \[
 % U[t](r)=(U[t])_r = U_{t+r}
@@ -123,12 +136,22 @@ U[t](r)  = U_{t+r}
 U[t](r\to s) = u_{t+r}^{t+s}.
 \]
 We say that \(U[t]\) is a \textbf{shifted module}.
+Note that  
+$$
+U[0]=U
+\quad\text{and}\quad
+U[t][t'] = U[t+t']
+$$
+for any \(t,t'\in \R\).
+Similarly,
+for any morphism of persistence modules \(\alpha\colon U\to V\),
+we can define a \textbf{shifted module morphism} \(\alpha[t] = (\alpha_{r+t})_{r\in \R}\).
 
 Suppose we've made two shifts of \(U\), say \(U[s]\) and \(U[t]\), where \(s\leq t\).
-We might ask ourserlves: what is the relationship between these shifted modules?
-Since these are functors, we wonder if there is a canonical natural transformation
-\(\alpha\colon U[s]\to U[t]\),
-and in fact there is.
+We might ask ourserlves: \textit{what is the relationship between these shifted modules?}
+In other words, we wonder if there is a canonical natural transformation
+\(\alpha\colon U[s]\to U[t]\).
+% and in fact there is.
 To find out, consider any \(p\to q\) and apply both  \(U[s]\) and \(U[t]\) to this arrow.
 We get 
 $$
@@ -136,7 +159,7 @@ U[s](p\to q)\; =\; U_{p+s}\xrightarrow{u_{q+s}^{p+s}} U_{q+s}
 $$
 and 
 $$
-U[t](p\to q) \;=\; U_{p+t}\xrightarrow{u_{q+t}^{p+t}} U_{q+t}
+U[t](p\to q) \;=\; U_{p+t}\xrightarrow{u_{q+t}^{p+t}} U_{q+t}.
 $$
 % Since \(\alpha=(\alpha_r\colon U[s](r) \to U[t](r))_{r\in \R}\) 
 Since \(\alpha=(\alpha_r )_{r\in \R}\) 
@@ -157,8 +180,11 @@ Then the composition law give us
 u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},
 \]
 which means the square commutes.
-Thus \(\alpha\) is indeed a natural transformation, that we'll denote \(U[s\to t]\).
-To sum up, we have the following natural transformation 
+So, yes there is a canonical way to map \(U[s]\) to \(U[t]\).
+Denote \(\alpha = U[s\to t]\) and define  
+$$
+U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \R}.
+$$
 % $$
 % \begin{tikzcd}
 %   \R
@@ -179,75 +205,212 @@ To sum up, we have the following natural transformation
 % \end{tikzcd}
 % \]
 % where 
+
+\begin{remark}\hfill\null
+\begin{itemize}
+% \item We can generalize this construction to define (THIS FOR LATER)
+\item For \(t\geq 0\), we denote 
+$
+\mathbb{1}^{t}_U = U[0\to t]
+$.
+% In fact, we have 
+% $$
+% \phi \circ \mathbb{1}^{t}_U = \phi = \mathbb{1}^{t}_U \circ \phi
+% $$
+% for any \(\phi\colon U\to U\) module morphism.
+
+\item Observe that $$
+\mathbb{1}^{0}_U = U[0\to 0] = (u_r^r)_{r\in \R} 
+= (\mathrm{Id}_{U_r})_{r\in \R}
+=\mathbb{1}_{U}
 $$
-U[s\to t] = \left( u_{t+r}^{s+r} \right)_{r\in \R}.
+is an identity natural transformation.
+So, for \(t\geq 0\), we might think of \(\mathbb{1}^{t}_U\)
+as a generalized identity.
+
+\item By definition, we get \(U[t\to t] = \mathbb{1}_{U[t]}\) for any \(t\in \R\).
+Moreover, if \(r\leq s\leq t\), for any \(p\in \R\) we have
+\begin{align*}
+\left( U[s\to t] \circ U[r\to s] \right)_p &= U[s\to t]_p \circ U[r\to s]_p\\
+&= u_{p+t}^{p+s} \circ u_{p+s}^{p+r}\\
+&= u_{p+t}^{p+r}\\
+&= U[r\to t]_p
+\end{align*}
+thanks to the composition law. Thus 
 $$
-On the other hand, note that 
+U[s\to t] \circ U[r\to s] = U[r\to t].
 $$
-U[t][t'] = U[t+t']
-$$
-for any \(t,t'\in R\).
+\end{itemize}
+\end{remark}
+
 
 % Note that \([t]\) is a functor \(X\to X\) . THIS IS FALSE.
 
-\begin{figure}[h]
-\includegraphics[width=\linewidth]{../assets/media/nt.png}
-\end{figure}
+% \begin{figure}[h]
+% \includegraphics[width=\linewidth]{../assets/media/nt.png}
+% \end{figure}
 
-The functor \(T = [\,\cdot\,]\colon \R\to \mathrm{End}(X)\) 
+The last remark leads us to the following definition.
+
+\begin{defi}
+The \textbf{shift functor} \(T = [\,\cdot\,]\colon \R\to \mathrm{End}(X)\) 
 is defined as follows
-\begin{itemize}
-\item Objects: for each \(t\in \R\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = (\alpha_{r+t})_{r\in \R}\) on morphisms \(\alpha=(\alpha_r)_{r\in \R}\). (Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\))
+\begin{enumerate}[label=(\roman*)]
+\item Objects: for each \(t\in \R\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = \alpha[t] = (\alpha_{r+t})_{r\in \R}\) on morphisms \(\alpha=(\alpha_r)_{r\in \R}\). (Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\), using a whiskering)
 \item Morphisms: for each \(r\to s\), define    a natural transformation $T(r\to s)\colon T_r\to T_s$ by
 $$
-T(r\to s)\colon T_r\to T_s = \left( U[r\to s] \right)_{U\in X}
+T(r\to s) = \left( U[r\to s] \right)_{U\in X}.
 $$
-\end{itemize}
+\end{enumerate}
  
+
+\end{defi}
+
 \subsection{The interleaving distance between persistence modules}
 
 Let \(U\) and \(V\) be persistence modules.
-A \(t\)-\textbf{interleaving} of \(U\) and \(V\) is a pair of morphisms 
-\((\phi, \psi )\)
+A \(t\)-\textbf{interleaving} of \(U\) and \(V\) is a pair of   natural transformations
+\((\phi\colon U\to V[t], \; \psi\colon V\to U[t] )\)
 that make the   diagrams 
-\[
+$$
 \begin{tikzcd}
 U \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_U"] &                                 & {U[2t]} & V \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_V"] &                                 & {V[2t]} \\
                                                       & {V[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {U[t]} \arrow[ru, "{\phi[t]}"'] &        
 \end{tikzcd}
-\]
+$$
 commute.
 If such a pair exists, we say that \(U\) and \(V\) are \(t\)-interleaved.
 
-
+\begin{example}
+Two persistence modules are isomorphic if and only if they are \(0\)-interleaved.
+Thus, we can think of interleavings as generalized isomorphisms.
+Let us see why...
+\end{example}
 
 \begin{defi}
-The  interleaving distance 
-between two interval modules is
+The  \textbf{interleaving distance} 
+between two persistence modules \(U\) and \(V\) is
 \[
-d_T (U, V)=\inf \left\{t\geq 0 \mid \text { there exists a } t\text {-interleaving of } U \text { and } V\right\}.
+d_T (U, V)=\inf \left\{t\geq 0 \mid \text {there exists a } t\text {-interleaving of } U \text { and } V\right\}.
 \]
+in case there is at least one interleaving of \(U\) and \(V\).
+If no such interleaving exists, we set 
+$d_T (U, V)= \infty$ .
 \end{defi} 
-This is the smallest shift we'd need to do for...
+% This is the smallest shift we'd need to do for...
+
+The subscript  \(T\) remind us that \(d_T\)
+depends on the shift functor.
+On the other hand, 
+\(d_T\) is not an actual metric, but a \textit{pseudometric}, 
+since $d_T (U, V) $  does not imply \(U\cong V\).
+
+\begin{example}
+\red{An example that proves the last sentence.}
+\end{example}
+
+Let us prove \(d_T\) satisfies the triangle inequality.
 
 \section{The computation}
 
 We'll do the computation for the case of closed intervals.
 Let \(I=[a,b]\) and \(J=[c,d]\).
-Denote by  $\mathcal{I}=\mathbf{k}^I$ and $\mathcal{J}=\mathbf{k}^J$   the corresponding 
+Denote by  $\mathcal{I}=\mathbf{k}^I$ and $\mathcal{J}=\mathbf{k}^J$   the associated 
 interval modules.
 
 Our strategy is  to find some apropriate bounds for $d_T (U, V)$.
 Befor going into the search for the pair of morphisms 
 that would make the triangles above commute,
-we need to know how are the morphisms between interval modules,
+we need to know how are the morphisms between arbitrary interval modules,
 because then we can characterize the morphisms between
 shifted interval modules.
 
+% Suppose \(I\) and \(J\) are as in the following picture.
+Let \(\alpha\colon \mathcal{I}\to \mathcal{J}\)
+be any persistence module morphism.
+For each \(s\in \R\)
+we have a map of vector spaces 
+$\alpha_s \colon \mathcal{I}_s\to \mathcal{J}_s$.
+The only available options for \(\mathcal{I}_s\) and \(\mathcal{J}_s\)
+are either \(\mathbf{k}\) or \(\mathbf{0}\).
 
 
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.75\linewidth]{../assets/media/morphism_interval_modules.png} 
+\end{figure}
+
+Note that, if \(s\notin I\cap J\), then either 
+\(\mathcal{I}_s=\mathbf{0}\) or \(\mathcal{J}_s=\mathbf{0}\),
+but in any case \(\alpha_s\) is the zero map.
+Thus, we always get trivial morphisms outside of the intersection.
+Inside the intersection, when \(s\in I\cap J\), we have
+a linear map \(\alpha_s\colon \mathbf{k}\to \mathbf{k}\),
+but since \(\mathbf{k}\) is a field, 
+\(\alpha\) is nothing more than multiplication by some scalar \(\lambda\in \mathbf{k}\), so \(\alpha_s\colon x\mapsto \lambda x\).
+Such \(\lambda\) could be zero, however.
+
+As a first result, we have the following.
+
+\paragraph{Fact 1.} If \(I\cap J=\varnothing\), then \(\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J) = \mathbf{0}\).
+\bigskip
+
+With this trivial case out of the way, assume \(I\cap J\neq \varnothing\),
+and  let us consider 
+two cases: \(a < c\) or \(c\leq a\).
+
+\begin{enumerate}[label=(\roman*),left=1cm]
+\item[\textbf{Case 1.}] Suppose \(a < c\). 
+Recall that our goal is to characterize
+the morphisms \(\mathbf{k}^I \to \mathbf{k}^J\).
+Since we already know what happens when \(t\notin I\cap J\),
+let us focus on \(\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t\) 
+with  \(t\in I\cap J\).
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.75\linewidth]{../assets/media/case-a-less-than-c.png}
+\end{figure}
+Take the arrow \(a\to r\) and apply both 
+\(\mathbf{k}^I\) and \(\mathbf{k}^J\).
+We get  
+We know \(\mathbf{k}^I(a\to r) = \)
+By \eqref{eq:naturality-morphism-persistence-modules}
+The conclusion of this case is that 
+$\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0} $,
+even if \(I\cap J\neq \varnothing\).
+
+\item[\textbf{Case 2.}] Suppose \(c\leq a\), meaning that \(J\) \textit{starts} before \(I\). Now we consider two more cases.
+\item[\textbf{Case 2.1.}] Suppose \(b <d\).
+We also get $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0} $.
+the problem was that \(J\) \textit{died} after \(I\).
+\item[\textbf{Case 2.2.}] Suppose $d\leq b $. Here we prove there is an isomorphism $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k} $.
+\end{enumerate} 
+
+Now we come to the following conclusion.
+
+\paragraph{Fact 2.} If  \(c\leq a\leq d\leq b\), 
+then   $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k} $.
+\bigskip
+
+Both Fact 1 and Fact 2 will help us determine \(d_T(\mathbf{k}^I, \mathbf{k}^J)\)
+for any closed intervals \(I\) and \(J\).
 \subsection{Bound above}
 
+We start looking for values of \(t\geq 0\) 
+for which a \(t\)-interleaving of 
+\({\mathcal{I}}=\mathbf{k}^I\) and \({\mathcal{I}}=\mathbf{k}^J\)
+exists, that is,
+for which we can find maps 
+$ \phi\colon {\mathcal{I}}\to {\mathcal{I}}[t]$ and $ \psi\colon {\mathcal{I}}\to {\mathcal{I}}[t]   $ 
+that make the diagrams
+$$
+\begin{tikzcd}
+{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{I}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} \\
+                                                      & {{\mathcal{I}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
+\end{tikzcd}
+$$
+commute.
 
 \subsection{Bound below}
 
