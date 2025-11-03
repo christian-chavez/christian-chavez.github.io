@@ -658,18 +658,84 @@ We consider three cases.
     \includegraphics[width=0.75\linewidth]{../assets/media/nonzero-regions-interleaving.png}
 \end{figure}
 If \(r\in (-\infty,a)\),
-then \(\phi_r = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}\)
-and 
-$ \mathbf{k}^{[a,b]}(r\to  r+2t) = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}$.
-Thus 
-$$
-\psi_{r+t}\circ \phi_r = 0 =  \mathbf{k}^{[a,b]}(r\to  r+2t)
-$$
+then 
+% \(\phi_r = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}\)
+% and 
+% $ \mathbf{k}^{[a,b]}(r\to  r+2t) = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}$.
+% Thus 
+\begin{align*}
+\psi_{r+t}\circ \phi_r 
+&= \psi_{r+t}\circ (\mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k^*})\\
+&= \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k^*}\\
+&= \mathbf{k}^{[a,b]}(r\to  r+2t)
+\end{align*}
 no matter the value of \(\psi_{r+t}\).
+Here  \(\mathbf{k^*}\) denotes either \(\mathbf{0}\) or \(\mathbf{k}\).
+
 If \(r\in[a,b-2t]\),
 then 
+% \(\phi_r = \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}\),
+% $\psi_{r+t} = \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k} $ 
+% and 
+% $ \mathbf{k}^{[a,b]}(r\to  r+2t) = \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k} $.
+% Thus 
+% $$
+% \psi_{r+t}\circ \phi_r = \mathrm{Id} =  \mathbf{k}^{[a,b]}(r\to  r+2t)
+% $$
+% xd 
+\begin{align*}
+\psi_{r+t}\circ \phi_r &= 
+(\mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}) \circ (\mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k})\\
+&= \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}\\
+&= \mathbf{k}^{[a,b]}(r\to  r+2t).
+\end{align*}
+Finally, 
+if \(r\in(b-2t,\infty)\),
+\begin{align*}
+\psi_{r+t}\circ \phi_r &= 
+(\mathbf{k^*}\xrightarrow{\mathrm{0}}\mathbf{0}) \circ \phi_r\\
+&= \mathbf{k^*}\xrightarrow{\mathrm{0}}\mathbf{0}\\
+&= \mathbf{k}^{[a,b]}(r\to  r+2t).
+\end{align*}
+where \(\mathbf{k^*}\) denotes either \(\mathbf{0}\) or \(\mathbf{k}\).
+We have proved that   the left triangle commutes
+for every \(r\in \R\).
+In an entirely analogous manner we prove the 
+right triangle commutes.
+Therefore \((\phi,\psi)\)   is a \(t\)-interleaving of \(\mathbf{k}^{I}\) and 
+$\mathbf{k}^J $. 
 \end{enumerate}
+We have proved that, in either case A or B, 
+\(\mathbf{k}^{I}\) and 
+$\mathbf{k}^J $
+are \(t\)-interleaved
+if \(t\geq\max\{|c-a|,|d-b|\}\).
+Therefore 
+$$
+d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq  \max\left\{ |c-a|,|d-b|\right\}.
+$$
+Up to now we've found two upper bounds for $d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) $, so we know 
+that  the distance is smaller than both of them.
+We summarize what we've found in the following
+\paragraph{Fact 3.} 
+For any closed intervals \(I=[a,b]\) and $J=[c,d] $,
+\begin{equation}\label{eq:upper-bounds}
+d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+\end{equation}
 
 \subsection{Bound below}
+
+Let's prove that \eqref{eq:upper-bounds}
+is actually an equality.
+Denote that minimum by \(m\).
+Our goal is to prove that if 
+a \(t\)-interleaving exists, then 
+necessarily \(t\geq m\),
+for then we can take the infimum over all 
+those \(t\geq 0\) and get that \(  d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\geq m\).
+
+Let \(t\geq0\).
+We will actually prove that if \(t<m\), then no interleaving can exists.
+
 
 \end{document}
