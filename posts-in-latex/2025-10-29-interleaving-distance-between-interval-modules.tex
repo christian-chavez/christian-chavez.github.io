@@ -472,6 +472,22 @@ Now we come to the following conclusion.
 
 \paragraph{Fact 2.} If  \(c\leq a\leq d\leq b\), 
 then   $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k} $.
+Given \(\lambda\in \mathbf{k}\),
+define $\alpha^\lambda \colon \mathbf{k}^I\to \mathbf{k}^J  $ 
+by 
+$$
+\alpha^\lambda_r =
+\begin{cases}
+\mathbf{k}\xrightarrow{\mu_\lambda}\mathbf{k}
+&\text{if } r\in I\cap J\\
+\mathbf{k}^I_r\xrightarrow{0}\mathbf{k}^J_r&\text{else}
+\end{cases}
+$$
+where \(\mu_\lambda\colon r\mapsto \lambda r\).
+The map $$\Psi \colon \mathbf{k}\to \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J):\lambda\mapsto \alpha^\lambda$$
+is injective, and 
+surjective, and linear
+(proof...)
 \bigskip
 
 Both Fact 1 and Fact 2 will help us determine \(d_T(\mathbf{k}^I, \mathbf{k}^J)\)
@@ -496,7 +512,7 @@ By using the fact that a shift of an interval module is
 the interval module of the shifted interval (Example \ref{ex:shifted.interval.module}),
 we can redraw these diagram as 
 % we want 
-
+%
 % such that the diagrams
 $$
 \begin{tikzcd}[column sep=1.25em]
@@ -543,37 +559,116 @@ does consider this aspect.
 
 Now we use Fact 2.
 Framed in our context, it tell us that 
-$$
-c-t\leq a \leq d-t\leq b \implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
-$$
-and 
-$$
-a-t\leq c \leq b-t\leq d \implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} 
-$$
+\begin{equation}\label{eq:inequalities-for-non-trivial-hom}
+\begin{aligned}
+c-t\leq a \leq d-t\leq b &\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} \\
+a-t\leq c \leq b-t\leq d &\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
+\end{aligned} 
+\end{equation}
+Now we start looking for values of \(t\geq0\)
+for which the two sets of inequalities
+are satisfied, because then we can choose 
+apropriate
+nonzero \(\phi\) and \(\psi\)
+such that \((\phi,\psi)\) is  a \(t\)-interleaving.
+
 The conditions $ c-t\leq a$ and $ a-t\leq c$ are equivalent to 
 $t\geq  |c-a| $, 
 and the conditions 
 $ d-t\leq b$ and $ b-t\leq d$ are equivalent to 
 $t\geq  |d-b| $.
-The middle inequalities translate into 
-\(t\leq \min\{d-a,b-c\}\)
-Thus, if $t\geq \max\{|c-a|,|d-b|\} $,
-we have 
+So, let \(t\geq\max\{|c-a|,|d-b|\}\).
+
+With respect to the middle inequalities,  
+we consider two cases.
+\begin{enumerate}[label=(\roman*),left=1cm]
+\item[\textbf{Case A.}] 
+Suppose \(d-t < a\) and \(b-t<c\).
+% From \(d-t < a\), 
+Using the fact that  \(t\geq |d-b|\geq b-d\), we have
+$$
+b-2t = b -t -t \leq b-(b-d)-t \leq d-t < a
+$$
+% $$
+% b-d\leq t \implies b-t< d \implies b-2t\leq d-t < a
+% $$
+whence $t > \frac{b-a}{2}$.
+Similarly, if \(b-t < c\), we get \(t> \frac{d-c}{2}\).
+Thus \(t\geq \max\{\frac{b-a}{2},\frac{d-c}{2}\}\),
+which lead us to the situation above where 
+a \(t\)-interleaving trivially exists,
+but the two hom-sets are zero.
+
+\item[\textbf{Case B.}]
+Suppose then that \(a\leq d-t\) or \(c\leq b-t\).
+Using the assumption that \(t\geq\max\{|c-a|,|d-b|\}\),
+we see that either inequality implies the other.
+Thus we have  \(a\leq d-t\) and \(c\leq b-t\).
+Therefore both sets of inequalities in \eqref{eq:inequalities-for-non-trivial-hom} above are satisfied,
+whence
+% The middle inequalities translate into 
+% \(t\leq \min\{d-a,b-c\}\).
+% Thus, if $t\geq \max\{|c-a|,|d-b|\} $,
+% we have 
 $$
 \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
 \quad\text{and}\quad 
-\mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} 
+\mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k}.
 $$
-meaning that we can chose a pair 
+Using Fact 2, 
+we see that
+this implies that 
+for \(1\in \mathbf{k}\), 
+there exists 
 \(\phi\colon \mathbf{k}^{[a,b]}\to \mathbf{k}^{[c-t,d-t]}\)
 and 
-\(\psi\colon \mathbf{k}^{[c,d]}\to \mathbf{k}^{[a-t,b-t]}\)
-for each pair of scalars in \(\mathbf{k}\).
-However, we must guarante that the morphisms
-we choose make the triangles above commute, 
-so that we have an interleaving.
-
-Let's prove that 
+\(\psi\colon \mathbf{k}^{[c,d]}\to \mathbf{k}^{[a-t,b-t]}\) defined by 
+$$
+\phi_r = %\colon x\mapsto 1\cdot x
+\begin{cases}
+\mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}
+&\text{if } r\in [a,d-t]\\
+\mathbf{0}&\text{else}
+\end{cases}
+$$
+and 
+$$
+\psi_r = %\colon x\mapsto 1\cdot x
+\begin{cases}
+\mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}
+&\text{if } r\in [c,b-t]\\
+\mathbf{0}&\text{else}
+\end{cases}
+$$
+The final, and most important, step is to prove 
+that \((\phi,\psi)\) is a \(t\)-interleaving of \(\mathbf{k}^I \) and $\mathbf{k}^J $.
+This amounts to prove that the 
+triangles 
+$$
+\begin{tikzcd}[column sep=1.25em]
+{\mathbf{k}^{[a,b]}_r} \arrow[rd, "\phi_r"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}(r\to  r+2t)}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}_r}} & {\mathbf{k}^{[c,d]}_r} \arrow[rd, "\psi_r"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}(r\to r+2t)}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}_r}} \\
+                                                      & {{\mathbf{k}^{[c-t,d-t]}_r}} \arrow[ru, "{\psi_{r+t}}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}_r}} \arrow[ru, "{\phi_{r+t}}"'] &        
+\end{tikzcd}
+$$
+commute for every \(r\in \R\).
+Let's consider the first triangle.
+We consider three cases.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{../assets/media/nonzero-regions-interleaving.png}
+\end{figure}
+If \(r\in (-\infty,a)\),
+then \(\phi_r = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}\)
+and 
+$ \mathbf{k}^{[a,b]}(r\to  r+2t) = \mathbf{0}\xrightarrow{\mathrm{0}}\mathbf{k}$.
+Thus 
+$$
+\psi_{r+t}\circ \phi_r = 0 =  \mathbf{k}^{[a,b]}(r\to  r+2t)
+$$
+no matter the value of \(\psi_{r+t}\).
+If \(r\in[a,b-2t]\),
+then 
+\end{enumerate}
 
 \subsection{Bound below}
 
