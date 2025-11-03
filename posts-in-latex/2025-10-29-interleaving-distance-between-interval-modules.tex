@@ -40,7 +40,8 @@ r\to s\; \mapsto \begin{cases}
 \end{cases}
 \]
 on objects and morphisms, respectively.
-Here \(\mathbf{0}\) denotes the zero vector space of course.
+Here \(\mathbf{0}\) denotes both the zero vector space and the zero map,
+respectively.
 We call \(\mathbf{k}^I\) the \textbf{interval module} over \(I\).
 % \begin{figure}[!h]
 % \centering
@@ -113,12 +114,59 @@ i.e., \(v_t^s \circ \alpha_s=\alpha_t\circ u_t^s\).
 
 \red{Explain composition with a diagram.}
 
-% \begin{example}
+\begin{example}
 % Let \(U\) be a persistence module and fix \(t\in \R\).
 % By the composition law, the square
 
 % commutes for every \(\)
-% \end{example}
+If \(U\) and \(V\) are any persistence modules,
+then there is a zero morphism \(U\to V\), given by 
+$(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\R} $, 
+and denoted by $\mathbf{0}$.
+\end{example}
+
+\begin{example}
+Consider two interval modules \(\mathbf{k}^{[0,1]}\) and \(\mathbf{k}^{[0,2]}\).
+For each \(r\in \R\), define 
+$$
+\alpha_r = \mathbf{k}^{[0,1]}(x)\to\mathbf{k}^{[0,2]}(x)
+$$
+% $$
+% \alpha_r =
+% \begin{cases}
+% \mathbf{k}^{[0,2]}(x\to x) &\text{if } x\in [0,1]\\
+% \mathbf{0}&\text{else}
+% \end{cases}\;
+% =
+% \begin{cases}
+% \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k} &\text{if } x\in [0,1]\\
+% \mathbf{0}&\text{else}.
+% \end{cases}
+% $$
+So \(\alpha=(\alpha_r)_{r\in\R}\) is the inclusion 
+\(\mathbf{k}^{[0,1]}\hookrightarrow\mathbf{k}^{[0,2]}\).
+However, \(\alpha\) is not a morphism of persistence modules.
+For example, for the arrow \(1\to 2\) we have 
+$$
+\mathbf{k}^{[0,1]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{0}} \mathbf{0}
+$$
+and 
+$$
+\mathbf{k}^{[0,2]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}
+$$
+but \(\alpha_1 = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}\) and 
+$\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$.
+Therefore, the diagram 
+$$
+\begin{tikzcd}
+\mathbf{k} \arrow[r, "0"] \arrow[d, "\mathrm{Id}"'] & \mathbf{0} \arrow[d, "0"] \\
+\mathbf{k} \arrow[r, "\mathrm{Id}"']                & \mathbf{k}               
+\end{tikzcd}
+$$
+does not commute.
+The same situation happens if we'd taken 
+\(r\to s\) with \(r\in [0,1]\cap [0,2]=[0,1]\) and \(s\in [0,2]\setminus [0,1]=(1,2]\).
+\end{example}
 
 
 \subsection{The shift functor}
@@ -131,9 +179,9 @@ Define a new persistence module \(U[t]\) by
 % \quad\text{and}\quad 
 % U[t](r\to s)=(u[t])_r^s = u_{t+r}^{t+s}
 %
-U[t](r)  = U_{t+r}
+U[t](r)  = U_{r+t}
 \quad\text{and}\quad 
-U[t](r\to s) = u_{t+r}^{t+s}.
+U[t](r\to s) = u_{r+t}^{s+t}.
 \]
 We say that \(U[t]\) is a \textbf{shifted module}.
 Note that  
@@ -262,9 +310,30 @@ $$
 T(r\to s) = \left( U[r\to s] \right)_{U\in X}.
 $$
 \end{enumerate}
- 
-
 \end{defi}
+
+\begin{example}\label{ex:shifted.interval.module}
+Let \(\mathcal{I}=\mathbf{k}^I\) be an interval module 
+and fix \(t\in \R\).
+Then, for any \(r\in \R\),
+$$
+% \mathcal{I}[t](r) = 
+\mathbf{k}^I(r+t) = \begin{cases}
+\mathbf{k} &\text{ if }r+t\in I\\
+\mathbf{0}&\text{ else }
+\end{cases}
+= 
+\begin{cases}
+\mathbf{k} &\text{ if }r \in I-t\\
+\mathbf{0}&\text{ else }
+\end{cases}
+=
+\mathbf{k}^{I-t}(r)
+$$
+and similarly, for any \(r\leq s\) we obtain $$ \mathbf{k}^I(r+t\to s+t) = \mathbf{k}^{I-t}(r\to s).$$
+Thus $\mathbf{k}^I[t] =  \mathbf{k}^{I-t}$.
+We will denote \(\mathcal{I}[t]=\mathcal{I}-t\).
+\end{example}
 
 \subsection{The interleaving distance between persistence modules}
 
@@ -279,7 +348,7 @@ U \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_U"] &                         
 \end{tikzcd}
 $$
 commute.
-If such a pair exists, we say that \(U\) and \(V\) are \(t\)-interleaved.
+If such a pair exists, we say that \(U\) and \(V\) are \(t\)-\textbf{interleaved}.
 
 \begin{example}
 Two persistence modules are isomorphic if and only if they are \(0\)-interleaved.
@@ -303,7 +372,7 @@ The subscript  \(T\) remind us that \(d_T\)
 depends on the shift functor.
 On the other hand, 
 \(d_T\) is not an actual metric, but a \textit{pseudometric}, 
-since $d_T (U, V) $  does not imply \(U\cong V\).
+since $d_T (U, V)=0 $  does not imply \(U = V\).
 
 \begin{example}
 \red{An example that proves the last sentence.}
@@ -313,7 +382,9 @@ Let us prove \(d_T\) satisfies the triangle inequality.
 
 \section{The computation}
 
-We'll do the computation for the case of closed intervals.
+We'll do the computation
+of $d_T(\mathbf{k}^I,\mathbf{k}^J) $ 
+ for the case of closed intervals.
 Let \(I=[a,b]\) and \(J=[c,d]\).
 Denote by  $\mathcal{I}=\mathbf{k}^I$ and $\mathcal{J}=\mathbf{k}^J$   the associated 
 interval modules.
@@ -343,13 +414,13 @@ are either \(\mathbf{k}\) or \(\mathbf{0}\).
 
 Note that, if \(s\notin I\cap J\), then either 
 \(\mathcal{I}_s=\mathbf{0}\) or \(\mathcal{J}_s=\mathbf{0}\),
-but in any case \(\alpha_s\) is the zero map.
+and in any case \(\alpha_s\) is the zero map.
 Thus, we always get trivial morphisms outside of the intersection.
 Inside the intersection, when \(s\in I\cap J\), we have
 a linear map \(\alpha_s\colon \mathbf{k}\to \mathbf{k}\),
 but since \(\mathbf{k}\) is a field, 
-\(\alpha\) is nothing more than multiplication by some scalar \(\lambda\in \mathbf{k}\), so \(\alpha_s\colon x\mapsto \lambda x\).
-Such \(\lambda\) could be zero, however.
+\(\alpha_s\) is nothing more than multiplication by some scalar \(\lambda\in \mathbf{k}\), so \(\alpha_s\colon x\mapsto \lambda x\).
+Such \(\lambda\) could be zero, though.
 
 As a first result, we have the following.
 
@@ -366,24 +437,34 @@ Recall that our goal is to characterize
 the morphisms \(\mathbf{k}^I \to \mathbf{k}^J\).
 Since we already know what happens when \(t\notin I\cap J\),
 let us focus on \(\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t\) 
-with  \(t\in I\cap J\).
+with  \(t\in I\cap J\),
+that is with \(c\leq t\leq b\).
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.75\linewidth]{../assets/media/case-a-less-than-c.png}
 \end{figure}
-Take the arrow \(a\to r\) and apply both 
+Take the arrow \(a\to t\) and apply both 
 \(\mathbf{k}^I\) and \(\mathbf{k}^J\).
-We get  
-We know \(\mathbf{k}^I(a\to r) = \)
-By \eqref{eq:naturality-morphism-persistence-modules}
-The conclusion of this case is that 
-$\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0} $,
-even if \(I\cap J\neq \varnothing\).
+We have  \(\mathbf{k}^I(a\to t) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}\)
+and 
+\(\mathbf{k}^J(a\to t) = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}\).
+Note that \(\alpha_a\colon \mathbf{k}\to \mathbf{0}\) is the zero map
+and \(\alpha_t\colon \mathbf{k}\to \mathbf{k}\)
+is some linear map.
+By \eqref{eq:naturality-morphism-persistence-modules}, naturality implies
+$$
+\alpha_t =  \alpha_t\circ \mathbf{k}^I(a\to t) 
+= \mathbf{k}^J(a\to t)\circ \alpha_a = 0.
+$$
+Thus \(\alpha_t\) is zero even on \(I\cap J\).
+The conclusion  is that 
+$\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0} $
+%  if \(I\cap J\neq \varnothing\).
+if \(I\) was \textit{born} before \(J\).
 
-\item[\textbf{Case 2.}] Suppose \(c\leq a\), meaning that \(J\) \textit{starts} before \(I\). Now we consider two more cases.
-\item[\textbf{Case 2.1.}] Suppose \(b <d\).
+\item[\textbf{Case 2.}] Suppose \(c\leq a\), meaning that \(J\) was \textit{born} before \(I\). Now we consider two more cases.
+\item[\textbf{Case 2.1.}] Suppose \(b <d\). This means that \(J\) \textit{died} after \(I\).
 We also get $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0} $.
-the problem was that \(J\) \textit{died} after \(I\).
 \item[\textbf{Case 2.2.}] Suppose $d\leq b $. Here we prove there is an isomorphism $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k} $.
 \end{enumerate} 
 
@@ -399,18 +480,100 @@ for any closed intervals \(I\) and \(J\).
 
 We start looking for values of \(t\geq 0\) 
 for which a \(t\)-interleaving of 
-\({\mathcal{I}}=\mathbf{k}^I\) and \({\mathcal{I}}=\mathbf{k}^J\)
+\({\mathcal{I}}=\mathbf{k}^I\) and \({\mathcal{J}}=\mathbf{k}^J\)
 exists, that is,
 for which we can find maps 
-$ \phi\colon {\mathcal{I}}\to {\mathcal{I}}[t]$ and $ \psi\colon {\mathcal{I}}\to {\mathcal{I}}[t]   $ 
+$ \phi\colon {\mathcal{I}}\to {\mathcal{J}}[t]$ and $ \psi\colon {\mathcal{J}}\to {\mathcal{I}}[t]   $ 
 that make the diagrams
 $$
 \begin{tikzcd}
-{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{I}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} \\
-                                                      & {{\mathcal{I}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
+{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{J}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{J}}}"] &                                 & {{\mathcal{J}}[2t]} \\
+                                                      & {{\mathcal{J}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
 \end{tikzcd}
 $$
 commute.
+By using the fact that a shift of an interval module is 
+the interval module of the shifted interval (Example \ref{ex:shifted.interval.module}),
+we can redraw these diagram as 
+% we want 
+
+% such that the diagrams
+$$
+\begin{tikzcd}[column sep=1.25em]
+{\mathbf{k}^{[a,b]}} \arrow[rd, "\phi"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}}} & {\mathbf{k}^{[c,d]}} \arrow[rd, "\psi"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}}} \\
+                                                      & {{\mathbf{k}^{[c-t,d-t]}}} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}}} \arrow[ru, "{\phi[t]}"'] &        
+\end{tikzcd}
+$$
+
+The first observation is that if the top arrows are both \(0\), 
+then we can put \(\phi=0\) and \(\psi=0\) because then 
+the triangles commute trivially.
+But, how do we get the top arrows to be zero?
+Here we can use Fact 1: if \([a,b]\cap [a-2t,b-2t]=\varnothing\), then 
+\(\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[a-2t,b-2t]}) = \mathbf{0}\).
+In order to get an empty intersection, 
+we just need to make a sufficiently large shift.
+Since \(t\geq 0\), the shift moves to the left,
+so we need \(b-2t < a\), 
+that is \(t> \frac{b-a}{2}\).
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{../assets/media/intervalAB-empty-intersection.png}
+% \caption{}%\label{fig:}
+\end{figure}
+By the same reason we arrive at 
+\(t> \frac{d-c}{2}\).
+Thus the top arrows are both zero if \(t> \frac{b-a}{2}\) and \(t> \frac{d-c}{2}\), 
+which is equivalent to 
+$$
+t>\frac{1}{2}\max\left\{ b-a,d-c \right\}.
+$$
+If we denote the right term by \(M\), 
+we get that an \((M+\varepsilon)\)-interleaving of \(\mathcal{I}\) and \(\mathcal{J}\)
+exists for every \(\varepsilon > 0\).
+Thus $d_T(\mathbf{k}^I, \mathbf{k}^J) \leq M+\varepsilon$  for every \(\varepsilon > 0\),
+and taking the infimum over \(\varepsilon\) give us 
+$$
+d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \frac{1}{2}\max\left\{ b-a,d-c \right\}.
+$$
+Notice that this bound does not take into account the relationship (or position)
+between \(I\) and \(J\),
+so our next step is to find a bound that 
+does consider this aspect.
+
+Now we use Fact 2.
+Framed in our context, it tell us that 
+$$
+c-t\leq a \leq d-t\leq b \implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
+$$
+and 
+$$
+a-t\leq c \leq b-t\leq d \implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} 
+$$
+The conditions $ c-t\leq a$ and $ a-t\leq c$ are equivalent to 
+$t\geq  |c-a| $, 
+and the conditions 
+$ d-t\leq b$ and $ b-t\leq d$ are equivalent to 
+$t\geq  |d-b| $.
+The middle inequalities translate into 
+\(t\leq \min\{d-a,b-c\}\)
+Thus, if $t\geq \max\{|c-a|,|d-b|\} $,
+we have 
+$$
+\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
+\quad\text{and}\quad 
+\mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} 
+$$
+meaning that we can chose a pair 
+\(\phi\colon \mathbf{k}^{[a,b]}\to \mathbf{k}^{[c-t,d-t]}\)
+and 
+\(\psi\colon \mathbf{k}^{[c,d]}\to \mathbf{k}^{[a-t,b-t]}\)
+for each pair of scalars in \(\mathbf{k}\).
+However, we must guarante that the morphisms
+we choose make the triangles above commute, 
+so that we have an interleaving.
+
+Let's prove that 
 
 \subsection{Bound below}
 
