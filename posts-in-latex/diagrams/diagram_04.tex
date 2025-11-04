@@ -1,7 +1,6 @@
-\documentclass[tikz,border=2pt]{standalone}
-\usepackage{amsmath,amssymb}
-\usepackage{tikz-cd}
-
+\documentclass[
+tikz,border=2pt
+]{standalone}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -15,14 +14,15 @@
     xcolor,
     mlmodern,
     % lmodern,
-    tikz-cd,
     dsfont,
+    tikz-cd,
     float,
 }
 \begin{document}
+ 
 \begin{tikzcd}
-U \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_U"] &                                 & {U[2t]} & V \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_V"] &                                 & {V[2t]} \\
+U \arrow[rd, "\phi"'] \arrow[rr, "\mathds{1}^{2t}_U"] &                                 & {U[2t]} & V \arrow[rd, "\psi"'] \arrow[rr, "\mathds{1}^{2t}_V"] &                                 & {V[2t]} \\
                                                       & {V[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {U[t]} \arrow[ru, "{\phi[t]}"'] &        
-\end{tikzcd}
+\end{tikzcd} 
 
 \end{document}

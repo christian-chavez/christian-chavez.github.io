@@ -36,11 +36,14 @@ blockquote {
 }
 </style>
 
+```matlab
+Post under construction
+```
 
 
 I found nowhere the explicit computation of the interleaving distance
-between interval modules, tough it is well known that it equals the
-bottleneck distance.
+between interval modules, 
+so I decided to post it here.
 
 # Preliminaries
 
@@ -486,7 +489,7 @@ $t$-interleaving.
 
 The conditions $c-t\leq a$ and $a-t\leq c$ are equivalent to
 $t\geq  |c-a|$, and the conditions $d-t\leq b$ and $b-t\leq d$ are
-equivalent to $t\geq  |d-b|$. So, let $t\geq\max\left\{|c-a|,|d-b|\right\}$.
+equivalent to $t\geq  |d-b|$. So, let $t\geq\max\left\\{|c-a|,|d-b|\right\\}$.
 
 With respect to the middle inequalities, we consider two cases.
 
@@ -499,12 +502,12 @@ With respect to the middle inequalities, we consider two cases.
     $t > \frac{b-a}{2}$. Similarly, if $b-t < c$, we get
     $t> \frac{d-c}{2}$. 
     Thus
-    $t\geq \max\left\left\{\frac{b-a}{2},\frac{d-c}{2}\right\}$, which lead us to the
+    $t\geq \max\left\\{\frac{b-a}{2},\frac{d-c}{2}\right\\}$, which lead us to the
     situation above where a $t$-interleaving trivially exists, but the
     two hom-sets are zero.
 
 2.  Suppose then that $a\leq d-t$ or $c\leq b-t$. Using the assumption
-    that $t\geq\max\left\{|c-a|,|d-b|\right\}$, we see that either inequality
+    that $t\geq\max\left\\{|c-a|,|d-b|\right\\}$, we see that either inequality
     implies the other. Thus we have $a\leq d-t$ and $c\leq b-t$.
     Therefore both sets of inequalities   above are
     satisfied, whence
@@ -593,7 +596,7 @@ With respect to the middle inequalities, we consider two cases.
     $t$-interleaving of $\mathbf{k}^{I}$ and $\mathbf{k}^J$.
 
 We have proved that, in either case A or B, $\mathbf{k}^{I}$ and
-$\mathbf{k}^J$ are $t$-interleaved if $t\geq\max\{|c-a|,|d-b|\}$.
+$\mathbf{k}^J$ are $t$-interleaved if $t\geq\max\left\\{|c-a|,|d-b|\right\\}$.
 Therefore
 
 $$d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq  \max\left\{ |c-a|,|d-b|\right\}.$$
