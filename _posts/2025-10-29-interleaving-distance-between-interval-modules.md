@@ -486,7 +486,7 @@ $t$-interleaving.
 
 The conditions $c-t\leq a$ and $a-t\leq c$ are equivalent to
 $t\geq  |c-a|$, and the conditions $d-t\leq b$ and $b-t\leq d$ are
-equivalent to $t\geq  |d-b|$. So, let $t\geq\max\{|c-a|,|d-b|\}$.
+equivalent to $t\geq  |d-b|$. So, let $t\geq\max\left\{|c-a|,|d-b|\right\}$.
 
 With respect to the middle inequalities, we consider two cases.
 
@@ -497,8 +497,9 @@ With respect to the middle inequalities, we consider two cases.
     
     whence
     $t > \frac{b-a}{2}$. Similarly, if $b-t < c$, we get
-    $t> \frac{d-c}{2}$. Thus
-    $t\geq \max\left\{\frac{b-a}{2},\frac{d-c}{2}\right\}$, which lead us to the
+    $t> \frac{d-c}{2}$. 
+    Thus
+    $t\geq \max\left\left\{\frac{b-a}{2},\frac{d-c}{2}\right\}$, which lead us to the
     situation above where a $t$-interleaving trivially exists, but the
     two hom-sets are zero.
 
@@ -507,9 +508,11 @@ With respect to the middle inequalities, we consider two cases.
     implies the other. Thus we have $a\leq d-t$ and $c\leq b-t$.
     Therefore both sets of inequalities   above are
     satisfied, whence
+
     $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
     \quad\text{and}\quad 
     \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k}.$$
+
     Using Fact 2, we see that this implies that for $1\in \mathbf{k}$,
     there exists
     $\phi\colon \mathbf{k}^{[a,b]}\to \mathbf{k}^{[c-t,d-t]}$ and

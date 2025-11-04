@@ -37,7 +37,7 @@
   });
 </script>  -->
 
-<!-- MathJax v3 -->
+<!-- MathJax v4 -->
 <script>
 window.MathJax = {
   tex: {
@@ -45,13 +45,9 @@ window.MathJax = {
     displayMath: [['$$', '$$'], ['\\[', '\\]']],
     processEscapes: true,
     processEnvironments: true,
-    tags: 'ams'          // enables \label, \ref, \eqref
+    tags: 'ams'
   },
-  svg: {
-    fontCache: 'global'
-  }
+  chtml: { fontCache: 'global' }
 };
 </script>
-<script id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
+<script defer src='https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js'></script>
