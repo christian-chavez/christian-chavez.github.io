@@ -43,7 +43,7 @@ on objects and morphisms, respectively.
 Here \(\mathbf{0}\) denotes both the zero vector space and the zero map,
 respectively.
 We call \(\mathbf{k}^I\) the \textbf{interval module} over \(I\).
-% \begin{figure}[!h]
+% \begin{figure}[H]
 % \centering
 % \includegraphics[width=\linewidth]{../assets/media/interval_module.gif} 
 % \end{figure}
@@ -407,7 +407,7 @@ are either \(\mathbf{k}\) or \(\mathbf{0}\).
 
 
 
-\begin{figure}[!htb]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{../assets/media/morphism_interval_modules.png} 
 \end{figure}
@@ -439,7 +439,7 @@ Since we already know what happens when \(t\notin I\cap J\),
 let us focus on \(\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t\) 
 with  \(t\in I\cap J\),
 that is with \(c\leq t\leq b\).
-\begin{figure}[!h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.75\linewidth]{../assets/media/case-a-less-than-c.png}
 \end{figure}
@@ -532,7 +532,7 @@ we just need to make a sufficiently large shift.
 Since \(t\geq 0\), the shift moves to the left,
 so we need \(b-2t < a\), 
 that is \(t> \frac{b-a}{2}\).
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{../assets/media/intervalAB-empty-intersection.png}
 % \caption{}%\label{fig:}
@@ -645,7 +645,7 @@ that \((\phi,\psi)\) is a \(t\)-interleaving of \(\mathbf{k}^I \) and $\mathbf{k
 This amounts to prove that the 
 triangles 
 $$
-\begin{tikzcd}[column sep=1.25em]
+\begin{tikzcd}[column sep=1em]
 {\mathbf{k}^{[a,b]}_r} \arrow[rd, "\phi_r"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}(r\to  r+2t)}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}_r}} & {\mathbf{k}^{[c,d]}_r} \arrow[rd, "\psi_r"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}(r\to r+2t)}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}_r}} \\
                                                       & {{\mathbf{k}^{[c-t,d-t]}_r}} \arrow[ru, "{\psi_{r+t}}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}_r}} \arrow[ru, "{\phi_{r+t}}"'] &        
 \end{tikzcd}
