@@ -1,7 +1,7 @@
 ---
 layout: post
 title: new blog
-published: true
+published: false
 ---
 
 Este blog solo sirve para testear LaTeX.

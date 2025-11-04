@@ -2,7 +2,7 @@
 layout: post
 title: Computing the interleaving distance between two interval modules
 author: Christian Chávez
-# excerpt: "Tools and tips that helped me with the writing process of my bachelor thesis."
+excerpt: "I found nowhere the explicit computation of the interleaving distance between interval modules,  so I decided to post it here."
 published: true
 toc: true
 ---
