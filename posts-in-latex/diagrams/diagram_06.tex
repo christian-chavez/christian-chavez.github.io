@@ -1,0 +1,28 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz-cd}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{
+	amsthm,
+	amsmath,
+	amssymb,
+	enumitem,
+    microtype,
+	setspace,
+    xcolor,
+    mlmodern,
+    % lmodern,
+    tikz-cd,
+    dsfont,
+    float,
+}
+\begin{document}
+\begin{tikzcd}[column sep=1.25em]
+{\mathbf{k}^{[a,b]}} \arrow[rd, "\phi"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}}} & {\mathbf{k}^{[c,d]}} \arrow[rd, "\psi"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}}} \\
+                                                      & {{\mathbf{k}^{[c-t,d-t]}}} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}}} \arrow[ru, "{\phi[t]}"'] &        
+\end{tikzcd}
+
+\end{document}

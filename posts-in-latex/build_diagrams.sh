@@ -1,14 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
-OUTDIR="diagrams"
+
+INDIR="diagrams"   # where diagram_XX.tex live
+OUTDIR="_temp"     # where PDF/SVG/logs should go
 mkdir -p "$OUTDIR"
 
 shopt -s nullglob
-for tex in "$OUTDIR"/diagram_*.tex; do
-  stem="${tex%.tex}"
-  # Compile to PDF (LuaLaTeX handles modern packages well)
-  lualatex -interaction=batchmode -halt-on-error -output-directory="$OUTDIR" "$tex"
-  # Convert PDF -> SVG (text converted to paths to avoid font issues on web)
-  dvisvgm --pdf --exact --no-fonts -o "${stem}.svg" "${stem}.pdf"
-  echo "Built ${stem}.svg"
+
+# Only wrapped files (exclude *_body.tex)
+for tex in "$INDIR"/diagram_[0-9][0-9].tex; do
+  name="$(basename "$tex" .tex)"                # e.g. diagram_01
+  echo "==> pdflatex $name.tex"
+  pdflatex -interaction=nonstopmode -halt-on-error \
+    -output-directory="$OUTDIR" "$tex"
+
+  pdf="$OUTDIR/$name.pdf"                       # pdf is in OUTDIR
+  if [[ ! -f "$pdf" ]]; then
+    echo "No PDF produced for $tex. Check $OUTDIR/$name.log"
+    exit 1
+  fi
+
+  echo "==> dvisvgm $name.pdf -> $name.svg"
+  dvisvgm --pdf --exact --no-fonts --scale=2 -o "$OUTDIR/$name.svg" "$pdf"
+
+  echo "Built $OUTDIR/$name.svg"
 done
+
+echo "All done. SVGs in $OUTDIR/"

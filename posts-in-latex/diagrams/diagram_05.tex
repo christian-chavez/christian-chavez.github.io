@@ -1,0 +1,28 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz-cd}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{
+	amsthm,
+	amsmath,
+	amssymb,
+	enumitem,
+    microtype,
+	setspace,
+    xcolor,
+    mlmodern,
+    % lmodern,
+    tikz-cd,
+    dsfont,
+    float,
+}
+\begin{document}
+\begin{tikzcd}
+{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{J}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{J}}}"] &                                 & {{\mathcal{J}}[2t]} \\
+                                                      & {{\mathcal{J}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
+\end{tikzcd}
+
+\end{document}

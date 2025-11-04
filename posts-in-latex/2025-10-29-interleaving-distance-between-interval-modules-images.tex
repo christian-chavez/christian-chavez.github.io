@@ -104,10 +104,7 @@ is a family of linear maps
 such that 
 the diagram 
 \begin{equation}\label{eq:naturality-morphism-persistence-modules}
-\begin{tikzcd}
-U_s \arrow[r, "u_t^s"] \arrow[d, "\alpha_s"'] & U_t \arrow[d, "\alpha_t"] \\
-V_s \arrow[r, "v_t^s"]                        & V_t                      
-\end{tikzcd}
+![diagram 1](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_01.svg)
 \end{equation}
 commutes for all \(s\leq t\),
 i.e., \(v_t^s \circ \alpha_s=\alpha_t\circ u_t^s\).
@@ -158,10 +155,7 @@ but \(\alpha_1 = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}\) and
 $\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$.
 Therefore, the diagram 
 $$
-\begin{tikzcd}
-\mathbf{k} \arrow[r, "0"] \arrow[d, "\mathrm{Id}"'] & \mathbf{0} \arrow[d, "0"] \\
-\mathbf{k} \arrow[r, "\mathrm{Id}"']                & \mathbf{k}               
-\end{tikzcd}
+![diagram 2](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_02.svg)
 $$
 does not commute.
 The same situation happens if we'd taken 
@@ -215,10 +209,7 @@ is determined by its components,
 we need to find the vertical arrows 
 that make the square
 $$
-\begin{tikzcd}
-U_{p+s} \arrow[r, "u_{q+s}^{p+s}"] \arrow[d, "\alpha_p"'] & U_{q+s} \arrow[d, "\alpha_q"] \\
-U_{p+t} \arrow[r, "u_{q+t}^{p+t}"']                       & U_{q+t}                      
-\end{tikzcd}
+![diagram 3](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_03.svg)
 $$
 %
 commute. 
@@ -324,10 +315,7 @@ A \(t\)-\textbf{interleaving} of \(U\) and \(V\) is a pair of   natural transfor
 \((\phi\colon U\to V[t], \; \psi\colon V\to U[t] )\)
 that make the   diagrams 
 $$
-\begin{tikzcd}
-U \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_U"] &                                 & {U[2t]} & V \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_V"] &                                 & {V[2t]} \\
-                                                      & {V[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {U[t]} \arrow[ru, "{\phi[t]}"'] &        
-\end{tikzcd}
+![diagram 4](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_04.svg)
 $$
 commute.
 If such a pair exists, we say that \(U\) and \(V\) are \(t\)-\textbf{interleaved}.
@@ -484,10 +472,7 @@ for which we can find maps
 $ \phi\colon {\mathcal{I}}\to {\mathcal{J}}[t]$ and $ \psi\colon {\mathcal{J}}\to {\mathcal{I}}[t]   $ 
 that make the diagrams
 $$
-\begin{tikzcd}
-{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{J}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{J}}}"] &                                 & {{\mathcal{J}}[2t]} \\
-                                                      & {{\mathcal{J}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
-\end{tikzcd}
+![diagram 5](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_05.svg)
 $$
 commute.
 By using the fact that a shift of an interval module is 
@@ -497,10 +482,7 @@ we can redraw these diagram as
 %
 % such that the diagrams
 $$
-\begin{tikzcd}[column sep=1.25em]
-{\mathbf{k}^{[a,b]}} \arrow[rd, "\phi"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}}} & {\mathbf{k}^{[c,d]}} \arrow[rd, "\psi"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}[0\to 2t]}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}}} \\
-                                                      & {{\mathbf{k}^{[c-t,d-t]}}} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}}} \arrow[ru, "{\phi[t]}"'] &        
-\end{tikzcd}
+![diagram 6](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_06.svg)
 $$
 
 The first observation is that if the top arrows are both \(0\), 
@@ -627,10 +609,7 @@ that \((\phi,\psi)\) is a \(t\)-interleaving of \(\mathbf{k}^I \) and $\mathbf{k
 This amounts to prove that the 
 triangles 
 $$
-\begin{tikzcd}[column sep=1em]
-{\mathbf{k}^{[a,b]}_r} \arrow[rd, "\phi_r"'] \arrow[rr, "{{\mathbf{k}^{[a,b]}(r\to  r+2t)}}"] &                                 & {{\mathbf{k}^{[a-2t,b-2t]}_r}} & {\mathbf{k}^{[c,d]}_r} \arrow[rd, "\psi_r"'] \arrow[rr, "{{\mathbf{k}^{[c,d]}(r\to r+2t)}}"] &                                 & {{\mathbf{k}^{[c-2t,d-2t]}_r}} \\
-                                                      & {{\mathbf{k}^{[c-t,d-t]}_r}} \arrow[ru, "{\psi_{r+t}}"'] &         &                                                       & {{\mathbf{k}^{[a-t,b-t]}_r}} \arrow[ru, "{\phi_{r+t}}"'] &        
-\end{tikzcd}
+![diagram 7](/assets/2025-10-29-images-interleaving-distance-between-interval-modules/diagram_07.svg)
 $$
 commute for every \(r\in \mathbb{R}\).
 Let's consider the first triangle.
