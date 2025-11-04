@@ -79,7 +79,7 @@ call $\mathbf{k}^I$ the **interval module** over $I$.
 
 
 <div class="bluebox">
-Remark. Interval modules are the building blocks of persistence modules. In
+<strong>Remark.</strong> Interval modules are the building blocks of persistence modules. In
 fact, one objective of persistence theory is to understand persistence
 modules by decomposing them into interval modules. However, this is not
 always possible. A situation when such a decomposition is guaranteed is
@@ -401,7 +401,7 @@ and let us consider two cases: $a < c$ or $c\leq a$.
 
 Now we come to the following conclusion.
 
-> **Fact 2.** If $c\leq a\leq d\leq b$, then $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k}$. 
+> **Fact 2.** If $c\leq a\leq d\leq b$, then $\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\cong \mathbf{k}$. 
 
 Given
 $\lambda\in \mathbf{k}$, define
@@ -479,7 +479,7 @@ Now we use Fact 2. Framed in our context, it tell us that
 
 $$
 \begin{aligned}
-c-t\leq a \leq d-t\leq b &\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} \\
+c-t\leq a \leq d-t\leq b &\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k},\\
 a-t\leq c \leq b-t\leq d &\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
 \end{aligned}
 $$ 
@@ -556,7 +556,7 @@ With respect to the middle inequalities, we consider two cases.
     </div> 
 
     If $r\in (-\infty,a)$, then 
-    
+
     $$
     \begin{aligned}
     \psi_{r+t}\circ \phi_r 
