@@ -9,7 +9,7 @@ toc: true
  
 
 In this post I want to share the tools I used to write [my bachelor thesis](/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf). 
-I wrote my thesis using \\(\\LaTeX\\) with Tex Live, locally on my computer running   Linux.
+I wrote my thesis using \\(\mathrm{\LaTeX}\\) with Tex Live, locally on my computer running   Linux.
 
 In summary, I used the following tools:
 - VS Code & Neovim as my editors
@@ -42,7 +42,7 @@ Moreover, Zathura supports backward search (clicking on a specific location in t
 
 ## Git & GitHub  
 
-Version control is essential for managing projects, and Git makes it seamless. I use GitHub to back up my work. For my \\(\\LaTeX\\)  documents, Git allows me to keep a clean history of edits, revert to previous versions, and sync across devices. (If something happens to my computer, I still have my thesis project in the cloud).  When I make a change to a `.tex` file and want to save   a version at this time, I run this:
+Version control is essential for managing projects, and Git makes it seamless. I use GitHub to back up my work. For my \\(\mathrm{\LaTeX}\\)  documents, Git allows me to keep a clean history of edits, revert to previous versions, and sync across devices. (If something happens to my computer, I still have my thesis project in the cloud).  When I make a change to a `.tex` file and want to save   a version at this time, I run this:
 
 ```bash
 git add -A
@@ -68,7 +68,7 @@ Now, I can quickly commit changes with `git-commit "reviewed chapter homotopy"`,
 aspell -t -c chap02-category-theory.tex
 ```
 
-Since ``.tex`` files contain commands that should not be checked, we use the `-t` flag to ignore \\(\\LaTeX\\) syntax. The `-c` flag opens an interactive mode, allowing you to review and correct misspelled words on the fly. Press any number from 1 to 9 to replace the word with the suggested correction.
+Since ``.tex`` files contain commands that should not be checked, we use the `-t` flag to ignore $\mathrm{\LaTeX}$ syntax. The `-c` flag opens an interactive mode, allowing you to review and correct misspelled words on the fly. Press any number from 1 to 9 to replace the word with the suggested correction.
 
 <p align="center">
   <img src="/assets/media/aspell-example.gif" alt="Aspell checking example">
@@ -78,7 +78,7 @@ Since ``.tex`` files contain commands that should not be checked, we use the `-t
 
 ## Inkscape
 
-We can draw in \\( \LaTeX \\) using TikZ or PGFPlots, but this method isn't very user-friendly since it's entirely command-based. Drawing is a visual process, and that's where [Inkscape](https://inkscape.org/){:target="_blank"} comes in handy. It allows us to export figures in \\( \LaTeX \\) format, rendering text directly at compilation time. Here are some examples:
+We can draw in $\mathrm{\LaTeX}$ using TikZ or PGFPlots, but this method isn't very user-friendly since it's entirely command-based. Drawing is a visual process, and that's where [Inkscape](https://inkscape.org/){:target="_blank"} comes in handy. It allows us to export figures in \\( \mathrm{\LaTeX} \\) format, rendering text directly at compilation time. Here are some examples:
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom:15px">
     <img src="/assets/media/klein-bottle.png" alt="Klein Bottle" style="max-width: 20%; height: auto;">
@@ -86,7 +86,7 @@ We can draw in \\( \LaTeX \\) using TikZ or PGFPlots, but this method isn't very
     <img src="/assets/media/functor-illustration.png" alt="Functor Diagram" style="max-width: 27%; height: auto;">
 </div>
 
-The process is quite simple: draw anything you want, select `File > Export > PDF file`, and then import the PDF as you would with any figure in \\( \LaTeX \\). However, to compile the text with \\( \LaTeX \\), we need an additional step. The text you see in the figures above is written directly in Inkscape using \\( \LaTeX \\) commands. For instance, the second one looks like this before exporting:
+The process is quite simple: draw anything you want, select `File > Export > PDF file`, and then import the PDF as you would with any figure in \\( \mathrm{\LaTeX} \\). However, to compile the text with \\( \mathrm{\LaTeX} \\), we need an additional step. The text you see in the figures above is written directly in Inkscape using \\( \mathrm{\LaTeX} \\) commands. For instance, the second one looks like this before exporting:
 
 
 <p style="text-align: center;">
@@ -94,7 +94,7 @@ The process is quite simple: draw anything you want, select `File > Export > PDF
 </p>
 
 
-Open the export dialog and choose to _Omit text in PDF and create LaTeX file_. You get a file with extension `.pdf_tex`, which is later  imported into the \\(\\LaTeX\\) document.
+Open the export dialog and choose to _Omit text in PDF and create LaTeX file_. You get a file with extension `.pdf_tex`, which is later  imported into the \\(\mathrm{\LaTeX}\\) document.
 
 <p align="center">
   <img src="/assets/media/inkscape-example.png" alt="Inkscape export example">
@@ -133,7 +133,7 @@ If you want to get started with Inkscape, take a look a this [video series](http
 
 ## Bonus
 
-- **[tikzcd-editor](https://tikzcd.yichuanshen.de/){:target="_blank"}**: for making commutative diagrams. It has a visual interface where you draw, and an option to export the \\(\\LaTeX\\) code.
+- **[tikzcd-editor](https://tikzcd.yichuanshen.de/){:target="_blank"}**: for making commutative diagrams. It has a visual interface where you draw, and an option to export the \\(\mathrm{\LaTeX}\\) code.
 - **[Xournalpp](https://xournalpp.github.io/){:target="_blank"}**: for sketching ideas. Sometimes, I feel like I'm wasting too much paper, so I take notes using a Wacom tablet. It's especially useful when studying from a book in PDF format.  
 - **[Obsidian](https://obsidian.md/){:target="_blank"}**: for taking digital notes. It helped me implement a digital version of the Zettelkasten method.  The tag feature is really useful for organizing ideas, notes, to-do lists, etc. It also has a plugin to back up your notes to a GitHub repository.
 - **[Flameshot](https://flameshot.org/){:target="_blank"}**: for screenshots. I mention it because it has a nice feature that allows pinning a screenshot to the screen.  

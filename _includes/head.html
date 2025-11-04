@@ -37,7 +37,9 @@
   });
 </script>  -->
 
-<!-- MathJax v4 -->
+<link href="https://iosevka-webfonts.github.io/iosevka/iosevka.css" rel="stylesheet" />
+
+<!-- MathJax v3 -->
 <script>
 window.MathJax = {
   tex: {
@@ -45,9 +47,13 @@ window.MathJax = {
     displayMath: [['$$', '$$'], ['\\[', '\\]']],
     processEscapes: true,
     processEnvironments: true,
-    tags: 'ams'
+    tags: 'ams'          // enables \label, \ref, \eqref
   },
-  chtml: { fontCache: 'global' }
+  svg: {
+    fontCache: 'global'
+  }
 };
 </script>
-<script defer src='https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js'></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>

@@ -122,7 +122,6 @@ $(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ such that the diagram
 
 <div id="eq:naturality-morphism-persistence-modules" align="center">
   <img src="/assets/media/post-interleaving/diagram_01.svg" alt="diagram 1" width="150"><br>
-  <em>(1)</em>
 </div>
 
  commutes for all $s\le t$, i.e.
@@ -150,7 +149,7 @@ $1\to 2$ we have
 
 $$\mathbf{k}^{[0,1]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{0}} \mathbf{0}$$
 
-and
+and $\mathrm{\LaTeX}$
 
 $$\mathbf{k}^{[0,2]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$$
 
@@ -311,7 +310,7 @@ modules $U$ and $V$ is
 $$d_T (U, V)=\inf \left\{t\geq 0 \mid \text {there exists a } t\text {-interleaving of } U \text { and } V\right\}.$$
 
 in case there is at least one interleaving of $U$ and $V$. If no such
-interleaving exists, we set $d_T (U, V)= \infty$ .
+interleaving exists, we set $d_T (U, V)= \infty$.
 
 The subscript $T$ remind us that $d_T$ depends on the shift functor. On
 the other hand, $d_T$ is not an actual metric, but a *pseudometric*,
@@ -379,11 +378,14 @@ and let us consider two cases: $a < c$ or $c\leq a$.
     and
     $\mathbf{k}^J(a\to t) = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$.
     Note that $\alpha_a\colon \mathbf{k}\to \mathbf{0}$ is the zero map
-    and $\alpha_t\colon \mathbf{k}\to \mathbf{k}$ is some linear map. By
-    [\[eq:naturality-morphism-persistence-modules\]](#eq:naturality-morphism-persistence-modules){reference-type="eqref"
-    reference="eq:naturality-morphism-persistence-modules"}, naturality
-    implies $$\alpha_t =  \alpha_t\circ \mathbf{k}^I(a\to t) 
-    = \mathbf{k}^J(a\to t)\circ \alpha_a = 0.$$ Thus $\alpha_t$ is zero
+    and $\alpha_t\colon \mathbf{k}\to \mathbf{k}$ is some linear map.
+    Naturality
+    implies 
+    
+    $$\alpha_t =  \alpha_t\circ \mathbf{k}^I(a\to t) 
+    = \mathbf{k}^J(a\to t)\circ \alpha_a = 0.$$ 
+    
+    Thus $\alpha_t$ is zero
     even on $I\cap J$. The conclusion is that
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$ if $I$
     was *born* before $J$.
@@ -607,8 +609,8 @@ distance is smaller than both of them. We summarize what we've found in
 the following
 
 > **Fact 3.** For any closed intervals $I=[a,b]$ and $J=[c,d]$,
-
-$$ 
+>
+> $$ 
 d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
 $$
 
