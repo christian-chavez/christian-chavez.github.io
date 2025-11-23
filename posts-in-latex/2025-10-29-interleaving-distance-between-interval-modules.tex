@@ -241,7 +241,7 @@ $$
 % \item We can generalize this construction to define (THIS FOR LATER)
 \item For \(t\geq 0\), we denote 
 $
-\mathbb{1}^{t}_U = U[0\to t]
+\mathds{1}^{t}_U = U[0\to t]
 $.
 % In fact, we have 
 % $$
@@ -250,15 +250,15 @@ $.
 % for any \(\phi\colon U\to U\) module morphism.
 
 \item Observe that $$
-\mathbb{1}^{0}_U = U[0\to 0] = (u_r^r)_{r\in \mathbb{R}} 
+\mathds{1}^{0}_U = U[0\to 0] = (u_r^r)_{r\in \mathbb{R}} 
 = (\mathrm{Id}_{U_r})_{r\in \mathbb{R}}
-=\mathbb{1}_{U}
+=\mathds{1}_{U}
 $$
 is an identity natural transformation.
-So, for \(t\geq 0\), we might think of \(\mathbb{1}^{t}_U\)
+So, for \(t\geq 0\), we might think of \(\mathds{1}^{t}_U\)
 as a generalized identity.
 
-\item By definition, we get \(U[t\to t] = \mathbb{1}_{U[t]}\) for any \(t\in \mathbb{R}\).
+\item By definition, we get \(U[t\to t] = \mathds{1}_{U[t]}\) for any \(t\in \mathbb{R}\).
 Moreover, if \(r\leq s\leq t\), for any \(p\in \mathbb{R}\) we have
 \begin{align*}
 \left( U[s\to t] \circ U[r\to s] \right)_p &= U[s\to t]_p \circ U[r\to s]_p\\
@@ -286,7 +286,7 @@ The last remark leads us to the following definition.
 The \textbf{shift functor} \(T = [\,\cdot\,]\colon \mathbb{R}\to \mathrm{End}(X)\) 
 is defined as follows
 \begin{enumerate}[label=(\roman*)]
-\item Objects: for each \(t\in \mathbb{R}\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = \alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}\) on morphisms \(\alpha=(\alpha_r)_{r\in \mathbb{R}}\). (Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\), using a whiskering)
+\item Objects: for each \(t\in \mathbb{R}\) we have a functor  \(T(t) \colon X\to X\) denoted  \(T_t\), which is defined by \(T_t( U) = U[t]\) on objects \(U\in X\), and by \(T_t(\alpha) = \alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}\) on morphisms \(\alpha=(\alpha_r)_{r\in \mathbb{R}}\). %(Equivalently, we can define \(T_t(\alpha) = \alpha \star [t]\), using a whiskering)
 \item Morphisms: for each \(r\to s\), define    a natural transformation $T(r\to s)\colon T_r\to T_s$ by
 $$
 T(r\to s) = \left( U[r\to s] \right)_{U\in X}.
@@ -485,7 +485,7 @@ $ \phi\colon {\mathcal{I}}\to {\mathcal{J}}[t]$ and $ \psi\colon {\mathcal{J}}\t
 that make the diagrams
 $$
 \begin{tikzcd}
-{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{J}} \arrow[rd, "\psi"'] \arrow[rr, "\mathbb{1}^{2t}_{{\mathcal{J}}}"] &                                 & {{\mathcal{J}}[2t]} \\
+{\mathcal{I}} \arrow[rd, "\phi"'] \arrow[rr, "\mathds{1}^{2t}_{{\mathcal{I}}}"] &                                 & {{\mathcal{I}}[2t]} & {\mathcal{J}} \arrow[rd, "\psi"'] \arrow[rr, "\mathds{1}^{2t}_{{\mathcal{J}}}"] &                                 & {{\mathcal{J}}[2t]} \\
                                                       & {{\mathcal{J}}[t]} \arrow[ru, "{\psi[t]}"'] &         &                                                       & {{\mathcal{I}}[t]} \arrow[ru, "{\phi[t]}"'] &        
 \end{tikzcd}
 $$

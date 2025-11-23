@@ -83,7 +83,7 @@ call $\mathbf{k}^I$ the **interval module** over $I$.
 fact, one objective of persistence theory is to understand persistence
 modules by decomposing them into interval modules. However, this is not
 always possible. A situation when such a decomposition is guaranteed is
-when we work with finite dimentional vector spaces, that is, if we work
+when we work with finite dimensional vector spaces, that is, if we work
 over $\mathrm{vect}(\mathbf{k} )$ instead of
 $\mathrm{Vect}(\mathbf{k} )$.
 </div>
@@ -97,7 +97,7 @@ a persistence module.
 - For each $t\in \mathbb{R}$ and each arrow $r\to s$ denote $V(t)=V_t$
     and $V(r\to s) = v_s^r$.
 
-- Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$ and     $V(t\to t) = v_t^t = \mathrm{Id}_{V_t}$.
+- Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $V(t\to t) = v_t^t = \mathrm{Id}_{V_t}$.
 
 Thus, a persistence module $V$ is a family 
 $\left(V_t\right)$ 
@@ -105,7 +105,7 @@ of vector spaces
 together with a family
 $\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}$
 
-We got a set theorical definition from the categorical one above. In
+We got a set theoretical definition from the categorical one above. In
 fact, the two are equivalent. We will use the first, but prefer the
 notation of the second.
 
@@ -138,7 +138,9 @@ $\mathbf{0}$.
 $\mathbf{k}^{[0,2]}$. For each $r\in \mathbb{R}$, define
 
 $$
-\alpha_r = \mathbf{k}^{[0,1]}(x)\to\mathbf{k}^{[0,2]}(x)
+\alpha_r = \mathbf{k}^{[0,1]}(r)\to\mathbf{k}^{[0,2]}(r)
+\quad\text{by}\quad
+x\mapsto x
 $$
 
 So
@@ -149,7 +151,7 @@ $1\to 2$ we have
 
 $$\mathbf{k}^{[0,1]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{0}} \mathbf{0}$$
 
-and $\mathrm{\LaTeX}$
+and 
 
 $$\mathbf{k}^{[0,2]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$$
 
@@ -158,7 +160,7 @@ $\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$. Therefore,
 the diagram
 
 <div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_02.svg" alt="diagram 2" width="150">
+  <img src="/assets/media/post-interleaving/diagram_02.svg" alt="diagram 2" width="125">
 </div>
 
 does not commute. The same situation happens if we'd taken $r\to s$ with
@@ -186,7 +188,7 @@ morphism of persistence modules $\alpha\colon U\to V$, we can define a
 $\alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}$.
 
 Suppose we've made two shifts of $U$, say $U[s]$ and $U[t]$, where
-$s\leq t$. We might ask ourserlves: *what is the relationship between
+$s\leq t$. We might ask ourselves: *what is the relationship between
 these shifted modules?* In other words, we wonder if there is a
 canonical natural transformation $\alpha\colon U[s]\to U[t]$. To find
 out, consider any $p\to q$ and apply both $U[s]$ and $U[t]$ to this
@@ -327,7 +329,7 @@ case of closed intervals. Let $I=[a,b]$ and $J=[c,d]$. Denote by
 $\mathcal{I}=\mathbf{k}^I$ and $\mathcal{J}=\mathbf{k}^J$ the associated
 interval modules.
 
-Our strategy is to find some apropriate bounds for $d_T (\mathbf{k}^I,\mathbf{k}^J)$. Befor
+Our strategy is to find some appropriate bounds for $d_T (\mathbf{k}^I,\mathbf{k}^J)$. Before
 going into the search for the pair of morphisms that would make the
 triangles above commute, we need to know how are the morphisms between
 arbitrary interval modules, because then we can characterize the
@@ -486,7 +488,7 @@ $$
 
 Now we start looking for values of $t\geq0$ for which
 the two sets of inequalities are satisfied, because then we can choose
-apropriate nonzero $\phi$ and $\psi$ such that $(\phi,\psi)$ is a
+appropriate nonzero $\phi$ and $\psi$ such that $(\phi,\psi)$ is a
 $t$-interleaving.
 
 The conditions $c-t\leq a$ and $a-t\leq c$ are equivalent to
