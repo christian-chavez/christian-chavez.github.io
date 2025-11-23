@@ -160,7 +160,7 @@ $\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$. Therefore,
 the diagram
 
 <div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_02.svg" alt="diagram 2" width="125">
+  <img src="/assets/media/post-interleaving/diagram_02.svg" alt="diagram 2" width="150">
 </div>
 
 does not commute. The same situation happens if we'd taken $r\to s$ with
@@ -249,7 +249,7 @@ $$U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in 
 
 The last remark leads us to the following definition.
 
-**Definition 2**. The **shift functor**
+**Definition 2**. Let  The **shift functor**
 $T = [\,\cdot\,]\colon \mathbb{R}\to \mathrm{End}(X)$ is defined as
 follows
 
