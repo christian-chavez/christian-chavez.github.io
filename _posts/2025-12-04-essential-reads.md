@@ -1,0 +1,45 @@
+---
+layout: post
+title: 10 books I wish I had discovered earlier
+author: Christian Chávez
+excerpt: "These are 10 books I wish I had read sooner."
+published: true
+toc: true
+---
+
+These are 10 books I wish I had read sooner.
+
+
+If I could go back in time and give my younger self just ten 
+books to improve my thinking, math, and help me grow personally,
+it would be these:
+
+
+### Math & Thinking
+
+- *[How to Solve It](https://www.goodreads.com/book/show/192221.How_to_Solve_It)*, George Pólya
+- *[How to Think Like a Mathematician](https://www.goodreads.com/book/show/6220915-how-to-think-like-a-mathematician)*, Kevin Houston
+- *[Linear Algebra Done Right](https://www.goodreads.com/book/show/24477453-linear-algebra-done-right)*, Sheldon Axler
+- *[Understanding Analysis](https://www.goodreads.com/book/show/25906085-understanding-analysis)*, Stephen Abbott
+- *[Elementary Topology: Problem Textbook](https://www.goodreads.com/book/show/3669598-elementary-topology)*, O. Ya. Viro, Oleg Ivanov, N. Mnëv, V. Kharlamov
+
+### Personal Growth
+
+- *[Deep Work](https://www.goodreads.com/book/show/25980294-deep-work)*, Cal Newport
+- *[Atomic Habits](https://www.goodreads.com/book/show/40244063-atomic-habits)*, James Clear
+- *[Meditations](https://www.goodreads.com/book/show/30659.Meditations)*, Marcus Aurelius
+- *[How to Win Friends and Influence People](https://www.goodreads.com/book/show/4865.How_to_Win_Friends_and_Influence_People)*, Dale Carnegie
+- *[Fluent Forever](https://www.goodreads.com/book/show/19661852-fluent-forever)*, Gabriel Wyner
+
+They are not in any particular order, but 
+I read the first 9 while I was an undergrad,
+and the last one this year, which helped
+me to learn French.
+
+**Disclaimer**: This (very short) list  is unfair, I must admit, to the many other good books I've read.
+However, these are my 10 favorites.
+
+Each contributed something to 
+who I am today.
+I can't go back in time, but I acknowledge 
+how they shaped my thinking, habits, and how I organize my life to keep improving little by little  with the passage of time.
