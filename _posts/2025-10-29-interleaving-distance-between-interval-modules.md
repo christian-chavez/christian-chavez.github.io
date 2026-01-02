@@ -94,20 +94,19 @@ The concise definition of persistence module can be expanded to aide
 comprehension. Let $V\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ be
 a persistence module.
 
-- For each $t\in \mathbb{R}$ and each arrow $r\to s$ denote $V(t)=V_t$
+- For each $t\in \mathbb{R}$ and each arrow $r\to s$, we  denote $V(t)=V_t$
     and $V(r\to s) = v_s^r$.
 
 - Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $V(t\to t) = v_t^t = \mathrm{Id}_{V_t}$.
 
-Thus, a persistence module $V$ is a family 
+Thus, a persistence module $V$ consists of a family 
 $\left(V_t\right)$ 
 of vector spaces
 together with a family
-$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}$
+$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}$.
 
-We got a set theoretical definition from the categorical one above. In
-fact, the two are equivalent. We will use the first, but prefer the
-notation of the second.
+This set-theoretical definition is equivalent to  the categorical one above.
+
 
 Since persistence modules are functors, we can consider the natural
 transformations between them, and since those can be composed (using
@@ -116,7 +115,7 @@ vertical composition) we obtain a category.
 **Definition 1**. The **category of persistence modules** is
 $\mathbf{X} = \mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$.
 
-Yes, this category is fun. Concretely, a morphism of persistence modules
+Concretely, a morphism of persistence modules
 $\alpha\colon U\to V$ is a family of linear maps
 $(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ such that the diagram
 
