@@ -249,8 +249,8 @@ $header-christian-color: #212121;
 .post-title,
 .post-content h1 {
   @include relative-font-size(2.625);
-  letter-spacing: -1px;
-  line-height: 1.15;
+  letter-spacing: 0px;
+  line-height: 1.0;
 
   @media screen and (min-width: $on-large) {
     @include relative-font-size(2.625);
@@ -260,7 +260,7 @@ $header-christian-color: #212121;
 .post-content {
   margin-bottom: $spacing-unit;
 
-  h1, h2, h3, h4, h5, h6 { margin-top: $spacing-unit }
+  h1, h2, h3, h4, h5, h6 { margin-top: $spacing-unit; line-height: 1.15; }
 
   h2 {
     @include relative-font-size(1.75);

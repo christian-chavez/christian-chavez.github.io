@@ -1,10 +1,9 @@
 ---
 layout: post
-title: Computing the interleaving distance between two interval modules
+title: The interleaving distance between two interval modules
 author: Christian Chávez
 excerpt: "I found nowhere the explicit computation of the interleaving distance between interval modules,  so I decided to post it here."
 published: true
-toc: true
 ---
 
 <style>
@@ -34,7 +33,16 @@ blockquote {
   margin: 1.2em 0;
   border-radius: 6px;
 }
+
+.post-content img {
+  display: block;
+  margin: auto;
+}
+
+
 </style>
+
+
 
 ```matlab
 Post under construction
@@ -76,9 +84,10 @@ $$
 on objects and morphisms, respectively. Here $\mathbf{0}$
 denotes both the zero vector space and the zero map, respectively. We
 call $\mathbf{k}^I$ the **interval module** over $I$.
+We usually  denote $\mathbf{k}^I(t)$ by $\mathbf{k}^I_t$.
 
 
-<div class="bluebox">
+<!-- <div class="bluebox">
 <strong>Remark.</strong> Interval modules are the building blocks of persistence modules. In
 fact, one objective of persistence theory is to understand persistence
 modules by decomposing them into interval modules. However, this is not
@@ -86,7 +95,7 @@ always possible. A situation when such a decomposition is guaranteed is
 when we work with finite dimensional vector spaces, that is, if we work
 over $\mathrm{vect}(\mathbf{k} )$ instead of
 $\mathrm{Vect}(\mathbf{k} )$.
-</div>
+</div> -->
 
 
 
@@ -99,11 +108,15 @@ a persistence module.
 
 - Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $V(t\to t) = v_t^t = \mathrm{Id}_{V_t}$.
 
-Thus, a persistence module $V$ consists of a family 
-$\left(V_t\right)$ 
+Therefore, a persistence module $V$ consists of a family 
+$(V_t)\_{t\in \mathbb{R}}$ 
 of vector spaces
 together with a family
-$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}$.
+
+$$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}
+$$ 
+
+of linear maps.
 
 This set-theoretical definition is equivalent to  the categorical one above.
 
@@ -113,15 +126,19 @@ transformations between them, and since those can be composed (using
 vertical composition) we obtain a category.
 
 **Definition 1**. The **category of persistence modules** is
-$\mathbf{X} = \mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$.
+$\mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$.
 
-Concretely, a morphism of persistence modules
+More specifically, a morphism of persistence modules
 $\alpha\colon U\to V$ is a family of linear maps
 $(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ such that the diagram
 
-<div id="eq:naturality-morphism-persistence-modules" align="center">
-  <img src="/assets/media/post-interleaving/diagram_01.svg" alt="diagram 1" width="150"><br>
-</div>
+<!-- <p style="text-align:center;"> -->
+<img src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0AU_s%20%5Carrow%5Br%2C%20%22u_t%5Es%22%5D%20%5Carrow%5Bd%2C%20%22%5Calpha_s%22'%5D%20%26%20U_t%20%5Carrow%5Bd%2C%20%22%5Calpha_t%22%5D%20%5C%5C%0AV_s%20%5Carrow%5Br%2C%20%22v_t%5Es%22%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20V_t%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D" alt="
+\begin{tikzcd}
+U_s \arrow[r, &quot;u_t^s&quot;] \arrow[d, &quot;\alpha_s&quot;'] &amp; U_t \arrow[d, &quot;\alpha_t&quot;] \\
+V_s \arrow[r, &quot;v_t^s&quot;]                        &amp; V_t                      
+\end{tikzcd}" />
+<!-- </p> -->
 
  commutes for all $s\le t$, i.e.
 $v_t^s\circ \alpha_s=\alpha_t\circ u_t^s$.
@@ -155,15 +172,18 @@ and
 $$\mathbf{k}^{[0,2]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$$
 
 but $\alpha_1 = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$ and
-$\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$. Therefore,
+$\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$, meaning that 
 the diagram
 
-<div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_02.svg" alt="diagram 2" width="150">
-</div>
+<img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%220%22%5D%20%5Carrow%5Bd%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%26%20%5Cmathbf%7B0%7D%20%5Carrow%5Bd%2C%20%220%22%5D%20%5C%5C%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%5Cmathbf%7Bk%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+\begin{tikzcd}
+\mathbf{k} \arrow[r, &quot;0&quot;] \arrow[d, &quot;\mathrm{Id}&quot;'] &amp; \mathbf{0} \arrow[d, &quot;0&quot;] \\
+\mathbf{k} \arrow[r, &quot;\mathrm{Id}&quot;']                &amp; \mathbf{k}               
+\end{tikzcd}
+" />
 
 does not commute. The same situation happens if we'd taken $r\to s$ with
-$r\in [0,1]\cap [0,2]=[0,1]$ and $s\in [0,2]\setminus [0,1]=(1,2]$.
+$r\in [0,1]\cap [0,2]$ and $s\in [0,2]\setminus [0,1]=(1,2]$.
 
 ## The shift functor
 
@@ -183,7 +203,7 @@ U[t][t'] = U[t+t']$$
 
 for any $t,t'\in \mathbb{R}$. Similarly, for any
 morphism of persistence modules $\alpha\colon U\to V$, we can define a
-**shifted module morphism**
+**shifted module morphism** by
 $\alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}$.
 
 Suppose we've made two shifts of $U$, say $U[s]$ and $U[t]$, where
@@ -202,23 +222,32 @@ $$U[t](p\to q) \;=\; U_{p+t}\xrightarrow{u_{q+t}^{p+t}} U_{q+t}.$$
 Since $\alpha=(\alpha_r )_{r\in \mathbb{R}}$ is determined by its components,
 we need to find the vertical arrows that make the square
 
-<div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_03.svg" alt="diagram 3" width="200">
-</div>
+<img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0AU_%7Bp%2Bs%7D%20%5Carrow%5Br%2C%20%22u_%7Bq%2Bs%7D%5E%7Bp%2Bs%7D%22%5D%20%5Carrow%5Bd%2C%20%22%5Calpha_p%22'%5D%20%26%20U_%7Bq%2Bs%7D%20%5Carrow%5Bd%2C%20%22%5Calpha_q%22%5D%20%5C%5C%0AU_%7Bp%2Bt%7D%20%5Carrow%5Br%2C%20%22u_%7Bq%2Bt%7D%5E%7Bp%2Bt%7D%22'%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20U_%7Bq%2Bt%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+\begin{tikzcd}
+U_{p+s} \arrow[r, &quot;u_{q+s}^{p+s}&quot;] \arrow[d, &quot;\alpha_p&quot;'] &amp; U_{q+s} \arrow[d, &quot;\alpha_q&quot;] \\
+U_{p+t} \arrow[r, &quot;u_{q+t}^{p+t}&quot;']                       &amp; U_{q+t}                      
+\end{tikzcd}
+" />
 
-commute. Set $\alpha_p = u_{p+t}^{p+s}$ and $\alpha_{q}=u_{q+t}^{q+s}$.
-Then the composition law give us
+commute. 
+By setting $\alpha_p = u_{p+t}^{p+s}$ and $\alpha_{q}=u_{q+t}^{q+s}$,
+the composition law give us
 
-$$u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},$$
+$$u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},
+$$
 
-which means the square commutes. So, yes there is a canonical way to map
-$U[s]$ to $U[t]$. Denote $\alpha = U[s\to t]$ and define
+which means the square commutes. So, yes, there is a canonical way to map
+$U[s]$ to $U[t]$. 
+We define
 
-$$U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathbb{R}}.$$
+$$U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathbb{R}}.
+$$
 
+and thus denote $\alpha = U[s\to t]$.
 
-**Remark 1**.
-
+<details open>
+<summary><strong>Remark.</strong></summary>
+<div markdown="1">
 -   For $t\geq 0$, we denote $\mathbb{1}^{t}_U = U[0\to t]$.
 
 -   Observe that
@@ -242,29 +271,34 @@ $$U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in 
     &= U[r\to t]_p
     \end{aligned}$$ 
     
-    thanks to the composition law. Thus
+    by the composition law. Thus
 
-    $$U[s\to t] \circ U[r\to s] = U[r\to t].$$
+    $$U[s\to t] \, \circ\,  U[r\to s] \, =\,  U[r\to t].$$
+</div>
+</details>
 
 The last remark leads us to the following definition.
 
-**Definition 2**. Let  The **shift functor**
-$T = [\,\cdot\,]\colon \mathbb{R}\to \mathrm{End}(X)$ is defined as
-follows
+**Definition 2**. Let $\mathbf{X} = \mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$ be the category of persistence modules. The **shift functor**
+$T\colon \mathbb{R}\to \mathrm{End}(\mathbf{X})$ is defined as
+follows:
 
-1. Objects: for each $t\in \mathbb{R}$ we have a functor
-    $T(t) \colon X\to X$ denoted $T_t$, which is defined by
-    $T_t( U) = U[t]$ on objects $U\in X$, and by
-    $T_t(\alpha) = \alpha[t] = (\alpha_{r+t})$ on
-    morphisms $\alpha=(\alpha_r)_{r\in \mathbb{R}}$. (Equivalently, we
-    can define $T_t(\alpha) = \alpha \star [t]$, using a whiskering)
+1. **Objects**: for each $t\in \mathbb{R}$ we have a functor
+    $T(t) \colon \mathbf{X}\to \mathbf{X}$ denoted $T_t$ and  defined by
 
-2.  Morphisms: for each $r\to s$, define a natural transformation
-    $T(r\to s)\colon T_r\to T_s$ by
+    $$T_t( U) = U[t],\quad T_t(\alpha) = \alpha[t]$$
+
+    on objects $U\in \mathbf{X}$ and morphisms $\alpha=(\alpha_r)_{r\in \mathbb{R}}$, respectively.  
+
+2.  **Morphisms**: for each $r\to s$, we have a natural transformation
+    $T(r\to s)\colon T_r\to T_s$ defined by 
+
     $$T(r\to s) = \left( U[r\to s] \right)_{U\in X}.$$
 
+We prefer the notation $[\,\cdot\,]$ rather than $T$.
+
 **Example 4**. Let $\mathcal{I}=\mathbf{k}^I$ be an interval module and
-fix $t\in \mathbb{R}$. Then, for any $r\in \mathbb{R}$,
+fix $t\in \mathbb{R}$. Then, for each $r\in \mathbb{R}$ we have 
 
 $$
 \mathbf{k}^I(r+t) = \begin{cases}
@@ -279,7 +313,7 @@ $$
 =
 \mathbf{k}^{I-t}(r)$$ 
 
-and similarly, for any $r\leq s$ we obtain
+and similarly, for each $r\leq s$ we have
 
 $$\mathbf{k}^I(r+t\to s+t) = \mathbf{k}^{I-t}(r\to s).$$
 
@@ -303,7 +337,7 @@ $t$-**interleaved**.
 
 **Example 5**. Two persistence modules are isomorphic if and only if
 they are $0$-interleaved. Thus, we can think of interleavings as
-generalized isomorphisms. Let us see why\...
+generalized isomorphisms.
 
 **Definition 3**. The **interleaving distance** between two persistence
 modules $U$ and $V$ is
@@ -313,13 +347,13 @@ $$d_T (U, V)=\inf \left\{t\geq 0 \mid \text {there exists a } t\text {-interleav
 in case there is at least one interleaving of $U$ and $V$. If no such
 interleaving exists, we set $d_T (U, V)= \infty$.
 
-The subscript $T$ remind us that $d_T$ depends on the shift functor. On
-the other hand, $d_T$ is not an actual metric, but a *pseudometric*,
-since $d_T (U, V)=0$ does not imply $U = V$.
+The subscript $T$ remind us that $d_T$ depends on the shift functor. 
+We must keep in mind that  $d_T$ is not an actual metric but a *pseudometric*,
+because we could have  $d_T (U, V)=0$ even if  $U\neq  V$.
 
 
 
-Let us prove $d_T$ satisfies the triangle inequality.
+
 
 # The computation
 
@@ -334,22 +368,25 @@ triangles above commute, we need to know how are the morphisms between
 arbitrary interval modules, because then we can characterize the
 morphisms between shifted interval modules.
 
-Let $\alpha\colon \mathcal{I}\to \mathcal{J}$ be any persistence module
+Let $\alpha\colon \mathbf{k}^I\to \mathbf{k}^J$ be any persistence module
 morphism. For each $s\in \mathbb{R}$ we have a map of vector spaces
-$\alpha_s \colon \mathcal{I}_s\to \mathcal{J}_s$. The only available
-options for $\mathcal{I}_s$ and $\mathcal{J}_s$ are either $\mathbf{k}$
+$\alpha_s \colon \mathbf{k}^I_s\to \mathbf{k}^J_s$
+and we know that the only possible
+options for $\mathbf{k}^I_s$ and $\mathbf{k}^J_s$ are either $\mathbf{k}$
 or $\mathbf{0}$.
+The following figure illustrates the "behaviour" of  an interval module 
+respect to the position of the input  arrow.
 
 <p align="center">
   <img src="/assets/media/interval_module.gif" alt="Interval module">
 </p>
 
 
-Note that, if $s\notin I\cap J$, then either $\mathcal{I}_s=\mathbf{0}$
-or $\mathcal{J}_s=\mathbf{0}$, and in any case $\alpha_s$ is the zero
+Note that, if $s\notin I\cap J$, then either $\mathbf{k}^I_s=\mathbf{0}$
+or $\mathbf{k}^J_s=\mathbf{0}$, and in any case $\alpha_s$ is the zero
 map. Thus, we always get trivial morphisms outside of the intersection.
-Inside the intersection, when $s\in I\cap J$, we have a linear map
-$\alpha_s\colon \mathbf{k}\to \mathbf{k}$, but since $\mathbf{k}$ is a
+Inside the intersection we have a linear map
+$\alpha_s\colon \mathbf{k}\to \mathbf{k}$ for each $s\in I\cap J$, and  since $\mathbf{k}$ is a
 field, $\alpha_s$ is nothing more than multiplication by some scalar
 $\lambda\in \mathbf{k}$, so $\alpha_s\colon x\mapsto \lambda x$. Such
 $\lambda$ could be zero, though.
@@ -426,7 +463,7 @@ is injective, and surjective, and linear (proof\...)
 Both Fact 1 and Fact 2 will help us determine
 $d_T(\mathbf{k}^I, \mathbf{k}^J)$ for any closed intervals $I$ and $J$.
 
-## Bound above
+## Upper bound
 
 We start looking for values of $t\geq 0$ for which a $t$-interleaving of
 ${\mathcal{I}}=\mathbf{k}^I$ and ${\mathcal{J}}=\mathbf{k}^J$ exists,
@@ -615,7 +652,7 @@ the following
 d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
 $$
 
-## Bound below
+## Lower bound
 
 Let's prove that the last inequality  is actually an equality. Denote that
 minimum by $m$. Our goal is to prove that if a $t$-interleaving exists,
