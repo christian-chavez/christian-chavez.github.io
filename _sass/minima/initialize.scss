@@ -2,14 +2,14 @@
 
 // Define defaults for each variable.
 
-$base-font-family: 'Inter', sans-serif;
+$base-font-family: 'Roboto Flex', sans-serif;
 // $base-font-family: -apple-system, sans-serif,system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial !default;
 $code-font-family: "Iosevka Web", monospace;
 // $code-font-family: "Iosevka", monospace, "Ubuntu Mono", "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Liberation Mono", "Courier New";
 $base-font-size:   16px !default; // i've changed from 17 to 16
-$base-font-weight: 400 !default;
+$base-font-weight: 350 !default;
 $small-font-size:  $base-font-size * 0.85 !default;
-$base-line-height: 1.60 !default;
+$base-line-height: 1.50 !default;
 
 $spacing-unit:     30px !default;
 

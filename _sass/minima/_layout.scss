@@ -1,15 +1,18 @@
 /**
  * Site header
  */
+
+$header-christian-color: #212121;
 .site-header {
-  border-top: 5px solid #eceff4;
-  border-bottom: 1px solid #e5e9f0;
+//   border-top: 1px solid $border-color-03; 
+  border-bottom: 1px solid #000000;
   min-height: $spacing-unit * 1;
   line-height: $base-line-height * $base-font-size * 1.75;
+  font-family: 'Roboto Condensed', sans-serif;
 
   // Positioning context for the mobile navigation icon
   position: relative;
-  background-color: $code-background-color;
+  background-color: $header-christian-color;
 }
 
 .site-title {
@@ -33,10 +36,10 @@
   position: absolute;
   top: 9px;
   right: $spacing-unit * .5;
-  background-color: $background-color;
+  background-color: $header-christian-color;
   border: 1px solid $border-color-01;
   border-radius: 5px;
-  text-align: right;
+  text-align: right; 
 
   .nav-trigger {
     display: none;
@@ -75,7 +78,7 @@
   }
 
   .page-link {
-    color: $text-color;
+    color: $site-title-color;
     line-height: $base-line-height;
     display: block;
     padding: 5px 10px;
