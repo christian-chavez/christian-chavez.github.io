@@ -38,8 +38,22 @@ blockquote {
   display: block;
   margin: auto;
 }
+ 
 
-
+ol {
+    counter-reset: list;
+}
+ol > li {
+    list-style: none;
+    position: relative;
+    padding-left: 0.6em;
+}
+ol > li:before {
+    counter-increment: list;
+    content: "(" counter(list, decimal) ")  ";
+    position: absolute;
+    left: -1.4em; 
+}
 </style>
 
 
@@ -70,15 +84,18 @@ Define $\mathbf{k}^I\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ by
 
 
 $$
-t\mapsto \begin{cases}
-\mathbf{k} &\text{ if } t\in I\\
-\mathbf{0}&\text{ else }
+\begin{align*}
+t \;&\longmapsto\;
+\begin{cases}
+\mathbf{k} & \text{if } t \in I \\
+\mathbf{0} & \text{else}
+\end{cases}\\
+(r \to s) \;&\longmapsto\;
+\begin{cases}
+\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } \{r,s\} \subset I \\
+\mathbf{0} & \text{else}
 \end{cases}
-\qquad\text{and}\qquad
-r\to s\; \mapsto \begin{cases}
-\mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k} &\text{ if } r,s\in I\\
-\mathbf{0}&\text{ else }
-\end{cases}
+\end{align*}
 $$
 
 on objects and morphisms, respectively. Here $\mathbf{0}$
@@ -99,14 +116,13 @@ $\mathrm{Vect}(\mathbf{k} )$.
 
 
 
-The concise definition of persistence module can be expanded to aide
-comprehension. Let $V\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ be
+The concise definition of persistence module can be restated. Let $V\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ be
 a persistence module.
 
 - For each $t\in \mathbb{R}$ and each arrow $r\to s$, we  denote $V(t)=V_t$
     and $V(r\to s) = v_s^r$.
 
-- Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $V(t\to t) = v_t^t = \mathrm{Id}_{V_t}$.
+- Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $ v_t^t = \mathrm{Id}_{V_t}$.
 
 Therefore, a persistence module $V$ consists of a family 
 $(V_t)\_{t\in \mathbb{R}}$ 
@@ -123,14 +139,15 @@ This set-theoretical definition is equivalent to  the categorical one above.
 
 Since persistence modules are functors, we can consider the natural
 transformations between them, and since those can be composed (using
-vertical composition) we obtain a category.
+vertical composition) we obtain a functor category.
 
 **Definition 1**. The **category of persistence modules** is
 $\mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$.
 
 More specifically, a morphism of persistence modules
 $\alpha\colon U\to V$ is a family of linear maps
-$(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ such that the diagram
+$(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ 
+that make the diagram
 
 <!-- <p style="text-align:center;"> -->
 <img src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0AU_s%20%5Carrow%5Br%2C%20%22u_t%5Es%22%5D%20%5Carrow%5Bd%2C%20%22%5Calpha_s%22'%5D%20%26%20U_t%20%5Carrow%5Bd%2C%20%22%5Calpha_t%22%5D%20%5C%5C%0AV_s%20%5Carrow%5Br%2C%20%22v_t%5Es%22%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20V_t%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D" alt="
@@ -140,7 +157,7 @@ V_s \arrow[r, &quot;v_t^s&quot;]                        &amp; V_t
 \end{tikzcd}" />
 <!-- </p> -->
 
- commutes for all $s\le t$, i.e.
+commute for all $s\le t$, i.e.
 $v_t^s\circ \alpha_s=\alpha_t\circ u_t^s$.
 
 
@@ -150,31 +167,35 @@ a zero morphism $U\to V$, given by
 $(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\mathbb{R}}$, and denoted by
 $\mathbf{0}$.
 
-**Example 3**. Consider two interval modules $\mathbf{k}^{[0,1]}$ and
+**Example 3**. (A non example.) Consider the interval modules $\mathbf{k}^{[0,1]}$ and
 $\mathbf{k}^{[0,2]}$. For each $r\in \mathbb{R}$, define
 
 $$
-\alpha_r = \mathbf{k}^{[0,1]}(r)\to\mathbf{k}^{[0,2]}(r)
+\alpha_r = \mathbf{k}^{[0,1]}_r\to\mathbf{k}^{[0,2]}_r
 \quad\text{by}\quad
-x\mapsto x
+x\mapsto x.
 $$
 
-So
+Note that
 $\alpha=(\alpha_r)_{r\in\mathbb{R}}$ is the inclusion
 $\mathbf{k}^{[0,1]}\hookrightarrow\mathbf{k}^{[0,2]}$. However, $\alpha$
 is not a morphism of persistence modules. For example, for the arrow
 $1\to 2$ we have
 
-$$\mathbf{k}^{[0,1]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{0}} \mathbf{0}$$
+$$
+\begin{align*}
+\mathbf{k}^{[0,1]}(1 \to 2)
+&= \mathbf{k} \xrightarrow{\mathrm{0}} \mathbf{0}, \\[0.5em]
+\mathbf{k}^{[0,2]}(1 \to 2)
+&= \mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k}, \\[0.75em]
+\alpha_1
+&= \mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k}, \\
+\alpha_2
+&= \mathbf{0} \xrightarrow{\mathrm{0}} \mathbf{k}.
+\end{align*}
+$$
 
-and 
-
-$$\mathbf{k}^{[0,2]}(1\to 2) = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$$
-
-but $\alpha_1 = \mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}$ and
-$\alpha_2 = \mathbf{0}\xrightarrow{\mathrm{0}} \mathbf{k}$, meaning that 
-the diagram
-
+so the diagram
 <img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%220%22%5D%20%5Carrow%5Bd%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%26%20%5Cmathbf%7B0%7D%20%5Carrow%5Bd%2C%20%220%22%5D%20%5C%5C%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%5Cmathbf%7Bk%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
 \begin{tikzcd}
 \mathbf{k} \arrow[r, &quot;0&quot;] \arrow[d, &quot;\mathrm{Id}&quot;'] &amp; \mathbf{0} \arrow[d, &quot;0&quot;] \\
@@ -182,8 +203,9 @@ the diagram
 \end{tikzcd}
 " />
 
-does not commute. The same situation happens if we'd taken $r\to s$ with
-$r\in [0,1]\cap [0,2]$ and $s\in [0,2]\setminus [0,1]=(1,2]$.
+does not commute. 
+<!-- The same situation happens if we'd taken $r\to s$ with
+$r\in [0,1]\cap [0,2]$ and $s\in [0,2]\setminus [0,1]=(1,2]$. -->
 
 ## The shift functor
 
@@ -297,21 +319,27 @@ follows:
 
 We prefer the notation $[\,\cdot\,]$ rather than $T$.
 
-**Example 4**. Let $\mathcal{I}=\mathbf{k}^I$ be an interval module and
+**Example 4** (Shifts of an interval module). Let $\mathcal{I}=\mathbf{k}^I$ be an interval module and
 fix $t\in \mathbb{R}$. Then, for each $r\in \mathbb{R}$ we have 
 
 $$
-\mathbf{k}^I(r+t) = \begin{cases}
-\mathbf{k} &\text{ if }r+t\in I\\
-\mathbf{0}&\text{ else }
-\end{cases}
-= 
+\begin{align*}
+\mathbf{k}^I(r+t)
+&=
 \begin{cases}
-\mathbf{k} &\text{ if }r \in I-t\\
-\mathbf{0}&\text{ else }
+\mathbf{k} & \text{if } r+t \in I, \\
+\mathbf{0} & \text{else}
 \end{cases}
-=
-\mathbf{k}^{I-t}(r)$$ 
+\\
+&=
+\begin{cases}
+\mathbf{k} & \text{if } r \in I - t, \\
+\mathbf{0} & \text{else}
+\end{cases}
+\\
+&= \mathbf{k}^{I - t}(r)
+\end{align*}
+$$
 
 and similarly, for each $r\leq s$ we have
 
@@ -323,7 +351,7 @@ $\mathcal{I}[t]=\mathcal{I}-t$.
 
 ## The interleaving distance between persistence modules
 
-Let $U$ and $V$ be persistence modules. A $t$-**interleaving** of $U$
+Let $U$ and $V$ be persistence modules and $t$ a real number. A $t$-**interleaving** of $U$
 and $V$ is a pair of natural transformations
 $(\phi\colon U\to V[t], \; \psi\colon V\to U[t] )$ that make the
 diagrams
@@ -342,7 +370,7 @@ generalized isomorphisms.
 **Definition 3**. The **interleaving distance** between two persistence
 modules $U$ and $V$ is
 
-$$d_T (U, V)=\inf \left\{t\geq 0 \mid \text {there exists a } t\text {-interleaving of } U \text { and } V\right\}.$$
+$$d_T (U, V)=\inf \left\{t\geq 0 \mid   U \text { and } V \text{ are }t\text{-interleaved}\right\}.$$
 
 in case there is at least one interleaving of $U$ and $V$. If no such
 interleaving exists, we set $d_T (U, V)= \infty$.
@@ -364,15 +392,15 @@ interval modules.
 
 Our strategy is to find some appropriate bounds for $d_T (\mathbf{k}^I,\mathbf{k}^J)$. Before
 going into the search for the pair of morphisms that would make the
-triangles above commute, we need to know how are the morphisms between
+triangles above commute, we need to understand  the morphisms between
 arbitrary interval modules, because then we can characterize the
 morphisms between shifted interval modules.
 
 Let $\alpha\colon \mathbf{k}^I\to \mathbf{k}^J$ be any persistence module
-morphism. For each $s\in \mathbb{R}$ we have a map of vector spaces
-$\alpha_s \colon \mathbf{k}^I_s\to \mathbf{k}^J_s$
+morphism. For each $t\in \mathbb{R}$ we have a map of vector spaces
+$\alpha_t \colon \mathbf{k}^I_t\to \mathbf{k}^J_t$
 and we know that the only possible
-options for $\mathbf{k}^I_s$ and $\mathbf{k}^J_s$ are either $\mathbf{k}$
+options for $\mathbf{k}^I_t$ and $\mathbf{k}^J_t$ are either $\mathbf{k}$
 or $\mathbf{0}$.
 The following figure illustrates the "behaviour" of  an interval module 
 respect to the position of the input  arrow.
@@ -382,13 +410,13 @@ respect to the position of the input  arrow.
 </p>
 
 
-Note that, if $s\notin I\cap J$, then either $\mathbf{k}^I_s=\mathbf{0}$
+Note that, if $t\notin I\cap J$, then either $\mathbf{k}^I_t=\mathbf{0}$
 or $\mathbf{k}^J_s=\mathbf{0}$, and in any case $\alpha_s$ is the zero
-map. Thus, we always get trivial morphisms outside of the intersection.
+map. Thus, we always get zero morphisms outside of the intersection.
 Inside the intersection we have a linear map
-$\alpha_s\colon \mathbf{k}\to \mathbf{k}$ for each $s\in I\cap J$, and  since $\mathbf{k}$ is a
-field, $\alpha_s$ is nothing more than multiplication by some scalar
-$\lambda\in \mathbf{k}$, so $\alpha_s\colon x\mapsto \lambda x$. Such
+$\alpha_t\colon \mathbf{k}\to \mathbf{k}$ for each $t\in I\cap J$, and  since $\mathbf{k}$ is a
+field, $\alpha_t$ is nothing more than multiplication by some scalar
+$\lambda\in \mathbf{k}$, so $\alpha_t\colon x\mapsto \lambda x$. Such
 $\lambda$ could be zero, though.
 
 As a first result, we have the following.
@@ -398,13 +426,14 @@ If $I\cap J=\varnothing$, then
 $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J) = \mathbf{0}$.
 
 With this trivial case out of the way, assume $I\cap J\neq \varnothing$,
-and let us consider two cases: $a < c$ or $c\leq a$.
+and let us consider two cases:  $a < c$ or  $c\leq a$.
+ 
 
-1.  Suppose $a < c$. Recall that our goal is to characterize the
-    morphisms $\mathbf{k}^I \to \mathbf{k}^J$. Since we already know
-    what happens when $t\notin I\cap J$, let us focus on
+1.  Suppose $a < c$.  Let us focus on
     $\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t$ with
-    $t\in I\cap J$, that is with $c\leq t\leq b$.
+    $t\in I\cap J$, i.e. with $c\leq t\leq b$. 
+    The case when $t\notin I\cap J$ give us zero morphism as noted earlier and 
+    is illustrated by the following figure:
 
     <p align="center">
     <img src="/assets/media/nt_between_interval_modules.gif" alt="Interval module">
@@ -425,21 +454,22 @@ and let us consider two cases: $a < c$ or $c\leq a$.
     
     Thus $\alpha_t$ is zero
     even on $I\cap J$. The conclusion is that
-    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$ if $I$
-    was *born* before $J$.
+    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$ because  $I$
+     *was born* before $J$.
 
-2.  Suppose $c\leq a$, meaning that $J$ was *born* before $I$. Now we
-    consider two more cases.
+2.  Suppose $c\leq a$, meaning that $J$ was *born* before $I$. We consider again two cases.
 
-3.  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
+    (2.1.)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$.
-
-4.  Suppose $d\leq b$. Here we prove there is an isomorphism
+    
+    (2.2.) Suppose $d\leq b$. Here we prove there is an isomorphism
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k}$.
 
 Now we come to the following conclusion.
 
-> **Fact 2.** If $c\leq a\leq d\leq b$, then $\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\cong \mathbf{k}$. 
+> **Fact 2.** If $c\leq a\leq d\leq b$, then 
+> 
+> $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\cong \mathbf{k}.$$ 
 
 Given
 $\lambda\in \mathbf{k}$, define
@@ -485,7 +515,7 @@ interval module of the shifted interval (Example 4), we can redraw these diagram
 
 The first observation is that if the top arrows are both $0$, then we
 can put $\phi=0$ and $\psi=0$ because then the triangles commute
-trivially. But, how do we get the top arrows to be zero? Here we can use
+trivially. *But, how do we get the top arrows to be zero?* Here we can use
 Fact 1: if $[a,b]\cap [a-2t,b-2t]=\varnothing$, then
 
 $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[a-2t,b-2t]}) = \mathbf{0}.$$
@@ -502,23 +532,23 @@ By the same reason we arrive at $t> \frac{d-c}{2}$. Thus the top arrows
 are both zero if $t> \frac{b-a}{2}$ and $t> \frac{d-c}{2}$, which is
 equivalent to $$t>\frac{1}{2}\max\left\{ b-a,d-c \right\}.$$ If we
 denote the right term by $M$, we get that an
-$(M+\varepsilon)$-interleaving of $\mathcal{I}$ and $\mathcal{J}$ exists
+$(M+\varepsilon)$-interleaving of $\mathbf{k}^I$ and $\mathbf{k}^J$ exists
 for every $\varepsilon > 0$. Thus
 $d_T(\mathbf{k}^I, \mathbf{k}^J) \leq M+\varepsilon$ for every
 $\varepsilon > 0$, and taking the infimum over $\varepsilon$ give us
 
 $$d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \frac{1}{2}\max\left\{ b-a,d-c \right\}.$$
 
-Notice that this bound does not take into account the relationship (or
-position) between $I$ and $J$, so our next step is to find a bound that
+Notice that this bound does not take into account the 
+position of the intervals respect to each other, so our next step is to find a bound that
 does consider this aspect.
 
 Now we use Fact 2. Framed in our context, it tell us that
 
 $$
 \begin{aligned}
-c-t\leq a \leq d-t\leq b &\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k},\\
-a-t\leq c \leq b-t\leq d &\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
+c-t\leq a \leq d-t\leq b \;&\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k},\\
+a-t\leq c \leq b-t\leq d \;&\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
 \end{aligned}
 $$ 
 
@@ -539,25 +569,29 @@ With respect to the middle inequalities, we consider two cases.
     $$b-2t = b -t -t \leq b-(b-d)-t \leq d-t < a$$
     
     whence
-    $t > \frac{b-a}{2}$. Similarly, if $b-t < c$, we get
+    $t > \frac{b-a}{2}$. Similarly, from $b-t < c$ we get
     $t> \frac{d-c}{2}$. 
     Thus
-    $t\geq \max\left\\{\frac{b-a}{2},\frac{d-c}{2}\right\\}$, which lead us to the
+
+    $$
+    t\geq \max\left\{\frac{b-a}{2},\frac{d-c}{2}\right\},
+    $$
+    
+    which lead us to the
     situation above where a $t$-interleaving trivially exists, but the
     two hom-sets are zero.
 
-2.  Suppose then that $a\leq d-t$ or $c\leq b-t$. Using the assumption
-    that $t\geq\max\left\\{|c-a|,|d-b|\right\\}$, we see that either inequality
+2.  Suppose   that $a\leq d-t$ or $c\leq b-t$. Since $t\geq\max\left\\{|c-a|,|d-b|\right\\}$, we see that either inequality
     implies the other. Thus we have $a\leq d-t$ and $c\leq b-t$.
     Therefore both sets of inequalities   above are
     satisfied, whence
 
-    $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k} 
-    \quad\text{and}\quad 
-    \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k}.$$
+    $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k}
+    \cong
+    \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]}).$$
 
-    Using Fact 2, we see that this implies that for $1\in \mathbf{k}$,
-    there exists
+    By Fact 2, this isomorphism  implies that for $1\in \mathbf{k}$,
+    there exist
     $\phi\colon \mathbf{k}^{[a,b]}\to \mathbf{k}^{[c-t,d-t]}$ and
     $\psi\colon \mathbf{k}^{[c,d]}\to \mathbf{k}^{[a-t,b-t]}$ defined by
 
@@ -631,19 +665,19 @@ With respect to the middle inequalities, we consider two cases.
     
     where $\mathbf{k^*}$ denotes either $\mathbf{0}$ or
     $\mathbf{k}$. We have proved that the left triangle commutes for
-    every $r\in \mathbb{R}$. In an entirely analogous manner we prove
+    every $r\in \mathbb{R}$. In an entirely analogous manner we prove that 
     the right triangle commutes. Therefore $(\phi,\psi)$ is a
     $t$-interleaving of $\mathbf{k}^{I}$ and $\mathbf{k}^J$.
 
-We have proved that, in either case A or B, $\mathbf{k}^{I}$ and
+We have proved that, in either case, $\mathbf{k}^{I}$ and
 $\mathbf{k}^J$ are $t$-interleaved if $t\geq\max\left\\{|c-a|,|d-b|\right\\}$.
-Therefore
+Thus
 
 $$d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq  \max\left\{ |c-a|,|d-b|\right\}.$$
 
 Up to now we've found two upper bounds for
-$d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})$, so we know that the
-distance is smaller than both of them. We summarize what we've found in
+$d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})$, so this distance is
+less than  both bounds. We summarize what we've found in
 the following
 
 > **Fact 3.** For any closed intervals $I=[a,b]$ and $J=[c,d]$,
