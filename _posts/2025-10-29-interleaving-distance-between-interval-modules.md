@@ -54,6 +54,16 @@ ol > li:before {
     position: absolute;
     left: -1.4em; 
 }
+
+
+mjx-container[display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space:nowrap;
+}
+
 </style>
 
 
@@ -255,17 +265,19 @@ commute.
 By setting $\alpha_p = u_{p+t}^{p+s}$ and $\alpha_{q}=u_{q+t}^{q+s}$,
 the composition law give us
 
-$$u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},
+$$
+u_{q+t}^{p+t} \circ  u_{p+t}^{p+s} = u_{q+t}^{p+s} = u_{q+t}^{q+s}\circ u_{q+s}^{p+s},
 $$
 
 which means the square commutes. So, yes, there is a canonical way to map
 $U[s]$ to $U[t]$. 
 We define
 
-$$U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathbb{R}}.
+$$
+U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathbb{R}}
 $$
 
-and thus denote $\alpha = U[s\to t]$.
+and   denote $\alpha = U[s\to t]$.
 
 <details open>
 <summary><strong>Remark.</strong></summary>
@@ -305,14 +317,14 @@ The last remark leads us to the following definition.
 $T\colon \mathbb{R}\to \mathrm{End}(\mathbf{X})$ is defined as
 follows:
 
-1. **Objects**: for each $t\in \mathbb{R}$ we have a functor
+- **Objects**: for each $t\in \mathbb{R}$ we have a functor
     $T(t) \colon \mathbf{X}\to \mathbf{X}$ denoted $T_t$ and  defined by
 
     $$T_t( U) = U[t],\quad T_t(\alpha) = \alpha[t]$$
 
     on objects $U\in \mathbf{X}$ and morphisms $\alpha=(\alpha_r)_{r\in \mathbb{R}}$, respectively.  
 
-2.  **Morphisms**: for each $r\to s$, we have a natural transformation
+-  **Morphisms**: for each $r\to s$, we have a natural transformation
     $T(r\to s)\colon T_r\to T_s$ defined by 
 
     $$T(r\to s) = \left( U[r\to s] \right)_{U\in X}.$$
@@ -432,7 +444,7 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 1.  Suppose $a < c$.  Let us focus on
     $\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t$ with
     $t\in I\cap J$, i.e. with $c\leq t\leq b$. 
-    The case when $t\notin I\cap J$ give us zero morphism as noted earlier and 
+    The case when $t\notin I\cap J$ give us $\alpha_t=0$ as noted earlier and 
     is illustrated by the following figure:
 
     <p align="center">
@@ -459,10 +471,10 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 
 2.  Suppose $c\leq a$, meaning that $J$ was *born* before $I$. We consider again two cases.
 
-    (2.1.)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
+    (2.1)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$.
     
-    (2.2.) Suppose $d\leq b$. Here we prove there is an isomorphism
+    (2.2) Suppose $d\leq b$. Here we prove there is an isomorphism
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k}$.
 
 Now we come to the following conclusion.
@@ -514,7 +526,7 @@ interval module of the shifted interval (Example 4), we can redraw these diagram
 
 
 The first observation is that if the top arrows are both $0$, then we
-can put $\phi=0$ and $\psi=0$ because then the triangles commute
+can choose $\phi=0$ and $\psi=0$ because then the triangles commute
 trivially. *But, how do we get the top arrows to be zero?* Here we can use
 Fact 1: if $[a,b]\cap [a-2t,b-2t]=\varnothing$, then
 
@@ -546,25 +558,27 @@ does consider this aspect.
 Now we use Fact 2. Framed in our context, it tell us that
 
 $$
-\begin{aligned}
+\begin{align*}
 c-t\leq a \leq d-t\leq b \;&\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k},\\
 a-t\leq c \leq b-t\leq d \;&\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
-\end{aligned}
+\end{align*}
 $$ 
 
-Now we start looking for values of $t\geq0$ for which
+
+
+We start by looking for values of $t\geq0$ for which
 the two sets of inequalities are satisfied, because then we can choose
 appropriate nonzero $\phi$ and $\psi$ such that $(\phi,\psi)$ is a
 $t$-interleaving.
 
 The conditions $c-t\leq a$ and $a-t\leq c$ are equivalent to
 $t\geq  |c-a|$, and the conditions $d-t\leq b$ and $b-t\leq d$ are
-equivalent to $t\geq  |d-b|$. So, let $t\geq\max\left\\{|c-a|,|d-b|\right\\}$.
+equivalent to $t\geq  |d-b|.$ So, let $t\geq\max\left\\{|c-a|,|d-b|\right\\}$.
 
-With respect to the middle inequalities, we consider two cases.
+With regard to the middle inequalities, we consider two cases.
 
 1.  Suppose $d-t < a$ and $b-t<c$. Using the fact that
-    $t\geq |d-b|\geq b-d$, we have
+    $t\geq |d-b|\geq b-d$, we get
 
     $$b-2t = b -t -t \leq b-(b-d)-t \leq d-t < a$$
     
@@ -583,37 +597,39 @@ With respect to the middle inequalities, we consider two cases.
 
 2.  Suppose   that $a\leq d-t$ or $c\leq b-t$. Since $t\geq\max\left\\{|c-a|,|d-b|\right\\}$, we see that either inequality
     implies the other. Thus we have $a\leq d-t$ and $c\leq b-t$.
-    Therefore both sets of inequalities   above are
+    Therefore both sets of inequalities  above are
     satisfied, whence
 
     $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c-t,d-t]})\cong \mathbf{k}
     \cong
     \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]}).$$
 
-    By Fact 2, this isomorphism  implies that for $1\in \mathbf{k}$,
-    there exist
+    By Fact 2, this isomorphism  implies that to $1\in \mathbf{k}$ there correspond
+    persistence-module-morphisms
     $\phi\colon \mathbf{k}^{[a,b]}\to \mathbf{k}^{[c-t,d-t]}$ and
     $\psi\colon \mathbf{k}^{[c,d]}\to \mathbf{k}^{[a-t,b-t]}$ defined by
 
-    $$\phi_r =  
+    $$
+    \phi_r =  
     \begin{cases}
-    \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}
-    &\text{if } r\in [a,d-t]\\
+    \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}    &\text{if } r\in [a,d-t],\\
     \mathbf{0}&\text{else}
     \end{cases}
     $$ 
     
     and 
     
-    $$\psi_r = 
+    $$
+    \psi_r = 
     \begin{cases}
-    \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}
-    &\text{if } r\in [c,b-t]\\
+    \mathbf{k}\xrightarrow{\mathrm{Id}}\mathbf{k}    &\text{if } r\in [c,b-t],\\
     \mathbf{0}&\text{else}
     \end{cases}
     $$
+
+    for each $r\in \mathbb{R}$.
     
-    The final, and most important, step is to prove that
+    The final (and most important) step is to prove that
     $(\phi,\psi)$ is a $t$-interleaving of $\mathbf{k}^I$ and
     $\mathbf{k}^J$. This amounts to prove that the triangles
 
