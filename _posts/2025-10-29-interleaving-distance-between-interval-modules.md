@@ -177,7 +177,7 @@ a zero morphism $U\to V$, given by
 $(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\mathbb{R}}$, and denoted by
 $\mathbf{0}$.
 
-**Example 3**. (A non example.) Consider the interval modules $\mathbf{k}^{[0,1]}$ and
+**Example 3** (A non example). Consider the interval modules $\mathbf{k}^{[0,1]}$ and
 $\mathbf{k}^{[0,2]}$. For each $r\in \mathbb{R}$, define
 
 $$
@@ -239,7 +239,7 @@ morphism of persistence modules $\alpha\colon U\to V$, we can define a
 $\alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}$.
 
 Suppose we've made two shifts of $U$, say $U[s]$ and $U[t]$, where
-$s\leq t$. We might ask ourselves: *what is the relationship between
+$s\leq t$. We might ask *what is the relationship between
 these shifted modules?* In other words, we wonder if there is a
 canonical natural transformation $\alpha\colon U[s]\to U[t]$. To find
 out, consider any $p\to q$ and apply both $U[s]$ and $U[t]$ to this
@@ -472,10 +472,43 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 2.  Suppose $c\leq a$, meaning that $J$ was *born* before $I$. We consider again two cases.
 
     (2.1)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
-    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$.
+    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$. To prove this, we proced as before. Let $\alpha = (\alpha_t)_{t\in\mathbb{R}} \in \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)$. 
+    We know already that $\alpha_t = 0$ if $t\notin I\cap J$, so let $t\in I\cap J$. Then  $\alpha_t$ is a linear map from $ \mathbf{k}$ to $\mathbf{k}$. By our assumptions, $I\cap J = I.$ 
+    Take the arrow $t\to d.$
+    By naturality of $\alpha$, we have 
+
+    $$
+    \begin{align*}
+    \alpha_t    &=  (\mathbf{k}\xrightarrow{\mathrm{Id}} \mathbf{k}) \circ \alpha_t\\
+                &=  \mathbf{k}^J(t\to d)\circ \alpha_t \\
+                &=  \alpha_d \circ \mathbf{k}^I(t\to d) \\
+                &=  \alpha_d \circ (\mathbf{k}\xrightarrow{\mathrm{0}} \mathbf{0})\\
+                &=  0.
+    \end{align*}
+    $$
+
+    Therefore $\alpha = \mathbf{0}$ and the assertion follows.
     
-    (2.2) Suppose $d\leq b$. Here we prove there is an isomorphism
+    (2.2) Suppose $d\leq b$. We will  prove that 
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k}$.
+    For each 
+    $\lambda\in \mathbf{k}$, define a morphism of persistence modules
+    $\alpha^\lambda \colon \mathbf{k}^I\to \mathbf{k}^J$ by
+
+    $$
+    \alpha^\lambda_r =
+    \begin{cases}
+    \mathbf{k}\xrightarrow{\mu_\lambda}\mathbf{k}
+    &\text{if } r\in I\cap J,\\
+    \mathbf{k}^I_r\xrightarrow{0}\mathbf{k}^J_r&\text{else}
+    \end{cases}
+    $$ 
+
+    where $\mu_\lambda\colon r\mapsto \lambda r$. The map
+
+    $$\Psi \colon \mathbf{k}\to \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J):\lambda\mapsto \alpha^\lambda$$
+
+    is injective,   surjective, and linear.
 
 Now we come to the following conclusion.
 
@@ -483,24 +516,7 @@ Now we come to the following conclusion.
 > 
 > $$\mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\cong \mathbf{k}.$$ 
 
-Given
-$\lambda\in \mathbf{k}$, define
-$\alpha^\lambda \colon \mathbf{k}^I\to \mathbf{k}^J$ by
 
-$$
-\alpha^\lambda_r =
-\begin{cases}
-\mathbf{k}\xrightarrow{\mu_\lambda}\mathbf{k}
-&\text{if } r\in I\cap J\\
-\mathbf{k}^I_r\xrightarrow{0}\mathbf{k}^J_r&\text{else}
-\end{cases}
-$$ 
-
-where $\mu_\lambda\colon r\mapsto \lambda r$. The map
-
-$$\Psi \colon \mathbf{k}\to \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J):\lambda\mapsto \alpha^\lambda$$
-
-is injective, and surjective, and linear (proof\...)
 
 Both Fact 1 and Fact 2 will help us determine
 $d_T(\mathbf{k}^I, \mathbf{k}^J)$ for any closed intervals $I$ and $J$.
