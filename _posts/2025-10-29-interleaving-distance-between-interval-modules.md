@@ -67,10 +67,10 @@ mjx-container[display="true"] {
 </style>
 
 
-
+<!-- 
 ```matlab
 Post under construction
-```
+``` -->
 
 
 I found nowhere the explicit computation of the interleaving distance
