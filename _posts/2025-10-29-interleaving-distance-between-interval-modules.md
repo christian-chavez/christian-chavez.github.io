@@ -89,7 +89,7 @@ A **persistence module** is a functor
 $\mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$.
 
 
-**Example 1.** Let $I\subseteq \mathbb{R}$ be an interval.
+**Example 1.** Let $I\subset \mathbb{R}$ be an interval.
 Define $\mathbf{k}^I\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ by
 
 
@@ -261,6 +261,8 @@ U_{p+t} \arrow[r, &quot;u_{q+t}^{p+t}&quot;']                       &amp; U_{q+t
 \end{tikzcd}
 " />
 
+
+
 commute. 
 By setting $\alpha_p = u_{p+t}^{p+s}$ and $\alpha_{q}=u_{q+t}^{q+s}$,
 the composition law give us
@@ -368,9 +370,10 @@ and $V$ is a pair of natural transformations
 $(\phi\colon U\to V[t], \; \psi\colon V\to U[t] )$ that make the
 diagrams
 
-<div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_04.svg" alt="diagram 4" width="500">
-</div>
+<p>
+<img src="https://quicklatex.com/cache3/db/ql_0d32d173003d8ebe2cd078654cfef4db_l3.svg"
+alt="tikzcd diagram" style="transform: scale(1.3);">
+</p>
 
 commute. If such a pair exists, we say that $U$ and $V$ are
 $t$-**interleaved**.
@@ -443,7 +446,7 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 
 1.  Suppose $a < c$.  Let us focus on
     $\alpha_t\colon \mathbf{k}^I_t \to \mathbf{k}^J_t$ with
-    $t\in I\cap J$, i.e. with $c\leq t\leq b$. 
+    $t\in I\cap J$, i.e. with $c\leq t\leq b.$ 
     The case when $t\notin I\cap J$ give us $\alpha_t=0$ as noted earlier and 
     is illustrated by the following figure:
 
@@ -529,16 +532,20 @@ that is, for which we can find maps
 $\phi\colon {\mathcal{I}}\to {\mathcal{J}}[t]$ and
 $\psi\colon {\mathcal{J}}\to {\mathcal{I}}[t]$ that make the diagrams
 
-<div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_05.svg" alt="diagram 5" width="600">
-</div>
+<p>
+<img src="https://quicklatex.com/cache3/4c/ql_c48eecca58db8cac383a9195064d9f4c_l3.svg"
+alt="tikzcd diagram" style="transform: scale(1.3);">
+</p>
 
 commute. By using the fact that a shift of an interval module is the
 interval module of the shifted interval (Example 4), we can redraw these diagram as
 
-<div style="text-align:center; margin:1em 0;">
-  <img src="/assets/media/post-interleaving/diagram_06.svg" alt="diagram 6" width="650">
-</div>
+<img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%5Bcolumn%20sep%3D1.25em%5D%0A%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D%7D%20%5Carrow%5Brd%2C%20%22%5Cphi%22'%5D%20%5Carrow%5Brr%2C%20%22%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D%5B0%5Cto%202t%5D%7D%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba-2t%2Cb-2t%5D%7D%7D%7D%20%26%20%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc%2Cd%5D%7D%7D%20%5Carrow%5Brd%2C%20%22%5Cpsi%22'%5D%20%5Carrow%5Brr%2C%20%22%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc%2Cd%5D%7D%5B0%5Cto%202t%5D%7D%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-2t%2Cd-2t%5D%7D%7D%7D%20%5C%5C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-t%2Cd-t%5D%7D%7D%7D%20%5Carrow%5Bru%2C%20%22%7B%5Cpsi%5Bt%5D%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba-t%2Cb-t%5D%7D%7D%7D%20%5Carrow%5Bru%2C%20%22%7B%5Cphi%5Bt%5D%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+\begin{tikzcd}[column sep=1.25em]
+{\mathbf{k}^{[a,b]}} \arrow[rd, &quot;\phi&quot;'] \arrow[rr, &quot;{\mathbf{k}^{[a,b]}[0\to 2t]}&quot;] &amp;                                 &amp; {\mathbf{k}^{[a-2t,b-2t]}} &amp; \mathbf{k}^{[c,d]} \arrow[rd, &quot;\psi&quot;'] \arrow[rr, &quot;{\mathbf{k}^{[c,d]}[0\to 2t]}&quot;] &amp;                                 &amp; {\mathbf{k}^{[c-2t,d-2t]}} \\
+                                                      &amp; {\mathbf{k}^{[c-t,d-t]}} \arrow[ru, &quot;{\psi[t]}&quot;'] &amp;         &amp;                                                       &amp; {\mathbf{k}^{[a-t,b-t]}} \arrow[ru, &quot;{\phi[t]}&quot;'] &amp;        
+\end{tikzcd}
+" />
 
 
 The first observation is that if the top arrows are both $0$, then we
@@ -552,9 +559,9 @@ In order to get an empty intersection, we just need to make a
 sufficiently large shift. Since $t\geq 0$, the shift moves to the left,
 so we need $b-2t < a$, that is $t> \frac{b-a}{2}$.
 
-<div style="text-align:center; margin:1em 0;">
+<!-- <div style="text-align:center; margin:1em 0;">
   <img src="/assets/media/intervalAB-empty-intersection.png" alt="empty intersection" width="300">
-</div> 
+</div>  -->
 
 By the same reason we arrive at $t> \frac{d-c}{2}$. Thus the top arrows
 are both zero if $t> \frac{b-a}{2}$ and $t> \frac{d-c}{2}$, which is
@@ -579,6 +586,7 @@ c-t\leq a \leq d-t\leq b \;&\implies \mathrm{Hom}(\mathbf{k}^{[a,b]}, \mathbf{k}
 a-t\leq c \leq b-t\leq d \;&\implies \mathrm{Hom}(\mathbf{k}^{[c,d]}, \mathbf{k}^{[a-t,b-t]})\cong \mathbf{k} .
 \end{align*}
 $$ 
+
 
 
 
@@ -649,9 +657,13 @@ With regard to the middle inequalities, we consider two cases.
     $(\phi,\psi)$ is a $t$-interleaving of $\mathbf{k}^I$ and
     $\mathbf{k}^J$. This amounts to prove that the triangles
 
-    <div style="text-align:center; margin:1em 0;">
-    <img src="/assets/media/post-interleaving/diagram_07.svg" alt="diagram 7" width="650">
-    </div>
+    <img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%5Bcolumn%20sep%3D1em%5D%0A%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D_r%7D%20%5Carrow%5Brd%2C%20%22%5Cphi_r%22'%5D%20%5Carrow%5Brr%2C%20%22%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D(r%5Cto%20%20r%2B2t)%7D%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba-2t%2Cb-2t%5D%7D_r%7D%7D%20%26%20%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc%2Cd%5D%7D_r%7D%20%5Carrow%5Brd%2C%20%22%5Cpsi_r%22'%5D%20%5Carrow%5Brr%2C%20%22%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc%2Cd%5D%7D(r%5Cto%20r%2B2t)%7D%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-2t%2Cd-2t%5D%7D_r%7D%7D%20%5C%5C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-t%2Cd-t%5D%7D_r%7D%7D%20%5Carrow%5Bru%2C%20%22%7B%5Cpsi_%7Br%2Bt%7D%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba-t%2Cb-t%5D%7D_r%7D%7D%20%5Carrow%5Bru%2C%20%22%7B%5Cphi_%7Br%2Bt%7D%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+    \begin{tikzcd}[column sep=1em]
+    {\mathbf{k}^{[a,b]}_r} \arrow[rd, &quot;\phi_r&quot;'] \arrow[rr, &quot;{\mathbf{k}^{[a,b]}(r\to  r+2t)}&quot;] &amp;                                 &amp; {\mathbf{k}^{[a-2t,b-2t]}_r} &amp; {\mathbf{k}^{[c,d]}_r} \arrow[rd, &quot;\psi_r&quot;'] \arrow[rr, &quot;{\mathbf{k}^{[c,d]}(r\to r+2t)}&quot;] &amp;                                 &amp; {\mathbf{k}^{[c-2t,d-2t]}_r} \\
+                                                        &amp; {\mathbf{k}^{[c-t,d-t]}_r} \arrow[ru, &quot;{\psi_{r+t}}&quot;'] &amp;         &amp;                                                       &amp; {\mathbf{k}^{[a-t,b-t]}_r} \arrow[ru, &quot;{\phi_{r+t}}&quot;'] &amp;        
+    \end{tikzcd}
+    " />
+    
     commute for every $r\in \mathbb{R}$. Let's consider the first
     triangle. We consider three cases.
 
@@ -715,17 +727,135 @@ the following
 > **Fact 3.** For any closed intervals $I=[a,b]$ and $J=[c,d]$,
 >
 > $$ 
-d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
-$$
+> d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+> $$
 
 ## Lower bound
 
-Let's prove that the last inequality  is actually an equality. Denote that
-minimum by $m$. Our goal is to prove that if a $t$-interleaving exists,
+Let's prove that the last inequality  is tight. 
+Let 
+
+$$
+m = \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+$$
+
+We want to show that  if a $t$-interleaving exists,
 then necessarily $t\geq m$, for then we can take the infimum over all
 those $t\geq 0$ and get that
 $d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]})\geq m$.
 
-Let $t\geq0$. We will actually prove that if $t<m$, then no interleaving
-can exists.
+Suppose that $(\phi, \varphi)$ is a $t$-interleaving of $\mathbf{k}^{[a,b]}$ and $\mathbf{k}^{[c,d]}$.
+
+Either 
+
+$$
+t \geq \frac{1}{2}\max\left\{ b-a,d-c \right\}
+$$
+
+or 
+
+$$
+t < \frac{1}{2}\max\left\{ b-a,d-c \right\}.
+$$
+
+In the first case we get $t\geq m$ immediatly because of the definition of $m$, a minimum.
+
+Let us focus on the second case.
+Suppose that $t < \frac{1}{2}\max\left\\{ b-a,d-c \right\\}.$
+Let us assume, without loss of generality, that 
+$b-a \geq d-c $.
+We know that the diagram
+
+
+<img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%5Bcolumn%20sep%3D1em%5D%0A%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D_r%7D%20%5Carrow%5Brd%2C%20%22%5Cphi_r%22'%5D%20%5Carrow%5Brr%2C%20%22%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba%2Cb%5D%7D(r%5Cto%20%20r%2B2t)%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Ba-2t%2Cb-2t%5D%7D_r%7D%7D%20%5C%5C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-t%2Cd-t%5D%7D_r%7D%20%5Carrow%5Bru%2C%20%22%5Cpsi_%7Br%2Bt%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+\begin{tikzcd}[column sep=1em]
+{\mathbf{k}^{[a,b]}_r} \arrow[rd, &quot;\phi_r&quot;'] \arrow[rr, &quot;{\mathbf{k}^{[a,b]}(r\to  r+2t)}&quot;] &amp;                                                        &amp; {\mathbf{k}^{[a-2t,b-2t]}_r} \\
+                                                                                              &amp; {\mathbf{k}^{[c-t,d-t]}_r} \arrow[ru, &quot;\psi_{r+t}&quot;'] &amp;                               
+\end{tikzcd}
+" />
+
+commutes for every $r\in \mathbb{R}$.
+Moreover, the top arrow is nonzero when $r\in [a,b]$ and 
+$r\in [a-2t,b-2t]$, i.e., when 
+
+$$
+r\in [a,b] \cap  [a-2t,b-2t] = [a,b-2t].
+$$
+
+Notice that $[a,b-2t]\neq \varnothing$ because $t < \frac{b-a}{2}$ by assumption.
+Let $r\in [a,b-2t]$.
+Our last diagram becomes 
+
+<img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%5Bcolumn%20sep%3D1em%5D%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Brd%2C%20%22%5Cphi_r%22'%5D%20%5Carrow%5Brr%2C%20%22%5Cmathrm%7BId%7D%22%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%5Cmathbf%7Bk%7D%20%5C%5C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%7B%7B%5Cmathbf%7Bk%7D%5E%7B%5Bc-t%2Cd-t%5D%7D_r%7D%7D%20%5Carrow%5Bru%2C%20%22%5Cpsi_%7Br%2Bt%7D%22'%5D%20%26%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
+\begin{tikzcd}[column sep=1em]
+\mathbf{k} \arrow[rd, &quot;\phi_r&quot;'] \arrow[rr, &quot;\mathrm{Id}&quot;] &amp;                                                        &amp; \mathbf{k} \\
+                                                           &amp; {\mathbf{k}^{[c-t,d-t]}_r} \arrow[ru, &quot;\psi_{r+t}&quot;'] &amp;           
+\end{tikzcd}
+" />
+
+whence $\psi_{r+t}\circ \phi_r = \mathrm{Id}$.
+Since $\mathrm{Id}$ is injective, so is $\phi_r$. 
+Since $\mathrm{Id}$ is surjective, so is $\psi_{r+t}$.
+Either of these facts imply that 
+$\mathbf{k}^{[c-t,d-t]}_r$
+is not zero, and thus $\mathbf{k}^{[c-t,d-t]}_r = \mathbf{k}$, necessarily. 
+By definition of interval module, we get 
+
+$$
+\mathbf{k}^{[c-t,d-t]}_r = \mathbf{k} \iff r\in [c-t,d-t].
+$$
+
+Therefore $r\in [c-t,d-t]$.
+We have shown that $[a,b-2t]\subset [c-t,d-t]$,
+which translated into inequalities give us 
+
+$$
+\begin{equation}\label{eq1}
+t > c-a
+\quad\text{and}\quad 
+t > b-d.
+\end{equation}
+$$
+
+Furthermore, since $b-a\geq d-c$, we have 
+
+$$
+c-a \geq d-b 
+\quad\text{and}\quad 
+b-d \geq a-c.
+$$
+
+It follows that 
+
+$$
+\begin{equation}\label{eq2}
+t >  d-b 
+\quad\text{and}\quad 
+t >  a-c.
+\end{equation}
+$$
+
+Combining \\eqref{eq1}  and \\eqref{eq2}, we get 
+
+$$
+t \geq |c-a|
+\quad\text{and}\quad 
+t \geq |d-b|
+$$
+
+which is equivalent to 
+
+$$
+t \geq \max\{|c-a|, |d-b|\}.
+$$
+
+Therefore $t\geq m$, as we wanted show.
+
+We obtain our desired conclusion:
+
+> For any closed intervals $I=[a,b]$ and $J=[c,d]$,
+>
+> $$ 
+> d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) = \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+> $$
 
