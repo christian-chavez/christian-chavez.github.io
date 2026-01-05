@@ -219,12 +219,12 @@ $r\in [0,1]\cap [0,2]$ and $s\in [0,2]\setminus [0,1]=(1,2]$. -->
 
 ## The shift functor
 
-Let $U$ be a persistence module and fix any $t\in \mathbb{R}$. Define a
-new persistence module $U[t]$ by 
+Let $U$ be a persistence module and fix any $t\in \mathbb{R}$. 
+Define a new persistence module $U[t]$ by 
 
 $$U[t](r)  = U_{r+t}
 \quad\text{and}\quad 
-U[t](r\to s) = u_{r+t}^{s+t}.$$
+U[t](r\to s) = u_{s+t}^{r+t}.$$
 
 We say that $U[t]$ is a **shifted
 module**. Note that
