@@ -61,18 +61,23 @@
 <!-- MathJax v3 -->
 <script>
 window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    tags: 'ams'          // enables \label, \ref, \eqref
-  },
-  svg: {
-    fontCache: 'global'
-  }
+    loader: {
+        load: ['[tex]/colorV2', '[tex]/dsfont']
+    },
+    tex: {
+        packages: {'[+]': ['colorV2', 'dsfont']},
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        tags: 'ams'          // enables \label, \ref, \eqref
+    },
+    svg: {
+        fontCache: 'global'
+    }
 };
 </script>
-<script id="MathJax-script" async
+<!-- <script id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
+</script> -->
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>

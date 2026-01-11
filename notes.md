@@ -47,7 +47,7 @@ Some docs, notes and proofs.
       <td>
         <a href='assets/docs/HomotopyEquivRelCochComp.pdf'>
           Homotopy of cochain complexes is an equivalence relation on
-          $\text{Hom}_{\mathcal{C}(\mathcal{A})}(A^\bullet, B^\bullet)$
+          $\text{Hom}_{\mathcal{C}(\mathcal{A})}(A^\bullet, B^\bullet)$.
         </a>
       </td>
     </tr>
@@ -55,7 +55,7 @@ Some docs, notes and proofs.
       <td>2024-09-30</td>
       <td>
         <a href='assets/docs/CatOfCochainComplexesIsAbelian.pdf'>
-          La categoría  $\mathcal{C}(\mathcal{A})$ de complejos de co-cadenas sobr eun acategoría abeliana  $\mathcal{A}$ es  abeliana
+          La categoría  $\mathcal{C}(\mathcal{A})$ de complejos de co-cadenas sobre una categoría abeliana  $\mathcal{A}$ es  abeliana.
         </a>
       </td>
     </tr>
@@ -64,7 +64,7 @@ Some docs, notes and proofs.
       <td>
         <a href='assets/docs/CompositionWellDefLocalizedCat.pdf'>
           Composition of morphisms in a localized category
-          $\mathcal{C}_{S}$ is well defined
+          $\mathcal{C}_{S}$ is well defined.
         </a>
       </td>
     </tr>

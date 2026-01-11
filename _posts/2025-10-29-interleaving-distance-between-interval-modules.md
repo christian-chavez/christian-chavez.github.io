@@ -80,17 +80,17 @@ so I decided to post it here.
 # Preliminaries
 
 Let $\mathbf{k}$ be an arbitrary field, fixed throughout. We denote by
-$\mathbb{R}$ either the real line or the category induced by the poset
-$(\mathbb{R},\leq)$. All functors are covariant.
+$\mathds{R}$ either the real line or the category induced by the poset
+$(\mathds{R},\leq)$. All functors are covariant.
 
 ## The category of persistence modules
 
 A **persistence module** is a functor
-$\mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$.
+$\mathds{R}\to \mathrm{Vect}(\mathbf{k} )$.
 
 
-**Example 1.** Let $I\subset \mathbb{R}$ be an interval.
-Define $\mathbf{k}^I\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ by
+**Example 1.** Let $I\subset \mathds{R}$ be an interval.
+Define $\mathbf{k}^I\colon \mathds{R}\to \mathrm{Vect}(\mathbf{k} )$ by
 
 
 $$
@@ -126,20 +126,20 @@ $\mathrm{Vect}(\mathbf{k} )$.
 
 
 
-The concise definition of persistence module can be restated. Let $V\colon \mathbb{R}\to \mathrm{Vect}(\mathbf{k} )$ be
+The concise definition of persistence module can be restated. Let $V\colon \mathds{R}\to \mathrm{Vect}(\mathbf{k} )$ be
 a persistence module.
 
-- For each $t\in \mathbb{R}$ and each arrow $r\to s$, we  denote $V(t)=V_t$
+- For each $t\in \mathds{R}$ and each arrow $r\to s$, we  denote $V(t)=V_t$
     and $V(r\to s) = v_s^r$.
 
 - Since $V$ is a functor, we have the so-called **composition law**: $v_t^s\circ v_s^r = v_t^r$ whenever $ r\leq s\leq t$, and     $ v_t^t = \mathrm{Id}_{V_t}$.
 
 Therefore, a persistence module $V$ consists of a family 
-$(V_t)\_{t\in \mathbb{R}}$ 
+$(V_t)\_{t\in \mathds{R}}$ 
 of vector spaces
 together with a family
 
-$$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathbb{R}}
+$$\left(v_t^s \colon V_s\to V_t\mid s\le t\right)_{s,t\in\mathds{R}}
 $$ 
 
 of linear maps.
@@ -152,11 +152,11 @@ transformations between them, and since those can be composed (using
 vertical composition) we obtain a functor category.
 
 **Definition 1**. The **category of persistence modules** is
-$\mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$.
+$\mathrm{Fun}(\mathds{R}, \mathrm{Vect}(\mathbf{k} ))$.
 
 More specifically, a morphism of persistence modules
 $\alpha\colon U\to V$ is a family of linear maps
-$(\alpha_r\colon U_r\to V_r)_{r\in \mathbb{R}}$ 
+$(\alpha_r\colon U_r\to V_r)_{r\in \mathds{R}}$ 
 that make the diagram
 
 <!-- <p style="text-align:center;"> -->
@@ -174,11 +174,11 @@ $v_t^s\circ \alpha_s=\alpha_t\circ u_t^s$.
 
 **Example 2**. If $U$ and $V$ are any persistence modules, then there is
 a zero morphism $U\to V$, given by
-$(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\mathbb{R}}$, and denoted by
+$(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\mathds{R}}$, and denoted by
 $\mathbf{0}$.
 
 **Example 3** (A non example). Consider the interval modules $\mathbf{k}^{[0,1]}$ and
-$\mathbf{k}^{[0,2]}$. For each $r\in \mathbb{R}$, define
+$\mathbf{k}^{[0,2]}$. For each $r\in \mathds{R}$, define
 
 $$
 \alpha_r = \mathbf{k}^{[0,1]}_r\to\mathbf{k}^{[0,2]}_r
@@ -187,7 +187,7 @@ x\mapsto x.
 $$
 
 Note that
-$\alpha=(\alpha_r)_{r\in\mathbb{R}}$ is the inclusion
+$\alpha=(\alpha_r)_{r\in\mathds{R}}$ is the inclusion
 $\mathbf{k}^{[0,1]}\hookrightarrow\mathbf{k}^{[0,2]}$. However, $\alpha$
 is not a morphism of persistence modules. For example, for the arrow
 $1\to 2$ we have
@@ -219,7 +219,7 @@ $r\in [0,1]\cap [0,2]$ and $s\in [0,2]\setminus [0,1]=(1,2]$. -->
 
 ## The shift functor
 
-Let $U$ be a persistence module and fix any $t\in \mathbb{R}$. 
+Let $U$ be a persistence module and fix any $t\in \mathds{R}$. 
 Define a new persistence module $U[t]$ by 
 
 $$U[t](r)  = U_{r+t}
@@ -233,10 +233,10 @@ $$U[0]=U
 \quad\text{and}\quad
 U[t][t'] = U[t+t']$$
 
-for any $t,t'\in \mathbb{R}$. Similarly, for any
+for any $t,t'\in \mathds{R}$. Similarly, for any
 morphism of persistence modules $\alpha\colon U\to V$, we can define a
 **shifted module morphism** by
-$\alpha[t] = (\alpha_{r+t})_{r\in \mathbb{R}}$.
+$\alpha[t] = (\alpha_{r+t})_{r\in \mathds{R}}$.
 
 Suppose we've made two shifts of $U$, say $U[s]$ and $U[t]$, where
 $s\leq t$. We might ask *what is the relationship between
@@ -251,7 +251,7 @@ and
 
 $$U[t](p\to q) \;=\; U_{p+t}\xrightarrow{u_{q+t}^{p+t}} U_{q+t}.$$
 
-Since $\alpha=(\alpha_r )_{r\in \mathbb{R}}$ is determined by its components,
+Since $\alpha=(\alpha_r )_{r\in \mathds{R}}$ is determined by its components,
 we need to find the vertical arrows that make the square
 
 <img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0AU_%7Bp%2Bs%7D%20%5Carrow%5Br%2C%20%22u_%7Bq%2Bs%7D%5E%7Bp%2Bs%7D%22%5D%20%5Carrow%5Bd%2C%20%22%5Calpha_p%22'%5D%20%26%20U_%7Bq%2Bs%7D%20%5Carrow%5Bd%2C%20%22%5Calpha_q%22%5D%20%5C%5C%0AU_%7Bp%2Bt%7D%20%5Carrow%5Br%2C%20%22u_%7Bq%2Bt%7D%5E%7Bp%2Bt%7D%22'%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20U_%7Bq%2Bt%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
@@ -276,7 +276,7 @@ $U[s]$ to $U[t]$.
 We define
 
 $$
-U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathbb{R}}
+U[s]\xrightarrow{U[s\to t]} U[t]\;\; = \;\;\left( u_{r+t}^{r+s} \right)_{r\in \mathds{R}}
 $$
 
 and   denote $\alpha = U[s\to t]$.
@@ -284,21 +284,21 @@ and   denote $\alpha = U[s\to t]$.
 <details open>
 <summary><strong>Remark.</strong></summary>
 <div markdown="1">
--   For $t\geq 0$, we denote $\mathbb{1}^{t}_U = U[0\to t]$.
+-   For $t\geq 0$, we denote $\mathds{1}^{t}_U = U[0\to t]$.
 
 -   Observe that
 
-    $$\mathbb{1}^{0}_U = U[0\to 0] = (u_r^r)_{r\in \mathbb{R}} 
-    = (\mathrm{Id}_{U_r})_{r\in \mathbb{R}}
-    =\mathbb{1}_{U}$$
+    $$\mathds{1}^{0}_U = U[0\to 0] = (u_r^r)_{r\in \mathds{R}} 
+    = (\mathrm{Id}_{U_r})_{r\in \mathds{R}}
+    =\mathds{1}_{U}$$
     
     is an identity natural transformation. So, for
-    $t\geq 0$, we might think of $\mathbb{1}^{t}_U$ as a generalized
+    $t\geq 0$, we might think of $\mathds{1}^{t}_U$ as a generalized
     identity.
 
--   By definition, we get $U[t\to t] = \mathbb{1}_{U[t]}$ for any
-    $t\in \mathbb{R}$. Moreover, if $r\leq s\leq t$, for any
-    $p\in \mathbb{R}$ we have 
+-   By definition, we get $U[t\to t] = \mathds{1}_{U[t]}$ for any
+    $t\in \mathds{R}$. Moreover, if $r\leq s\leq t$, for any
+    $p\in \mathds{R}$ we have 
     
     $$\begin{aligned}
     \left( U[s\to t] \circ U[r\to s] \right)_p &= U[s\to t]_p \circ U[r\to s]_p\\
@@ -315,16 +315,16 @@ and   denote $\alpha = U[s\to t]$.
 
 The last remark leads us to the following definition.
 
-**Definition 2**. Let $\mathbf{X} = \mathrm{Fun}(\mathbb{R}, \mathrm{Vect}(\mathbf{k} ))$ be the category of persistence modules. The **shift functor**
-$T\colon \mathbb{R}\to \mathrm{End}(\mathbf{X})$ is defined as
+**Definition 2**. Let $\mathbf{X} = \mathrm{Fun}(\mathds{R}, \mathrm{Vect}(\mathbf{k} ))$ be the category of persistence modules. The **shift functor**
+$T\colon \mathds{R}\to \mathrm{End}(\mathbf{X})$ is defined as
 follows:
 
-- **Objects**: for each $t\in \mathbb{R}$ we have a functor
+- **Objects**: for each $t\in \mathds{R}$ we have a functor
     $T(t) \colon \mathbf{X}\to \mathbf{X}$ denoted $T_t$ and  defined by
 
     $$T_t( U) = U[t],\quad T_t(\alpha) = \alpha[t]$$
 
-    on objects $U\in \mathbf{X}$ and morphisms $\alpha=(\alpha_r)_{r\in \mathbb{R}}$, respectively.  
+    on objects $U\in \mathbf{X}$ and morphisms $\alpha=(\alpha_r)_{r\in \mathds{R}}$, respectively.  
 
 -  **Morphisms**: for each $r\to s$, we have a natural transformation
     $T(r\to s)\colon T_r\to T_s$ defined by 
@@ -334,7 +334,7 @@ follows:
 We prefer the notation $[\,\cdot\,]$ rather than $T$.
 
 **Example 4** (Shifts of an interval module). Let $\mathcal{I}=\mathbf{k}^I$ be an interval module and
-fix $t\in \mathbb{R}$. Then, for each $r\in \mathbb{R}$ we have 
+fix $t\in \mathds{R}$. Then, for each $r\in \mathds{R}$ we have 
 
 $$
 \begin{align*}
@@ -412,7 +412,7 @@ arbitrary interval modules, because then we can characterize the
 morphisms between shifted interval modules.
 
 Let $\alpha\colon \mathbf{k}^I\to \mathbf{k}^J$ be any persistence module
-morphism. For each $t\in \mathbb{R}$ we have a map of vector spaces
+morphism. For each $t\in \mathds{R}$ we have a map of vector spaces
 $\alpha_t \colon \mathbf{k}^I_t\to \mathbf{k}^J_t$
 and we know that the only possible
 options for $\mathbf{k}^I_t$ and $\mathbf{k}^J_t$ are either $\mathbf{k}$
@@ -475,7 +475,7 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 2.  Suppose $c\leq a$, meaning that $J$ was *born* before $I$. We consider again two cases.
 
     (2.1)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
-    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$. To prove this, we proced as before. Let $\alpha = (\alpha_t)_{t\in\mathbb{R}} \in \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)$. 
+    $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$. To prove this, we proced as before. Let $\alpha = (\alpha_t)_{t\in\mathds{R}} \in \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)$. 
     We know already that $\alpha_t = 0$ if $t\notin I\cap J$, so let $t\in I\cap J$. Then  $\alpha_t$ is a linear map from $ \mathbf{k}$ to $\mathbf{k}$. By our assumptions, $I\cap J = I.$ 
     Take the arrow $t\to d.$
     By naturality of $\alpha$, we have 
@@ -651,7 +651,7 @@ With regard to the middle inequalities, we consider two cases.
     \end{cases}
     $$
 
-    for each $r\in \mathbb{R}$.
+    for each $r\in \mathds{R}$.
     
     The final (and most important) step is to prove that
     $(\phi,\psi)$ is a $t$-interleaving of $\mathbf{k}^I$ and
@@ -664,7 +664,7 @@ With regard to the middle inequalities, we consider two cases.
     \end{tikzcd}
     " />
     
-    commute for every $r\in \mathbb{R}$. Let's consider the first
+    commute for every $r\in \mathds{R}$. Let's consider the first
     triangle. We consider three cases.
 
     <div style="text-align:center; margin:1em 0;">
@@ -709,7 +709,7 @@ With regard to the middle inequalities, we consider two cases.
     
     where $\mathbf{k^*}$ denotes either $\mathbf{0}$ or
     $\mathbf{k}$. We have proved that the left triangle commutes for
-    every $r\in \mathbb{R}$. In an entirely analogous manner we prove that 
+    every $r\in \mathds{R}$. In an entirely analogous manner we prove that 
     the right triangle commutes. Therefore $(\phi,\psi)$ is a
     $t$-interleaving of $\mathbf{k}^{I}$ and $\mathbf{k}^J$.
 
@@ -774,7 +774,7 @@ We know that the diagram
 \end{tikzcd}
 " />
 
-commutes for every $r\in \mathbb{R}$.
+commutes for every $r\in \mathds{R}$.
 Moreover, the top arrow is nonzero when $r\in [a,b]$ and 
 $r\in [a-2t,b-2t]$, i.e., when 
 
