@@ -102,7 +102,7 @@ t \;&\longmapsto\;
 \end{cases}\\
 (r \to s) \;&\longmapsto\;
 \begin{cases}
-\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } \{r,s\} \subset I \\
+\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } r,s \in I \\
 \mathbf{0} & \text{else}
 \end{cases}
 \end{align*}
@@ -178,7 +178,7 @@ $(  U_r\xrightarrow{\mathbf{0}} V_r)_{r\in\mathbb{R}}$, and denoted by
 $\mathbf{0}$.
 
 **Example 3** (A non example). Consider the interval modules $\mathbf{k}^{[0,1]}$ and
-$\mathbf{k}^{[0,2]}$. For each $r\in \mathbb{R}$, define
+$\mathbf{k}^{[0,2]}.$ For each $r\in \mathbb{R}$, define
 
 $$
 \alpha_r = \mathbf{k}^{[0,1]}_r\to\mathbf{k}^{[0,2]}_r
@@ -188,7 +188,7 @@ $$
 
 Note that
 $\alpha=(\alpha_r)_{r\in\mathbb{R}}$ is the inclusion
-$\mathbf{k}^{[0,1]}\hookrightarrow\mathbf{k}^{[0,2]}$. However, $\alpha$
+$\mathbf{k}^{[0,1]}\hookrightarrow\mathbf{k}^{[0,2]}.$ However, $\alpha$
 is not a morphism of persistence modules. For example, for the arrow
 $1\to 2$ we have
 
@@ -205,7 +205,7 @@ $$
 \end{align*}
 $$
 
-so the diagram
+Then  the diagram
 <img align="center" src="https://i.upmath.me/svg/%0A%5Cbegin%7Btikzcd%7D%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%220%22%5D%20%5Carrow%5Bd%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%26%20%5Cmathbf%7B0%7D%20%5Carrow%5Bd%2C%20%220%22%5D%20%5C%5C%0A%5Cmathbf%7Bk%7D%20%5Carrow%5Br%2C%20%22%5Cmathrm%7BId%7D%22'%5D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%26%20%5Cmathbf%7Bk%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%5Cend%7Btikzcd%7D%0A" alt="
 \begin{tikzcd}
 \mathbf{k} \arrow[r, &quot;0&quot;] \arrow[d, &quot;\mathrm{Id}&quot;'] &amp; \mathbf{0} \arrow[d, &quot;0&quot;] \\
@@ -492,7 +492,7 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 
     Therefore $\alpha = \mathbf{0}$ and the assertion follows.
     
-    (2.2) Suppose $d\leq b$. We will  prove that 
+    (2.2) Suppose $d\leq b$. We can  prove that 
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{k}$.
     For each 
     $\lambda\in \mathbf{k}$, define a morphism of persistence modules
