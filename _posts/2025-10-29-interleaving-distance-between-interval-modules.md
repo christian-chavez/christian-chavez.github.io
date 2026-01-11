@@ -102,7 +102,7 @@ t \;&\longmapsto\;
 \end{cases}\\
 (r \to s) \;&\longmapsto\;
 \begin{cases}
-\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } \{r,s\} \subset I \\
+\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } r,s \in I \\
 \mathbf{0} & \text{else}
 \end{cases}
 \end{align*}

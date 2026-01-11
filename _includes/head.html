@@ -72,8 +72,23 @@ window.MathJax = {
         processEnvironments: true,
         tags: 'ams'          // enables \label, \ref, \eqref
     },
-    svg: {
-        fontCache: 'global'
+    // svg: {
+    //     fontCache: 'global'
+    // },
+    // Add this 'output' block to restore the v3 font
+    output: {
+    font: 'mathjax-tex'
+    },
+    // ADD THIS BLOCK TO DISABLE THE CLICK/EXPLORER
+    options: {
+    menuOptions: {
+        settings: {
+        enrich: false,
+        speech: false,  // Disables the explorer/speech by default
+        braille: false, // Disables braille generation
+        zoom: 'NoZoom'  // Ensures click-to-zoom is also off
+        }
+    }
     }
 };
 </script>
