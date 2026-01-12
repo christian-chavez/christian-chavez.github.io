@@ -97,12 +97,12 @@ $$
 \begin{align*}
 t \;&\longmapsto\;
 \begin{cases}
-\mathbf{k} & \text{if } t \in I \\
+\mathbf{k} & \text{if } t \in I, \\
 \mathbf{0} & \text{else}
 \end{cases}\\
 (r \to s) \;&\longmapsto\;
 \begin{cases}
-\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } r,s \in I \\
+\mathbf{k} \xrightarrow{\mathrm{Id}} \mathbf{k} & \text{if } r,s \in I, \\
 \mathbf{0} & \text{else}
 \end{cases}
 \end{align*}
@@ -319,7 +319,7 @@ The last remark leads us to the following definition.
 $T\colon \mathbb{R}\to \mathrm{End}(\mathbf{X})$ is defined as
 follows:
 
-- **Objects**: for each $t\in \mathbb{R}$ we have a functor
+- **Objects**: for each $t\in \mathbb{R}$,  we have a functor
     $T(t) \colon \mathbf{X}\to \mathbf{X}$ denoted $T_t$ and  defined by
 
     $$T_t( U) = U[t],\quad T_t(\alpha) = \alpha[t]$$
@@ -426,7 +426,7 @@ respect to the position of the input  arrow.
 
 
 Note that, if $t\notin I\cap J$, then either $\mathbf{k}^I_t=\mathbf{0}$
-or $\mathbf{k}^J_s=\mathbf{0}$, and in any case $\alpha_s$ is the zero
+or \\(\mathbf{k}^J_s=\mathbf{0}\\), and in any case $\alpha_s$ is the zero
 map. Thus, we always get zero morphisms outside of the intersection.
 Inside the intersection we have a linear map
 $\alpha_t\colon \mathbf{k}\to \mathbf{k}$ for each $t\in I\cap J$, and  since $\mathbf{k}$ is a
@@ -548,7 +548,7 @@ interval module of the shifted interval (Example 4), we can redraw these diagram
 " />
 
 
-The first observation is that if the top arrows are both $0$, then we
+The first observation is that if the top arrows are both $0,$, then we
 can choose $\phi=0$ and $\psi=0$ because then the triangles commute
 trivially. *But, how do we get the top arrows to be zero?* Here we can use
 Fact 1: if $[a,b]\cap [a-2t,b-2t]=\varnothing$, then
@@ -727,7 +727,7 @@ the following
 > **Fact 3.** For any closed intervals $I=[a,b]$ and $J=[c,d]$,
 >
 > $$ 
-> d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+> d_T(\mathbf{k}^{I}, \mathbf{k}^{J}) \leq \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
 > $$
 
 ## Lower bound
@@ -856,6 +856,6 @@ We obtain our desired conclusion:
 > For any closed intervals $I=[a,b]$ and $J=[c,d]$,
 >
 > $$ 
-> d_T(\mathbf{k}^{[a,b]}, \mathbf{k}^{[c,d]}) = \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
+> d_T(\mathbf{k}^{I}, \mathbf{k}^{J}) = \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
 > $$
 

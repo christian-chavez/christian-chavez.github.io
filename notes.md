@@ -21,7 +21,7 @@ Some docs, notes and proofs.
     <tr>
       <td> 2025-04-18 </td>
       <td>
-        <a href='assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf'>
+        <a href='/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf'>
           Bachelor Thesis, Yachay Tech University
         </a>
       </td>
@@ -29,7 +29,7 @@ Some docs, notes and proofs.
     <tr>
       <td>2025-01-31</td>
       <td>
-        <a href='assets/docs/basic-topology.pdf'>
+        <a href='/assets/docs/basic-topology.pdf'>
           Introducción a la topología general, Math Cub YT
         </a>
       </td>
