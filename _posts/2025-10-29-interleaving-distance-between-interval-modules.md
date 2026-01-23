@@ -329,7 +329,7 @@ follows:
 -  **Morphisms**: for each $r\to s$, we have a natural transformation
     $T(r\to s)\colon T_r\to T_s$ defined by 
 
-    $$T(r\to s) = \left( U[r\to s] \right)_{U\in X}.$$
+    $$T(r\to s) = \left( U[r\to s] \right)_{U\in \mathbf{X}}.$$
 
 We prefer the notation $[\,\cdot\,]$ rather than $T$.
 
