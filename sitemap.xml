@@ -9,62 +9,92 @@
 
 <url>
   <loc>https://christian-chavez.github.io/</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
+  <loc>https://christian-chavez.github.io/teaching/</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://christian-chavez.github.io/presentations/</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://christian-chavez.github.io/notes/</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://christian-chavez.github.io/blogroll/</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://christian-chavez.github.io/about/</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://christian-chavez.github.io/2025/10/29/interleaving-distance-between-interval-modules.html</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://christian-chavez.github.io/2025/03/04/thesis-writing.html</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://christian-chavez.github.io/2024/10/10/def-of-chain-homotopy.html</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://christian-chavez.github.io/2023/12/27/underg-repo.html</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://christian-chavez.github.io/assets/docs/basic-topology.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://christian-chavez.github.io/assets/presentations/ThesisDefense.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
   <loc>https://christian-chavez.github.io/assets/presentations/categories/index.html</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
   <loc>https://christian-chavez.github.io/assets/presentations/cryptography/index.html</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://christian-chavez.github.io/assets/docs/InducedHFunctor.pdf</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <loc>https://christian-chavez.github.io/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://christian-chavez.github.io/assets/docs/HomotopyEquivRelCochComp.pdf</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <loc>https://christian-chavez.github.io/assets/docs/cv-en-christian-chavez.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://christian-chavez.github.io/assets/docs/CatOfCochainComplexesIsAbelian.pdf</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <loc>https://christian-chavez.github.io/assets/docs/cv-fr-christian-chavez.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://christian-chavez.github.io/assets/docs/CV-Christian-Ch%C3%A1vez.pdf</loc>
-  <lastmod>2024-11-16T12:25:51+00:00</lastmod>
+  <loc>https://christian-chavez.github.io/assets/docs/cv-es-christian-chavez.pdf</loc>
+  <lastmod>2026-01-26T19:57:58+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 
