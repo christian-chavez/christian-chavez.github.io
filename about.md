@@ -11,8 +11,13 @@ permalink: /about/
          style="width: 40%; height: auto;  margin-right: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
 
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
-        <p>I'm an MSc student in mathematics at Université de Sherbrooke (Québec, Canada) under the supervision of Emily Cliff and Thomas Brüstle. 
-        My research interests lie within    category theory,    algebraic topology, representation theory and topological data analysis.</p>
+        <p>
+        I'm an MSc student in mathematics at Université de Sherbrooke (Québec, Canada) under the supervision of
+        <a href="https://www.usherbrooke.ca/mathematiques/nous-joindre/personnel/corps-professoral/professeurs/emily-cliff" target="_blank" rel="noopener noreferrer">Emily Cliff</a>
+        and
+        <a href="https://www.usherbrooke.ca/mathematiques/nous-joindre/personnel/corps-professoral/professeurs/thomas-brustle" target="_blank" rel="noopener noreferrer">Thomas Brüstle</a>.
+        My research interests lie within category theory, algebraic topology, representation theory and topological data analysis.
+        </p>
 
         <p>
         I obtained my  BSc in mathematics from  Yachay Tech University (Ecuador) in April 2025.
