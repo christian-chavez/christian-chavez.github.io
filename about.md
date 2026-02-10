@@ -32,7 +32,7 @@ permalink: /about/
     <p style="margin-top: 20px; margin-bottom: 0"> <strong>Full name</strong>: Kevin Christian Chávez Cadena</p> 
     <!-- <p style="margin-bottom: 0;"><strong>DOB</strong>: November 28, 2001 — Ibarra, Ecuador</p> -->
     <p style="margin-top: 0px; margin-bottom: 0">
-    <strong>Curriculum vitæ</strong> (to be updated): 
+    <strong>Curriculum vitæ</strong>: 
         <a href="/assets/docs/CV-en-kcc.pdf" style="text-decoration: none; color: #0073e6;">
             english
         </a>
