@@ -33,15 +33,15 @@ permalink: /about/
     <!-- <p style="margin-bottom: 0;"><strong>DOB</strong>: November 28, 2001 — Ibarra, Ecuador</p> -->
     <p style="margin-top: 0px; margin-bottom: 0">
     <strong>Curriculum vitæ</strong> (to be updated): 
-        <a href="/assets/docs/cv-en-kcc.pdf" style="text-decoration: none; color: #0073e6;">
+        <a href="/assets/docs/CV-en-kcc.pdf" style="text-decoration: none; color: #0073e6;">
             english
         </a>
         •
-            <a href="/assets/docs/cv-fr-kcc.pdf" style="text-decoration: none; color: #0073e6;">
+            <a href="/assets/docs/CV-fr-kcc.pdf" style="text-decoration: none; color: #0073e6;">
             french
         </a>    
         •
-            <a href="/assets/docs/cv-es-kcc.pdf" style="text-decoration: none; color: #0073e6;">
+            <a href="/assets/docs/CV-es-kcc.pdf" style="text-decoration: none; color: #0073e6;">
             spanish
         </a>                     
     </p>
