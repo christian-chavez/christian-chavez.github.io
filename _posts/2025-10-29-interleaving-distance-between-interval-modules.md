@@ -371,7 +371,7 @@ $(\phi\colon U\to V[t], \; \psi\colon V\to U[t] )$ that make the
 diagrams
 
 <p>
-<img src="https://quicklatex.com/cache3/db/ql_0d32d173003d8ebe2cd078654cfef4db_l3.svg"
+<img src="/assets/media/post-interleaving/deef-interleaving.svg"
 alt="tikzcd diagram" style="transform: scale(1.3);">
 </p>
 
@@ -476,7 +476,7 @@ and let us consider two cases:  $a < c$ or  $c\leq a$.
 
     (2.1)  Suppose $b <d$. This means that $J$ *died* after $I$. We also get
     $\mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)\cong \mathbf{0}$. To prove this, we proced as before. Let $\alpha = (\alpha_t)_{t\in\mathbb{R}} \in \mathrm{Hom}(\mathbf{k}^I, \mathbf{k}^J)$. 
-    We know already that $\alpha_t = 0$ if $t\notin I\cap J$, so let $t\in I\cap J$. Then  $\alpha_t$ is a linear map from $ \mathbf{k}$ to $\mathbf{k}$. By our assumptions, $I\cap J = I.$ 
+    We know already that $\alpha_t = 0$ if $t\notin I\cap J$, so let $t\in I\cap J$. Then  $\alpha_t$ is a linear map from $ \mathbf{k}$ to $\mathbf{k}.$ By our assumptions, $I\cap J = I.$ 
     Take the arrow $t\to d.$
     By naturality of $\alpha$, we have 
 
@@ -532,8 +532,9 @@ that is, for which we can find maps
 $\phi\colon {\mathcal{I}}\to {\mathcal{J}}[t]$ and
 $\psi\colon {\mathcal{J}}\to {\mathcal{I}}[t]$ that make the diagrams
 
+
 <p>
-<img src="https://quicklatex.com/cache3/4c/ql_c48eecca58db8cac383a9195064d9f4c_l3.svg"
+<img src="/assets/media/post-interleaving/upper-bound.svg"
 alt="tikzcd diagram" style="transform: scale(1.3);">
 </p>
 
