@@ -371,7 +371,7 @@ $(\phi\colon U\to V[t], \; \psi\colon V\to U[t] )$ that make the
 diagrams
 
 <p>
-<img src="/assets/media/post-interleaving/deef-interleaving.svg"
+<img src="/assets/media/post-interleaving/def-interleaving.svg"
 alt="tikzcd diagram" style="transform: scale(1.3);">
 </p>
 
