@@ -7,11 +7,11 @@ permalink: /teaching/
 ### 2026
 
 - Grader for MAT253 (Winter)
-- Grader for MAT193 (Fall)
 
 
 ### 2025 
 
+- Grader for MAT193 (Fall)
 - [Introduction to Topology](https://sites.google.com/yachaytech.edu.ec/club-de-matemticas-yt/cursos/topolog%C3%ADa-2025s1?authuser=0) (from the Math Club at Yachay Tech). [Lecture notes](assets/docs/basic-topology.pdf).
 
 ### 2024 
