@@ -19,6 +19,14 @@ Some docs, notes and proofs.
 <table class='docs-list'>
   <tbody>
     <tr>
+      <td> 2025-12-05 </td>
+      <td>
+        <a href='/assets/docs/mat729-all.pdf'>
+          Lecture notes from Mat729, Algèbre commutative et géométrie algébrique, Université de Sherbrooke
+        </a>
+      </td>
+    </tr>
+    <tr>
       <td> 2025-04-18 </td>
       <td>
         <a href='/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf'>
