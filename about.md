@@ -34,15 +34,15 @@ permalink: /about/
     <p style="margin-top: 0px; margin-bottom: 0">
     <strong>Curriculum vitæ</strong>: 
         <a href="/assets/docs/CV-en-kcc.pdf" style="text-decoration: none; color: #0073e6;">
-            english
+            English
         </a>
         •
             <a href="/assets/docs/CV-fr-kcc.pdf" style="text-decoration: none; color: #0073e6;">
-            french
+            French
         </a>    
         •
             <a href="/assets/docs/CV-es-kcc.pdf" style="text-decoration: none; color: #0073e6;">
-            spanish
+            Spanish
         </a>                     
     </p>
     <p style="margin-top: 0px; margin-bottom: 0"> <strong>Email</strong>: <code>kevin.chavez@usherbrooke.ca</code></p> 
