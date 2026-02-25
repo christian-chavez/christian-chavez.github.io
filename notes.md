@@ -32,6 +32,9 @@ Some docs, notes and proofs.
         <a href='/assets/docs/ThesisChristianChavez-VFinal_signed_signed.pdf'>
           Bachelor Thesis, Yachay Tech University
         </a>
+        <a href='/assets/docs/bachelor-thesis-2025-04-05.zip'>
+          | Source code
+        </a>
       </td>
     </tr>
     <tr>
