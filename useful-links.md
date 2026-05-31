@@ -22,6 +22,7 @@ A list of stuff that I find interesting
 
 ### Academic Resources
 
+- <a href="https://kconrad.math.uconn.edu/blurbs/" target="_blank">kconrad.math.uconn.edu/blurbs/</a>
 - <a href="https://users.math.msu.edu/users/ruiterj2/Math/" target="_blank">users.math.msu.edu/users/ruiterj2/Math/</a>
 - <a href="http://therisingsea.org/" target="_blank">therisingsea.org/</a>
 - <a href="https://www.math.utah.edu/~milicic/" target="_blank">math.utah.edu/~milicic/</a>
