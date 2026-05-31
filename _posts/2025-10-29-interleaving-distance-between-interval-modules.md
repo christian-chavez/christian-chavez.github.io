@@ -385,7 +385,7 @@ generalized isomorphisms.
 **Definition 3**. The **interleaving distance** between two persistence
 modules $U$ and $V$ is
 
-$$d_T (U, V)=\inf \left\{t\geq 0 \mid   U \text { and } V \text{ are }t\text{-interleaved}\right\}.$$
+$$d_T (U, V)=\inf \left\{t\geq 0 \mid   U \text { and } V \text{ are }t\text{-interleaved}\right\},$$
 
 in case there is at least one interleaving of $U$ and $V.$ If no such
 interleaving exists, we set $d_T (U, V)= \infty.$
