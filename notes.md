@@ -19,6 +19,14 @@ Some docs, notes and proofs.
 <table class='docs-list'>
   <tbody>
     <tr>
+      <td> 2026-07-06 </td>
+      <td>
+        <a href='/assets/docs/final-draft-poster.pdf'>
+          Poster: "The category of chords, cluster categories and interleavings" - Lorentz Center Workshop on Computable Invariants of Quiver Representations, The Netherlands
+        </a>
+      </td>
+    </tr>
+    <tr>
       <td> 2025-12-05 </td>
       <td>
         <a href='/assets/docs/mat729-all.pdf'>
