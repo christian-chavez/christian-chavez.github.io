@@ -7,7 +7,7 @@ permalink: /about/
 
  
 <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 15px;">
-    <img src="/assets/media/christian.jpeg" alt="Description" 
+    <img src="/assets/media/christian-ottawa.jpg" alt="Description" 
          style="width: 40%; height: auto;  margin-right: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
 
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
@@ -55,8 +55,8 @@ permalink: /about/
  
 <!-- <div class="photo-gallery"> -->
 <!-- First time at Sherbrooke -->
-<img src="/assets/media/usherbrooke.jpg" alt="Colina con sol" style="width: 100%; height: auto;  margin-right: 0px; margin-top: 50px; margin-bottom: 0px;">
-<img src="/assets/media/sherbrooke.jpg" alt="Colina con sol" style="width: 100%; height: auto;  margin-right: 0px; margin-top: 20px; margin-bottom: 10px;">
+<!-- <img src="/assets/media/usherbrooke.jpg" alt="Colina con sol" style="width: 100%; height: auto;  margin-right: 0px; margin-top: 50px; margin-bottom: 0px;"> -->
+<!-- <img src="/assets/media/sherbrooke.jpg" alt="Colina con sol" style="width: 100%; height: auto;  margin-right: 0px; margin-top: 20px; margin-bottom: 10px;"> -->
 <!-- My home town in Ecuador -->
 <!-- <img src="/assets/media/20250618_174706.jpg" alt="Colina con sol" style="width: 100%; height: auto;  margin-right: 0px; margin-bottom: 10px;"> -->
 <!-- <img src="/assets/media/20250618_170229.jpg" alt="Cuaderno y lápiz" style="width: 49%; height: auto;  margin-right: 1px; margin-bottom: 10px;"> -->
