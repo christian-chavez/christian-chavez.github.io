@@ -4,6 +4,9 @@
   <div class="wrapper footer-line">
     <span class="footer-name">&copy; {{ 'now' | date: "%Y" }} | Christian Chávez</span>
 
+    <a class="footer-link" href="mailto:{{ site.author.email }}">Email</a>
+    <a class="footer-link" href="{{ '/assets/docs/CV-en-kcc.pdf' | relative_url }}">CV</a>
+
     {%- for link in site.minima.social_links -%}
       {%- case link.platform -%}
         {%- when 'github' -%}{%- assign label = 'GitHub' -%}
@@ -14,8 +17,6 @@
       <a class="footer-link" href="{{ link.user_url }}" rel="me" target="_blank">{{ label }}</a>
     {%- endfor -%}
 
-    <a class="footer-link" href="{{ '/assets/docs/CV-en-kcc.pdf' | relative_url }}">CV</a>
-    <a class="footer-link" href="mailto:{{ site.author.email }}">Email</a>
     <a class="footer-link footer-link--rss" href="{{ site.feed.path | default: 'feed.xml' | relative_url }}">RSS</a>
   </div>
 
