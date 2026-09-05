@@ -7,7 +7,7 @@ permalink: /about/
 
  
 <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 15px;">
-    <img src="/assets/media/christian-ottawa.jpg" alt="Description" 
+    <img src="/assets/media/christian-ottawa.jpg" alt="Christian Chávez, Ottawa" 
          style="width: 40%; height: auto;  margin-right: 10px; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);">
 
     <div style="flex: 1; min-width: 250px; margin-top: 20px; text-align: left;">
@@ -22,8 +22,6 @@ permalink: /about/
         <p>
         I obtained my  BSc in mathematics from  Yachay Tech University (Ecuador) in April 2025.
         </p>
-
-        <p>I created this blog to share some thoughts and some other stuff. I love maths, linux, reading, and nature.</p>
     </div>
 </div>
 
