@@ -1,2 +1,41 @@
 // Placeholder to allow defining custom styles that override everything else.
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
+
+// Single-line footer: name + quiet gray text links.
+.footer-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: $spacing-unit * .25; // only takes effect when the line wraps
+  @include relative-font-size(0.875);
+}
+
+.footer-line .footer-name {
+  color: $text-color;
+}
+
+.footer-line .footer-link {
+  color: $brand-color-light;
+  text-decoration: none;
+
+  &:hover {
+    color: $text-color;
+    text-decoration: underline;
+  }
+
+  // Middot separator before every link (also parts it from the name).
+  // Equal margins on both sides so the dot sits centered between items.
+  &::before {
+    content: "\00b7";
+    margin: 0 .6ch;
+    color: $brand-color-light;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+}
+
+.footer-line .footer-link--rss {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: .85em;
+}
