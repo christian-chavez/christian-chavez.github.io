@@ -1,6 +1,7 @@
 title: Christian Chávez
 author:
   name: Christian Chávez
+  email: christian.chavez@usherbrooke.ca
 
 # The `>` after `description:` means to ignore line-breaks until next key.
 # If you want to omit the line-break after the end of text, use `>-` instead.
