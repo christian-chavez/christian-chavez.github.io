@@ -5,7 +5,6 @@ author:
 # The `>` after `description:` means to ignore line-breaks until next key.
 # If you want to omit the line-break after the end of text, use `>-` instead.
 # description: >
-#   Mathematics student at Yachay Tech University. Interested in mathematics, computer science, LaTeX, linux, among other things.
 
 # Build settings
 
