@@ -8,6 +8,10 @@ published: true
 Some links to stuff that I find interesting.
 
 <table class="blogroll">
+  <colgroup>
+    <col class="blogroll-site" />
+    <col />
+  </colgroup>
   <tbody>
     <tr><th colspan="2">Academic resources</th></tr>
     <tr>

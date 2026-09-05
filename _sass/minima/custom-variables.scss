@@ -1,1 +1,6 @@
 // Placeholder to allow overriding predefined variables smoothly.
+
+// Slightly wider content column so the tables (teaching, presentations,
+// notes, blogroll) have more room. Default is 750px; this makes the
+// centred .wrapper about 770px on desktop, ~800px on smaller screens.
+$content-width: 830px;
