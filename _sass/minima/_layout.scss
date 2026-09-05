@@ -2,10 +2,10 @@
  * Site header
  */
 
-$header-christian-color: #1a77bd;
+$header-christian-color: #f6f6f6;
 .site-header {
-//   border-top: 1px solid $border-color-03; 
-  border-bottom: 1px solid #003cac;
+//   border-top: 1px solid $border-color-03;
+  border-bottom: 1px solid $border-color-01;
   min-height: $spacing-unit * 1;
   line-height: $base-line-height * $base-font-size * 1.75;
   font-family: 'Roboto Condensed', sans-serif;
