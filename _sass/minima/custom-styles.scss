@@ -60,3 +60,19 @@
 .blogroll tbody tr:nth-child(odd) {
   background-color: $table-zebra-color;
 }
+
+// Blogroll first column holds site names, not dates: fix the table layout
+// and pin the column width with a <col> so it's actually enforced (a
+// `td` width is ignored under table-layout: fixed when the first row is a
+// colspan heading). Names wrap; the description column takes the rest.
+.blogroll {
+  table-layout: fixed;
+}
+
+.blogroll col.blogroll-site {
+  width: 12em;
+}
+
+.page-content table.blogroll td:first-child {
+  white-space: normal; // undo the shared nowrap; these aren't dates
+}
