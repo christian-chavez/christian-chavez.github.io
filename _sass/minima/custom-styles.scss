@@ -39,3 +39,24 @@
   letter-spacing: .04em;
   font-size: .85em;
 }
+
+// Data tables across the navbar pages (teaching, presentations, notes):
+// the first column is always a date or term, so keep it monospaced and
+// on a single line. Everything else about these tables comes from the
+// base `table` rules in _base.scss.
+.page-content table td:first-child {
+  font-family: $code-font-family;
+  white-space: nowrap;
+}
+
+// Blogroll: each <tbody> is one section, whose full-width heading is its
+// first row. Restart the zebra striping per section so every section reads
+// the same: heading, then an unshaded first entry, then alternating rows.
+// (The heading row lands on `odd` but its <th> paints over the stripe.)
+.blogroll tbody tr:nth-child(even) {
+  background-color: $background-color;
+}
+
+.blogroll tbody tr:nth-child(odd) {
+  background-color: $table-zebra-color;
+}
