@@ -4,13 +4,6 @@ title: Presentations
 permalink: /presentations/
 ---
 
-<style>
-  table.talk-list td:first-child {
-    font-family: "Iosevka Web", "Iosevka", monospace;
-    white-space: nowrap;               /* keeps dates on one line */
-  }
-</style>
-
 | Date | Title | At |
 |---|---|---|
 | 2026-07-06 | Poster: [The category of chords, cluster categories and interleavings](/assets/docs/final-draft-poster.pdf) | [Workshop: Computable Invariants of Quiver Representations](https://www.lorentzcenter.nl/computable-invariants-of-quiver-representations.html), Lorentz Center, Leiden, The Netherlands |
