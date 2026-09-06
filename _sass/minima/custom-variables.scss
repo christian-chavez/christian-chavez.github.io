@@ -5,6 +5,11 @@
 // centred .wrapper about 770px on desktop, ~800px on smaller screens.
 $content-width: 830px;
 
-// Header is now a light grey bar (see `$header-christian-color` in
-// _layout.scss), so the site title and nav links need dark text.
+// Nav links need dark text; the masthead title and current nav item use
+// the accent colour below.
 $site-title-color: #1a1a1a;
+
+// Single accent colour, used only on the masthead title and the current
+// nav item. Nord "frost" blue (nord10), which sits well with the Nord
+// snow-storm grey (#ECEFF4) the tables and code blocks already use.
+$accent-color: #5e81ac;
