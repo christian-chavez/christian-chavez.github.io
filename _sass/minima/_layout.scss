@@ -2,23 +2,23 @@
  * Site header
  */
 
-$header-christian-color: #f6f6f6;
 .site-header {
 //   border-top: 1px solid $border-color-03;
-  border-bottom: 1px solid $border-color-01;
+  border-bottom: 1px solid #c4ccd8; // cool grey, Nord-adjacent
   min-height: $spacing-unit * 1;
   line-height: $base-line-height * $base-font-size * 1.75;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: $base-font-family;
 
   // Positioning context for the mobile navigation icon
   position: relative;
-  background-color: $header-christian-color;
+  background-color: #eceff4; // Nord snow-storm, same as the table backgrounds
 }
 
 .site-title {
   @include relative-font-size(1.25);
-  font-weight: 450;
-  letter-spacing: -0.1px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 400;
+  letter-spacing: .03em;
   margin-bottom: 0;
   float: left;
 
@@ -28,7 +28,7 @@ $header-christian-color: #f6f6f6;
 
   &,
   &:visited {
-    color: $site-title-color;
+    color: $accent-color;
   }
 }
 
@@ -36,7 +36,7 @@ $header-christian-color: #f6f6f6;
   position: absolute;
   top: 9px;
   right: $spacing-unit * .5;
-  background-color: $header-christian-color;
+  background-color: $background-color;
   border: 1px solid $border-color-01;
   border-radius: 5px;
   text-align: right; 
@@ -79,6 +79,7 @@ $header-christian-color: #f6f6f6;
 
   .page-link {
     color: $site-title-color;
+    font-size: $small-font-size;
     line-height: $base-line-height;
     display: block;
     padding: 5px 10px;
@@ -87,6 +88,13 @@ $header-christian-color: #f6f6f6;
     // Gaps between nav items, but not on the last one
     &:not(:last-child) {
       margin-right: 0;
+    }
+
+    // Current page
+    &[aria-current="page"] {
+      color: $accent-color;
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
   }
 
