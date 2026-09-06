@@ -19,10 +19,6 @@ Some links to stuff that I find interesting.
       <td>Hundreds of short expository notes across algebra, number theory and analysis.</td>
     </tr>
     <tr>
-      <td><a href="https://users.math.msu.edu/users/ruiterj2/Math/" target="_blank">Joshua Ruiter's notes</a></td>
-      <td>Graduate-level lecture notes and worked summaries.</td>
-    </tr>
-    <tr>
       <td><a href="http://therisingsea.org/" target="_blank">The Rising Sea</a></td>
       <td>Daniel Murfet's course notes and videos on category theory, algebra and logic.</td>
     </tr>
