@@ -1,0 +1,16 @@
+/**
+ * MLModern (a darker Latin Modern, by Daniel Benjamin Miller), converted
+ * from the Type 1 fonts shipped with TeX Live to WOFF. GUST Font License.
+ * Glyphs it lacks (arrows, ≥, …) fall back to Computer Modern in the
+ * font stacks that use it.
+ */
+
+@font-face { font-family: 'MLModern Serif'; src: url('./MLModernSerif-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'MLModern Serif'; src: url('./MLModernSerif-Bold.woff') format('woff'); font-weight: bold; font-style: normal; }
+@font-face { font-family: 'MLModern Serif'; src: url('./MLModernSerif-Italic.woff') format('woff'); font-weight: normal; font-style: italic; }
+@font-face { font-family: 'MLModern Serif'; src: url('./MLModernSerif-BoldItalic.woff') format('woff'); font-weight: bold; font-style: italic; }
+
+@font-face { font-family: 'MLModern Sans'; src: url('./MLModernSans-Regular.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'MLModern Sans'; src: url('./MLModernSans-Bold.woff') format('woff'); font-weight: bold; font-style: normal; }
+@font-face { font-family: 'MLModern Sans'; src: url('./MLModernSans-Italic.woff') format('woff'); font-weight: normal; font-style: italic; }
+@font-face { font-family: 'MLModern Sans'; src: url('./MLModernSans-BoldItalic.woff') format('woff'); font-weight: bold; font-style: italic; }

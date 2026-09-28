@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+
+		<title>Théorème de Sylvester–Gallai</title>
+
+		<link rel="stylesheet" href="dist/reset.css" />
+		<link rel="stylesheet" href="dist/reveal.css" />
+		<link rel="stylesheet" href="dist/theme/computer-modern.css" />
+		<link rel="stylesheet" href="css/theme/fonts/mlmodern/mlmodern.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
+
+		<style>
+			/* MLModern throughout; Computer Modern covers any glyph it lacks */
+			:root {
+				--r-main-font: "MLModern Sans", "Computer Modern Sans", helvetica, sans-serif;
+				--r-heading-font: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+
+			/* Beamer-style blocks: a floating white card with a light blue title bar */
+			.block {
+				width: 800px;
+				margin: 0 auto;
+				text-align: left;
+				font-size: 0.72em;
+				border-radius: 6px;
+				overflow: hidden;
+				background: #fff;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.08);
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+			.block-title {
+				background: #dce8f7;
+				color: var(--r-main-color);
+				padding: 0.3em 0.75em;
+			}
+			.block-body {
+				padding: 0.55em 0.75em 0.65em;
+				line-height: 1.45;
+			}
+			.defs {
+				width: 800px;
+				margin: 0.9em auto 0;
+				text-align: left;
+				font-size: 0.5em;
+				line-height: 1.5;
+				color: #666;
+			}
+			.defs p { margin: 0; }
+			.block-body p { margin: 0 0 0.45em; }
+			.block-body p:last-child { margin-bottom: 0; }
+
+			/* One slide, two states: the proof block grows in below the
+			   theorem, and the flex centering glides the theorem upward. */
+			.stage {
+				height: 600px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.reveal .slides section .fragment.unfold {
+				max-height: 0;
+				margin-top: 0;
+				transition: max-height 0.7s ease, margin-top 0.7s ease, opacity 0.5s ease 0.2s;
+			}
+			.reveal .slides section .fragment.unfold.visible {
+				max-height: 260px;
+				margin-top: 36px;
+			}
+
+			/* Tally above the Euler example */
+			.ex-tally { font-size: 1.15em; }
+			.ex-tally .katex-display { margin: 0 0 0.2em; }
+
+			/* KaTeX labels inside the SVG figure */
+			.fig-lbl {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 18px;
+				line-height: 1;
+			}
+
+			/* Applet slides: iframe with a discreet QR code beside it */
+			.applet {
+				display: flex;
+				align-items: flex-end;
+				justify-content: center;
+				gap: 14px;
+			}
+			.applet iframe {
+				width: 900px;
+				height: 600px;
+				border: none;
+				border-radius: 6px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+			}
+			/* narrower iframe only when a QR code sits beside it */
+			.applet:has(.qr) iframe { width: 800px; }
+			.applet .qr {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 4px;
+			}
+			.applet .qr img {
+				width: 118px;
+				height: 118px;
+				margin: 0;
+				image-rendering: pixelated;
+			}
+			.applet .qr span {
+				font-size: 11px;
+				color: #999;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>Le théorème de<br />Sylvester&ndash;Gallai</h2>
+					<p style="text-align: left; margin-top: 2em;">
+						Christian Chávez <br />
+						Université de Sherbrooke
+						<span style="float: right;">2026-09-29</span>
+					</p>
+				</section>
+
+				<section>
+					<h3>Sylvester &amp; Gallai</h3>
+					<div style="display: flex; align-items: flex-start; justify-content: center; gap: 3em; margin-top: 1em;">
+						<div style="text-align: center;">
+							<img class="r-frame" src="images/Sylvester.jpg" alt="James Joseph Sylvester" style="height: 340px; transform: scaleX(-1);" />
+							<p style="font-size: 0.5em; margin-top: 0.8em;">
+								James Joseph Sylvester<br />
+								<span style="opacity: 0.7;">1893 : pose le problème</span>
+							</p>
+						</div>
+						<div style="text-align: center;">
+							<img class="r-frame" src="images/gallai.jpg" alt="Tibor Gallai" style="height: 340px; transform: scaleX(-1);" />
+							<p style="font-size: 0.5em; margin-top: 0.8em;">
+								Tibor Gallai<br />
+								<span style="opacity: 0.7;">1944 : première preuve</span>
+							</p>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Paul Erdős et « Le Livre »</h3>
+					<div style="display: flex; align-items: center; justify-content: center; gap: 2.5em; margin-top: 1em;">
+						<img class="r-frame" src="images/Erdos.jpg" alt="Paul Erdős" style="height: 380px;" />
+						<img src="images/the_book.png" alt="« THE BOOK »" style="height: 270px;" />
+					</div>
+					<p style="font-size: 0.55em; margin-top: 1.5em;">
+						« On n'est pas obligé de croire en Dieu, mais on devrait croire au Livre. »<br />
+						<span style="font-size: 0.85em; color: #777;">: Paul Erdős</span>
+					</p>
+				</section>
+
+				<section>
+					<div class="stage">
+						<div class="block">
+							<div class="block-title">Théorème (Sylvester 1893, Gallai 1944)</div>
+							<div class="block-body thm">
+								Soit $\mathcal{P} \subset \mathbb{R}^2$ fini et non aligné.
+								Alors il existe une droite contenant exactement deux points de $\mathcal{P}$.
+							</div>
+						</div>
+						<div class="block fragment unfold">
+							<div class="block-title">Idée de la démonstration</div>
+							<div class="block-body">
+								<p>Parmi les couples $(P,\ell)$ avec $\ell$ connectrice et $P \notin \ell$, choisir $(P_0,\ell_0)$ de distance minimale.</p>
+								<p>Affirmation&nbsp;: $\ell_0$ est ordinaire.</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+						<svg viewBox="-265 -285 545 480" style="width: 734px; height: 646px;">
+							<!-- lines -->
+							<line x1="-225.2" y1="130.0" x2="207.8" y2="-120.0" stroke="#2a62c9" stroke-width="3" />
+							<line x1="-110.0" y1="-190.5" x2="0.0" y2="-0.0" stroke="var(--r-main-color)" stroke-width="1.8" stroke-dasharray="6,6" opacity="0.75" />
+							<g class="fragment" data-fragment-index="1"><line x1="-100.3" y1="-249.7" x2="-167.2" y2="159.1" stroke="#ff3b30" stroke-width="3" /><line x1="-47.6" y1="27.5" x2="-143.1" y2="11.9" stroke="#8e3fc2" stroke-width="2.6" stroke-dasharray="6,5" /><path d="M-145.2,24.7 L-132.4,26.8 L-130.3,14.0" fill="none" stroke="#8e3fc2" stroke-width="1.6" /></g>
+							<!-- right angle at Q, inside triangle A Q P0 -->
+							<path d="M-13.9,8.0 L-21.9,-5.9 L-8.0,-13.9" fill="none" stroke="var(--r-main-color)" stroke-width="1.6" />
+							<!-- points -->
+							<circle cx="-110.0" cy="-190.5" r="6.5" fill="var(--r-main-color)" />
+							<circle cx="0.0" cy="-0.0" r="5.5" fill="white" stroke="var(--r-main-color)" stroke-width="2" />
+							<g class="fragment" data-fragment-index="0"><circle cx="-155.9" cy="90.0" r="6.5" fill="var(--r-main-color)" /><circle cx="-47.6" cy="27.5" r="6.5" fill="var(--r-main-color)" /><circle cx="112.6" cy="-65.0" r="6.5" fill="var(--r-main-color)" /></g>
+							<!-- labels -->
+							<foreignObject x="-185.9" y="-198.7" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$P_0$</div></foreignObject>
+							<foreignObject x="-19.8" y="1.0" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$Q$</div></foreignObject>
+							<foreignObject x="-72.5" y="-130.3" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$H$</div></foreignObject>
+							<foreignObject x="195.9" y="-137.4" width="80" height="44"><div class="fig-lbl" style="color: #2a62c9;">$l_0$</div></foreignObject>
+							<g class="fragment" data-fragment-index="0"><foreignObject x="-168.8" y="87.0" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$A$</div></foreignObject><foreignObject x="-65.7" y="27.5" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$B$</div></foreignObject></g>
+							<g class="fragment" data-fragment-index="1"><foreignObject x="-234.7" y="141.4" width="80" height="44"><div class="fig-lbl" style="color: #ff3b30;">$m$</div></foreignObject><foreignObject x="-131.5" y="-26.0" width="80" height="44"><div class="fig-lbl" style="color: #8e3fc2;">$h$</div></foreignObject></g>
+						</svg>
+				</section>
+
+				<!--
+				Commented out: redundant now that the interactive détecteur applet
+				(next slide) lets the audience explore ordinary lines themselves.
+				<section>
+					<h3>Vérification de compréhension</h3>
+					<p style="font-size: 0.55em; margin: 0.5em 0 0 0;">
+						Rappel&nbsp;: une droite est <em>ordinaire</em> si elle passe par
+						exactement deux des points marqués.
+					</p>
+					<div style="display: flex; align-items: center; justify-content: center; gap: 2.5em; margin-top: 0.5em;">
+						<svg viewBox="0 0 430 400" style="width: 430px; height: 400px; flex-shrink: 0;">
+							<line x1="30" y1="340" x2="370" y2="340" stroke="var(--r-main-color)" stroke-width="2" opacity="0.55" />
+							<line x1="60" y1="360" x2="60" y2="80" stroke="var(--r-main-color)" stroke-width="2" opacity="0.55" />
+							<line x1="32" y1="208" x2="368" y2="352" stroke="var(--r-main-color)" stroke-width="2" opacity="0.55" />
+							<line x1="213" y1="362" x2="47" y2="78" stroke="var(--r-main-color)" stroke-width="2" opacity="0.55" />
+							<line class="fragment" data-fragment-index="0" x1="213" y1="362" x2="47" y2="78" stroke="var(--r-link-color)" stroke-width="5" />
+							<circle cx="60" cy="340" r="6" fill="var(--r-main-color)" />
+							<circle cx="200" cy="340" r="6" fill="var(--r-main-color)" />
+							<circle cx="340" cy="340" r="6" fill="var(--r-main-color)" />
+							<circle cx="60" cy="220" r="6" fill="var(--r-main-color)" />
+							<circle cx="60" cy="100" r="6" fill="var(--r-main-color)" />
+							<circle cx="200" cy="280" r="6" fill="var(--r-main-color)" />
+							<text x="382" y="330" font-size="22" font-style="italic" fill="var(--r-main-color)">a</text>
+							<text x="224" y="378" font-size="22" font-style="italic" fill="var(--r-main-color)">b</text>
+							<text x="34" y="76" font-size="22" font-style="italic" fill="var(--r-main-color)">c</text>
+							<text x="382" y="372" font-size="22" font-style="italic" fill="var(--r-main-color)">d</text>
+						</svg>
+						<div style="text-align: left; font-size: 0.62em;">
+							<p style="margin-bottom: 1em;">Laquelle de ces droites<br />est ordinaire&nbsp;?</p>
+							<p style="margin: 0.5em 0;">(a)</p>
+							<p style="margin: 0.5em 0;">
+								(b)
+								<span class="fragment" data-fragment-index="0" style="color: var(--r-link-color); font-weight: bold;">
+									&nbsp;✓ correcte
+								</span>
+							</p>
+							<p style="margin: 0.5em 0;">(c)</p>
+							<p style="margin: 0.5em 0;">(d)</p>
+						</div>
+					</div>
+				</section>
+				-->
+
+				<section>
+					<h3 style="font-size: 0.7em; margin-bottom: 0.15em;">Détecteur de droites ordinaires</h3>
+					<div class="applet">
+						<iframe data-src="detecteur.html" title="Détecteur de droites ordinaires interactif"></iframe>
+						<!--
+						<div class="qr">
+							<img src="images/qr/detecteur-qr.png" alt="QR code vers le détecteur" />
+							<span>essayer</span>
+						</div>
+						-->
+					</div>
+				</section>
+
+				<section data-auto-animate>
+					<h3>Leonhard Euler</h3>
+					<img data-id="euler" class="r-frame" src="images/euler-flip.jpg" alt="Leonhard Euler" style="height: 500px;" />
+				</section>
+
+				<section data-auto-animate>
+					<h3>La formule d'Euler</h3>
+					<div style="display: flex; align-items: center; justify-content: center; gap: 2.2em;">
+						<img data-id="euler" class="r-frame" src="images/euler-flip.jpg" alt="Leonhard Euler" style="height: 420px;" />
+						<div>
+							<div class="block" style="width: 480px;">
+								<div class="block-title">Formule d'Euler</div>
+								<div class="block-body thm">
+									Si $G$ est un graphe plan connexe avec $S$ sommets, $A$ arêtes et $F$ faces, alors
+									$$S - A + F = 2.$$
+								</div>
+							</div>
+							<div class="defs" style="width: 480px;">
+								<p><em>graphe plan</em>&nbsp;: dessiné sans que deux arêtes se croisent</p>
+								<p><em>faces</em>&nbsp;: régions délimitées par le dessin, extérieure comprise</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section id="euler-ex">
+					<div class="block" style="width: 760px;">
+						<div class="block-title">Exemple</div>
+						<div class="block-body" style="text-align: center;">
+							<div class="ex-tally"></div>
+							<svg viewBox="-410 -225 820 510" style="width: 640px; height: 398px;">
+								<rect class="ex-f" data-k="7" x="-410" y="-225" width="820" height="510" fill="#d2e4de" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="0" points="-360,-48.0 -168.0,-180.0 -192.0,-48.0" fill="#83C167" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="1" points="-168.0,-180.0 168.0,-180.0 192.0,-48.0 0,-48.0 -192.0,-48.0" fill="#58C4DD" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="2" points="168.0,-180.0 360,-48.0 192.0,-48.0" fill="#9A72AC" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="3" points="-360,-48.0 -192.0,-48.0 0,84.0 0,252.0" fill="#FC6255" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="4" points="-192.0,-48.0 0,-48.0 0,84.0" fill="#F0AC5F" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="5" points="0,-48.0 192.0,-48.0 0,84.0" fill="#C55F73" style="opacity: 0; transition: opacity 0.4s;" />
+								<polygon class="ex-f" data-k="6" points="192.0,-48.0 360,-48.0 0,252.0 0,84.0" fill="#5CD0B3" style="opacity: 0; transition: opacity 0.4s;" />
+								<line class="ex-e" x1="-168.0" y1="-180.0" x2="168.0" y2="-180.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-360" y1="-48.0" x2="-168.0" y2="-180.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-168.0" y1="-180.0" x2="-192.0" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="168.0" y1="-180.0" x2="192.0" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="168.0" y1="-180.0" x2="360" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-360" y1="-48.0" x2="-192.0" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-192.0" y1="-48.0" x2="0" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="0" y1="-48.0" x2="192.0" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="192.0" y1="-48.0" x2="360" y2="-48.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-360" y1="-48.0" x2="0" y2="252.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="-192.0" y1="-48.0" x2="0" y2="84.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="0" y1="-48.0" x2="0" y2="84.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="192.0" y1="-48.0" x2="0" y2="84.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="360" y1="-48.0" x2="0" y2="252.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<line class="ex-e" x1="0" y1="84.0" x2="0" y2="252.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+								<circle class="ex-v" cx="-168.0" cy="-180.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="168.0" cy="-180.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="-360" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="-192.0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="192.0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="360" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="84.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="252.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+							</svg>
+						</div>
+					</div>
+					<span class="fragment" data-ex="1"></span>
+					<span class="fragment" data-ex="2"></span>
+					<span class="fragment" data-ex="3"></span>
+					<span class="fragment" data-ex="4"></span>
+				</section>
+
+				<section>
+					<div class="block" style="width: 900px;">
+						<div class="block-title">Théorème</div>
+						<div class="block-body thm">Tout graphe plan simple possède un sommet de degré au plus 5.</div>
+					</div>
+					<div class="defs" style="width: 900px; margin-top: 0.5em;">
+						<p><em>simple</em>&nbsp;: sans boucle ni arête multiple &emsp;&emsp; <em>degré</em> d'un sommet&nbsp;: nombre d'arêtes qui y aboutissent</p>
+					</div>
+					<div class="applet" style="margin-top: 0.6em;">
+						<iframe data-src="graphe.html" title="Graphes plans : degrés et formule d'Euler" style="height: 505px;"></iframe>
+						<!--
+						<div class="qr">
+							<img src="images/qr/graphe-qr.png" alt="QR code vers l'application graphes" />
+							<span>essayer</span>
+						</div>
+						-->
+					</div>
+				</section>
+
+				<section>
+					<h3 style="font-size: 0.75em;">Dictionnaire plan &harr; sphère</h3>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; row-gap: 0.7em; column-gap: 2.5em; max-width: 760px; margin: 1.8em auto 0; font-size: 0.6em; text-align: left;">
+						<div style="font-weight: 700; color: var(--r-link-color);">Plan</div>
+						<div style="font-weight: 700; color: var(--r-link-color);">Sphère</div>
+
+						<div>point $p \in \mathcal{P}$</div>
+						<div>paire de points antipodaux</div>
+
+						<div>droite connectrice</div>
+						<div>grand cercle</div>
+
+						<div>droite ordinaire</div>
+						<div>croisement de degré 4</div>
+
+						<div>droite à $\ge 3$ points</div>
+						<div>croisement de degré $\ge 6$</div>
+
+						<div class="fragment" data-fragment-index="0" style="border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.5em; font-weight: 600;">$\exists$ droite ordinaire</div>
+						<div class="fragment" data-fragment-index="0" style="border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.5em; font-weight: 600;">$\exists$ sommet de degré 4</div>
+					</div>
+				</section>
+
+				<section>
+					<h3 style="font-size: 0.7em; margin-bottom: 0.15em;">De la feuille à la sphère</h3>
+					<div class="applet">
+						<iframe data-src="sphere.html" title="De la feuille à la sphère : projection centrale interactive"></iframe>
+						<!--
+						<div class="qr">
+							<img src="images/qr/sphere-qr.png" alt="QR code vers l'application sphère" />
+							<span>essayer</span>
+						</div>
+						-->
+					</div>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="dist/plugin/notes.js"></script>
+		<script src="dist/plugin/markdown.js"></script>
+		<script src="dist/plugin/highlight.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				slideNumber: 'c/t',
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+			}).then(() => {
+				renderMathInElement(document.body, {
+					delimiters: [
+						{ left: '$$', right: '$$', display: true },
+						{ left: '$', right: '$', display: false },
+					],
+				});
+				setupEulerExample();
+			});
+
+			// "Un exemple": each click counts one kind of object (vertices, edges,
+			// faces), lighting them up one by one while the tally below S − A + F
+			// ticks up; the last click reveals "= 2".
+			function setupEulerExample() {
+				const slide = document.getElementById('euler-ex');
+				if (!slide) return;
+				const tally = slide.querySelector('.ex-tally');
+				const verts = [...slide.querySelectorAll('.ex-v')];
+				const edges = [...slide.querySelectorAll('.ex-e')];
+				const faces = [...slide.querySelectorAll('.ex-f')].sort((a, b) => a.dataset.k - b.dataset.k);
+				const RED = '#ff3b30', INK = '#1a1a1a', EDGE = '#64748b';
+				let timers = [];
+
+				// Every cell keeps a fixed width so the tally never shifts while counting.
+				function renderTally(v, e, f, done) {
+					const num = x => (x == null ? '\\hphantom{00}' : '\\hphantom{0}\\mathclap{' + x + '}\\hphantom{0}');
+					const op = (sym, on) => (on ? sym : '\\hphantom{' + sym + '}');
+					const row = [num(v), op('-', e != null), num(e), op('+', f != null), num(f),
+						op('=', done), done ? '2' : '\\hphantom{2}'];
+					katex.render('\\begin{array}{ccccccc} S & - & A & + & F & & \\\\ ' + row.join(' & ') + ' \\end{array}',
+						tally, { displayMode: true, throwOnError: false });
+				}
+
+				function paint(nV, nE, nF) {
+					verts.forEach((c, i) => c.setAttribute('fill', i < nV ? RED : INK));
+					edges.forEach((l, i) => l.setAttribute('stroke', i < nE ? RED : EDGE));
+					faces.forEach((p, i) => { p.style.opacity = i < nF ? 1 : 0; });
+				}
+
+				// The object being counted swells for a moment, then settles.
+				const bounce = {
+					v: el => el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.9)', offset: 0.35 }, { transform: 'scale(1)' }],
+						{ duration: 420, easing: 'ease-out' }),
+					e: el => el.animate([{ strokeWidth: '3px' }, { strokeWidth: '7px', offset: 0.35 }, { strokeWidth: '3px' }],
+						{ duration: 420, easing: 'ease-out' }),
+				};
+
+				function show(level, animate) {
+					timers.forEach(clearTimeout);
+					timers = [];
+					const V = verts.length, E = edges.length, F = faces.length;
+					if (!animate || level === 0 || level === 4) {
+						paint(level === 1 ? V : 0, level === 2 ? E : 0, level >= 3 ? F : 0);
+						renderTally(level >= 1 ? V : null, level >= 2 ? E : null, level >= 3 ? F : null, level >= 4);
+						return;
+					}
+					const count = (n, dt, fn) => {
+						for (let k = 1; k <= n; k++) timers.push(setTimeout(() => fn(k), k * dt));
+					};
+					paint(0, 0, 0);
+					if (level === 1) { renderTally(null, null, null, false); count(V, 260, k => { paint(k, 0, 0); bounce.v(verts[k - 1]); renderTally(k, null, null, false); }); }
+					if (level === 2) { renderTally(V, null, null, false); count(E, 190, k => { paint(0, k, 0); bounce.e(edges[k - 1]); renderTally(V, k, null, false); }); }
+					if (level === 3) { renderTally(V, E, null, false); count(F, 380, k => { paint(0, 0, k); renderTally(V, E, k, false); }); }
+				}
+
+				const level = () => slide.querySelectorAll('.fragment.visible[data-ex]').length;
+				Reveal.on('fragmentshown', e => { if (slide.contains(e.fragment)) show(level(), true); });
+				Reveal.on('fragmenthidden', e => { if (slide.contains(e.fragment)) show(level(), false); });
+				Reveal.on('slidechanged', e => { if (e.currentSlide === slide) show(level(), false); });
+				show(level(), false);
+			}
+		</script>
+	</body>
+</html>

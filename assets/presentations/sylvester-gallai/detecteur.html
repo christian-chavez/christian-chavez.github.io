@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Détecteur de droites ordinaires</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --soft: #608cde;
+    --grid: #cfcfcf;
+    --red: #ff3b30;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  canvas.grab { cursor: grab; }
+  canvas.grabbing { cursor: grabbing; }
+
+  .hud {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    min-width: 13em;
+    padding: 12px 16px 14px;
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    pointer-events: none;
+    font-size: clamp(13px, 1.45vw, 21px);
+  }
+  .hud .caption { color: var(--muted); }
+  .hud .big {
+    font-size: clamp(34px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5em;
+    margin-top: 0.3em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row span:first-child { color: var(--muted); }
+  .hud .status {
+    margin-top: 0.6em;
+    max-width: 14em;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .hud .status:empty { display: none; }
+
+  .presets {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  button {
+    font: inherit;
+    font-size: clamp(12px, 1.25vw, 18px);
+    padding: 0.45em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+  button:hover { border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  button kbd {
+    display: inline-block;
+    min-width: 1.1em;
+    margin-right: 0.5em;
+    font-family: inherit;
+    color: var(--muted);
+  }
+
+  .hint {
+    position: fixed;
+    left: 16px;
+    bottom: 12px;
+    color: var(--muted);
+    font-size: clamp(11px, 1.1vw, 16px);
+    pointer-events: none;
+  }
+
+  body.hide-ui .hud,
+  body.hide-ui .presets,
+  body.hide-ui .hint {
+    display: none;
+  }
+</style>
+</head>
+<body class="hide-ui">
+
+<canvas id="cv" aria-label="Plan : cliquez pour placer des points"></canvas>
+
+<div class="hud" aria-live="polite">
+  <div class="caption">droites ordinaires</div>
+  <div class="big" id="nOrd">0</div>
+  <div class="row"><span>points</span><span id="nPts">0</span></div>
+  <div class="row"><span>Melchior</span><span>≥ 3</span></div>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="presets">
+  <button data-preset="triangle"><kbd>1</kbd>Triangle, 7 points</button>
+  <button data-preset="grille"><kbd>2</kbd>Grille 3 × 3</button>
+  <button data-preset="presque"><kbd>3</kbd>Presque alignés</button>
+  <button data-preset="hasard"><kbd>4</kbd>Au hasard</button>
+  <button data-preset="vide"><kbd>E</kbd>Effacer</button>
+  <button data-action="lines" id="linesBtn"><kbd>L</kbd>Afficher les droites</button>
+</div>
+
+<div class="hint">Clic : ajouter. Glisser : déplacer. Clic droit ou Suppr : retirer. <kbd>H</kbd> : masquer les contrôles.</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const elOrd = document.getElementById('nOrd');
+  const elPts = document.getElementById('nPts');
+  const elStatus = document.getElementById('status');
+
+  const COLORS = { ink: '#1a1a1a', soft: '#608cde', grid: '#cfcfcf', red: '#ff3b30' };
+
+  // Points live on an integer grid, so collinearity is tested exactly.
+  let pts = [];
+  let W, H, g, cx, cy, maxX, maxY;
+  let drag = -1;
+  let hover = -1;
+  let showLines = false;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g = Math.max(16, Math.min(W, H) / 16);
+    cx = Math.round(W / 2);
+    cy = Math.round(H / 2);
+    maxX = Math.floor((W / 2 - g * 0.5) / g);
+    maxY = Math.floor((H / 2 - g * 0.5) / g);
+    pts = pts.map(clamp);
+    draw();
+  }
+
+  const toPx = p => [cx + p.x * g, cy - p.y * g];
+  const toGrid = (px, py) => ({ x: Math.round((px - cx) / g), y: Math.round((cy - py) / g) });
+  const clamp = q => ({
+    x: Math.max(-maxX, Math.min(maxX, q.x)),
+    y: Math.max(-maxY, Math.min(maxY, q.y)),
+  });
+  const indexAt = (q, skip = -1) => pts.findIndex((p, i) => i !== skip && p.x === q.x && p.y === q.y);
+  const radius = () => Math.max(6, Math.min(12, g * 0.2));
+
+  function gcd(a, b) {
+    a = Math.abs(a); b = Math.abs(b);
+    while (b) { [a, b] = [b, a % b]; }
+    return a;
+  }
+
+  // Every connecting line, as the exact set of points it contains.
+  function connectingLines() {
+    const map = new Map();
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        let a = pts[j].y - pts[i].y;
+        let b = pts[i].x - pts[j].x;
+        const d = gcd(a, b);
+        a /= d; b /= d;
+        if (a < 0 || (a === 0 && b < 0)) { a = -a; b = -b; }
+        const c = a * pts[i].x + b * pts[i].y;
+        const key = a + ',' + b + ',' + c;
+        if (!map.has(key)) map.set(key, new Set());
+        map.get(key).add(i).add(j);
+      }
+    }
+    return [...map.values()].map(s => [...s]);
+  }
+
+  function drawLine(i, j, color, width) {
+    const [x1, y1] = toPx(pts[i]);
+    const [x2, y2] = toPx(pts[j]);
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const L = (W + H) * 2;
+    const ux = (x2 - x1) / len, uy = (y2 - y1) / len;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(x1 - ux * L, y1 - uy * L);
+    ctx.lineTo(x1 + ux * L, y1 + uy * L);
+    ctx.stroke();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Drawn every 2 units for a sparser look; points still place and
+    // snap on the finer 1-unit grid used by clamp()/toGrid().
+    const gridMesh = g * 2;
+    ctx.strokeStyle = COLORS.grid;
+    ctx.lineWidth = 1;
+    const nx = Math.ceil(W / 2 / gridMesh) + 1;
+    const ny = Math.ceil(H / 2 / gridMesh) + 1;
+    for (let x = -nx; x <= nx; x++) {
+      const px = cx + x * gridMesh;
+      ctx.beginPath();
+      ctx.moveTo(px, 0);
+      ctx.lineTo(px, H);
+      ctx.stroke();
+    }
+    for (let y = -ny; y <= ny; y++) {
+      const py = cy - y * gridMesh;
+      ctx.beginPath();
+      ctx.moveTo(0, py);
+      ctx.lineTo(W, py);
+      ctx.stroke();
+    }
+
+    const lines = connectingLines();
+    const ordinary = lines.filter(l => l.length === 2);
+    const rich = lines.filter(l => l.length >= 3);
+
+    ctx.lineCap = 'round';
+    if (showLines) {
+      rich.forEach(l => drawLine(l[0], l[1], COLORS.soft, Math.max(1.5, g * 0.04)));
+      ordinary.forEach(l => drawLine(l[0], l[1], COLORS.red, Math.max(2.5, g * 0.075)));
+    }
+
+    const r = radius();
+    pts.forEach((p, i) => {
+      const [px, py] = toPx(p);
+      const rr = i === drag ? r * 1.35 : r;
+      if (i === hover || i === drag) {
+        ctx.strokeStyle = COLORS.ink;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(px, py, rr + 5, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+      ctx.fillStyle = COLORS.ink;
+      ctx.beginPath();
+      ctx.arc(px, py, rr, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    updateHud(lines, ordinary.length);
+  }
+
+  function updateHud(lines, nOrd) {
+    const n = pts.length;
+    const collinear = n >= 3 && lines.length === 1;
+    elOrd.textContent = nOrd;
+    elPts.textContent = n;
+
+    let msg = '';
+    if (n < 3) {
+      msg = 'Placez au moins 3 points.';
+    } else if (collinear) {
+      msg = 'Tous alignés : le théorème ne s’applique pas.';
+    }
+    elStatus.textContent = msg;
+  }
+
+  // ---------- presets (integer coordinates, centered) ----------
+  const PRESETS = {
+    // Kelly–Moser: vertices, midpoints and centroid of a triangle; only 3 ordinary lines.
+    triangle: () => [[-6, -6], [6, -6], [0, 6], [0, -6], [3, 0], [-3, 0], [0, -2]],
+    grille: () => [-3, 0, 3].flatMap(x => [-3, 0, 3].map(y => [x, y])),
+    presque: () => [[-5, -4], [-3, -4], [-1, -4], [1, -4], [3, -4], [5, -4], [0, 5]],
+    hasard: () => {
+      const rx = Math.max(1, maxX - 1), ry = Math.max(1, maxY - 1);
+      const rand = m => Math.floor(Math.random() * (2 * m + 1)) - m;
+      for (;;) {
+        const set = new Map();
+        while (set.size < 8) {
+          const x = rand(rx), y = rand(ry);
+          set.set(x + ',' + y, [x, y]);
+        }
+        const cand = [...set.values()];
+        pts = cand.map(([x, y]) => ({ x, y }));
+        if (connectingLines().length > 1) return cand;
+      }
+    },
+    vide: () => [],
+  };
+
+  function preset(name) {
+    pts = PRESETS[name]().map(([x, y]) => clamp({ x, y }));
+    // Clamping on a tiny screen could merge points; drop duplicates.
+    pts = pts.filter((p, i) => indexAt(p) === i);
+    drag = hover = -1;
+    draw();
+  }
+
+  const linesBtn = document.getElementById('linesBtn');
+  function toggleLines() {
+    showLines = !showLines;
+    linesBtn.textContent = '';
+    const kbd = document.createElement('kbd');
+    kbd.textContent = 'L';
+    linesBtn.appendChild(kbd);
+    linesBtn.appendChild(document.createTextNode(showLines ? 'Masquer les droites' : 'Afficher les droites'));
+    linesBtn.setAttribute('aria-pressed', String(showLines));
+    draw();
+  }
+  linesBtn.addEventListener('click', () => { toggleLines(); linesBtn.blur(); });
+
+  document.querySelectorAll('[data-preset]').forEach(b =>
+    b.addEventListener('click', () => { preset(b.dataset.preset); b.blur(); }));
+
+  // ---------- pointer ----------
+  function hit(px, py) {
+    const lim = Math.max(radius() * 2.2, g * 0.5);
+    let best = -1, bestD = lim;
+    pts.forEach((p, i) => {
+      const [x, y] = toPx(p);
+      const d = Math.hypot(x - px, y - py);
+      if (d <= bestD) { best = i; bestD = d; }
+    });
+    return best;
+  }
+
+  function removeAt(i) {
+    if (i < 0) return;
+    pts.splice(i, 1);
+    drag = hover = -1;
+    draw();
+  }
+
+  cv.addEventListener('contextmenu', e => e.preventDefault());
+
+  cv.addEventListener('pointerdown', e => {
+    const i = hit(e.clientX, e.clientY);
+    if (e.button === 2) { removeAt(i); return; }
+    if (e.button !== 0) return;
+    if (i >= 0) {
+      drag = i;
+    } else {
+      const q = clamp(toGrid(e.clientX, e.clientY));
+      if (indexAt(q) >= 0) return;
+      pts.push(q);
+      drag = pts.length - 1;
+    }
+    cv.setPointerCapture(e.pointerId);
+    cv.className = 'grabbing';
+    draw();
+  });
+
+  cv.addEventListener('pointermove', e => {
+    if (drag >= 0) {
+      const q = clamp(toGrid(e.clientX, e.clientY));
+      if (indexAt(q, drag) < 0 && (q.x !== pts[drag].x || q.y !== pts[drag].y)) {
+        pts[drag] = q;
+        draw();
+      }
+      return;
+    }
+    const h = hit(e.clientX, e.clientY);
+    if (h !== hover) {
+      hover = h;
+      cv.className = h >= 0 ? 'grab' : '';
+      draw();
+    }
+  });
+
+  const endDrag = () => {
+    if (drag < 0) return;
+    drag = -1;
+    cv.className = hover >= 0 ? 'grab' : '';
+    draw();
+  };
+  cv.addEventListener('pointerup', endDrag);
+  cv.addEventListener('pointercancel', endDrag);
+  cv.addEventListener('pointerleave', () => { if (drag < 0 && hover >= 0) { hover = -1; draw(); } });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  const KEYS = { '1': 'triangle', '2': 'grille', '3': 'presque', '4': 'hasard',
+                 'e': 'vide', 'E': 'vide' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (KEYS[e.key]) { preset(KEYS[e.key]); e.preventDefault(); return; }
+    if (e.key === 'h' || e.key === 'H') { document.body.classList.toggle('hide-ui'); e.preventDefault(); return; }
+    if (e.key === 'l' || e.key === 'L') { toggleLines(); e.preventDefault(); return; }
+    if (e.key === 'Delete' || e.key === 'Backspace') { removeAt(hover); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  preset('triangle');
+
+  // Test hook: counts for the current configuration.
+  window.__detecteur = {
+    preset,
+    stats: () => {
+      const lines = connectingLines();
+      return { n: pts.length, lines: lines.length, ordinary: lines.filter(l => l.length === 2).length };
+    },
+    setPoints: arr => { pts = arr.map(([x, y]) => ({ x, y })); draw(); },
+  };
+})();
+</script>
+</body>
+</html>
