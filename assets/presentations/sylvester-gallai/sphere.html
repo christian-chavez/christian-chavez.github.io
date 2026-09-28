@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De la feuille à la sphère</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --red: #ff3b30;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+  }
+  canvas.point { cursor: pointer; }
+  canvas.grabbing { cursor: grabbing; }
+
+  .hud {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    min-width: 12em;
+    padding: 12px 16px 14px;
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    pointer-events: none;
+    font-size: clamp(13px, 1.4vw, 20px);
+  }
+  .hud .caption { color: var(--muted); }
+  .hud .big {
+    font-size: clamp(30px, 4.4vw, 64px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5em;
+    margin-top: 0.25em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row span:first-child { color: var(--muted); }
+  .hud .euler { margin-top: 0.6em; padding-top: 0.5em; border-top: 1px solid var(--line); }
+  .hud .euler[hidden] { display: none; }
+  .hud .row.total span:last-child { font-weight: 700; }
+  .hud .row.red span { color: var(--red); }
+  .hud .status {
+    margin-top: 0.6em;
+    max-width: 13em;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .hud .status:empty { display: none; }
+
+  .presets {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  button {
+    font: inherit;
+    font-size: clamp(12px, 1.25vw, 18px);
+    padding: 0.45em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+  button:hover { border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: var(--ink); font-weight: 700; }
+  button kbd {
+    display: inline-block;
+    min-width: 1.1em;
+    margin-right: 0.5em;
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .sep { height: 6px; }
+
+  .legend {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    text-align: center;
+    font-size: clamp(13px, 1.5vw, 22px);
+    pointer-events: none;
+  }
+  .legend .red { color: var(--red); font-weight: 600; }
+  .legend .black { font-weight: 600; }
+
+  body.hide-ui .hud,
+  body.hide-ui .presets,
+  body.hide-ui .legend {
+    display: none;
+  }
+</style>
+</head>
+<body class="hide-ui">
+
+<canvas id="cv" aria-label="Sphère : glisser pour tourner, déplacer les points du plan"></canvas>
+
+<div class="hud" aria-live="polite">
+  <div class="caption">droites ordinaires</div>
+  <div class="big" id="nOrd">3</div>
+  <div class="euler" id="euler" hidden>
+    <div class="row"><span>sommets S</span><span id="S"></span></div>
+    <div class="row"><span>arêtes A</span><span id="A"></span></div>
+    <div class="row"><span>faces F</span><span id="F"></span></div>
+    <div class="row total"><span>S − A + F</span><span id="chi"></span></div>
+    <div class="row red"><span>sommets de degré 4</span><span id="d4"></span></div>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="presets">
+  <button data-step="1"><kbd>1</kbd>Les points</button>
+  <button data-step="2"><kbd>2</kbd>Les cercles</button>
+  <button data-step="3"><kbd>3</kbd>Les croisements</button>
+  <div class="sep"></div>
+  <button data-action="align"><kbd>A</kbd>Aligner p₄</button>
+  <button data-action="auto"><kbd>R</kbd>Rotation</button>
+  <button data-action="reset"><kbd>0</kbd>Réinitialiser</button>
+  <div class="sep"></div>
+  <button data-action="zoomIn"><kbd>+</kbd>Zoom avant</button>
+  <button data-action="zoomOut"><kbd>−</kbd>Zoom arrière</button>
+</div>
+
+<div class="legend" id="legend"></div>
+<div id="labels" aria-hidden="true"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  const COLORS = ['#2a62c9', '#2e9e4f', '#e08a00', '#8e3fc2'];
+  const RED = '#ff3b30', INK = '#1a1a1a', GREY = '#b3b3b3';
+
+  // LaTeX-rendered point labels, positioned over the canvas each frame.
+  const labelEls = COLORS.map((color, i) => {
+    const el = document.createElement('span');
+    el.style.cssText = 'position:fixed; pointer-events:none; font-size:1.15rem;';
+    el.style.color = color;
+    katex.render(`p_{${i + 1}}`, el, { throwOnError: false });
+    document.getElementById('labels').appendChild(el);
+    return el;
+  });
+
+  // Points of the plane z = PLANE_Z, on a grid of step 1/2 (scaled).
+  // Scaling x, y by the same factor as z keeps every ray direction — and
+  // so every crossing on the sphere — identical, while visibly lifting
+  // the plane off the sphere's surface.
+  const PLANE_Z = 1.6;
+  const START = [[-1, 0], [0, 0], [1, 0], [0, 1]].map(p => [p[0] * PLANE_Z, p[1] * PLANE_Z]);
+  const ALIGNED = [0.5 * PLANE_Z, 0];
+  const LIM = 1.5 * PLANE_Z, HALF = 1.75 * PLANE_Z;
+  const VIEW0 = { yaw: -0.55, elev: 0.42 };
+  const CAM_D = 9; // eye distance from the origin; sets the perspective strength
+
+  const GRID_STEP = LIM / 14; // purely visual, fine grid for smooth dragging by eye
+  const ELEV_MIN = 0.05, ELEV_MAX = Math.PI / 2 - 0.03; // near-top-down, short of the pole singularity
+  const ZOOM_MIN = 0.5, ZOOM_MAX = 3;
+
+  let pts = START.map(p => p.slice());
+  let step = 1;
+  let yaw = VIEW0.yaw, elev = VIEW0.elev;
+  let zoom = 1;
+  let auto = false;
+  let hover = -1, drag = -1, rot = null, anim = null;
+  let W, H, Rbase, R, ox, oy;
+
+  // ---------- vector helpers ----------
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const unit = v => { const l = Math.hypot(v[0], v[1], v[2]); return v.map(c => c / l); };
+  const vec = p => [p[0], p[1], PLANE_Z];
+
+  // ---------- perspective camera ----------
+  // Returns [X, Y, Z]: screen right, screen up, towards the viewer (camera space).
+  function view(p) {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), ce = Math.cos(elev), se = Math.sin(elev);
+    const x1 = cy * p[0] - sy * p[1];
+    const y1 = sy * p[0] + cy * p[1];
+    return [x1, y1 * se + p[2] * ce, -y1 * ce + p[2] * se];
+  }
+  // Inverse rotation: camera space -> world space (rotation matrices are orthogonal).
+  function unrotate(X, Y, Z) {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), ce = Math.cos(elev), se = Math.sin(elev);
+    const y1 = se * Y - ce * Z;
+    const z = ce * Y + se * Z;
+    return [cy * X + sy * y1, -sy * X + cy * y1, z];
+  }
+  // Perspective projection: the eye sits at camera-space Z = CAM_D.
+  const scr = v => {
+    const k = CAM_D / (CAM_D - v[2]);
+    return [ox + v[0] * R * k, oy - v[1] * R * k];
+  };
+
+  // Screen point -> point of the plane z = PLANE_Z under the cursor, by
+  // casting the camera ray through that pixel and intersecting the plane.
+  function screenToPlane(x, y) {
+    const eye = unrotate(0, 0, CAM_D);
+    const dir = unrotate((x - ox) / R, (oy - y) / R, -CAM_D);
+    const t = (PLANE_Z - eye[2]) / dir[2];
+    return [eye[0] + t * dir[0], eye[1] + t * dir[1]];
+  }
+
+  // ---------- the combinatorics ----------
+  // One group per connecting line = one pair of antipodal crossings on the sphere.
+  function groups() {
+    const V = pts.map(vec), gs = [];
+    for (let i = 0; i < V.length; i++) {
+      for (let j = i + 1; j < V.length; j++) {
+        const d = unit(cross(V[i], V[j]));
+        let g = gs.find(g => Math.abs(dot(g.d, d)) > 1 - 1e-10);
+        if (!g) { g = { d, set: new Set() }; gs.push(g); }
+        g.set.add(i).add(j);
+      }
+    }
+    return gs.map(g => ({ d: g.d, idx: [...g.set] }));
+  }
+
+  // ---------- drawing ----------
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    Rbase = Math.min(W * 0.2, H * 0.27);
+    R = Rbase * zoom;
+    ox = W * 0.52;
+    oy = H * 0.6;
+  }
+
+  function circlePoints(n, N = 240) {
+    const a = Math.abs(n[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+    const u = unit(cross(n, a)), w = cross(n, u);
+    const out = [];
+    for (let k = 0; k <= N; k++) {
+      const t = 2 * Math.PI * k / N, c = Math.cos(t), s = Math.sin(t);
+      out.push(view([c * u[0] + s * w[0], c * u[1] + s * w[1], c * u[2] + s * w[2]]));
+    }
+    return out;
+  }
+
+  // Stroke only the front (or back) half of a projected circle.
+  function strokeHalf(P, front) {
+    ctx.beginPath();
+    let pen = false;
+    for (let k = 0; k < P.length - 1; k++) {
+      const isFront = P[k][2] + P[k + 1][2] >= 0;
+      if (isFront === front) {
+        if (!pen) { ctx.moveTo(...scr(P[k])); pen = true; }
+        ctx.lineTo(...scr(P[k + 1]));
+      } else {
+        pen = false;
+      }
+    }
+    ctx.stroke();
+  }
+
+  function withAlpha(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  }
+
+  function disk(p, r, fill, stroke, lw = 2) {
+    ctx.beginPath();
+    ctx.arc(p[0], p[1], r, 0, 2 * Math.PI);
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
+  }
+
+  function crossings(gs, front) {
+    gs.forEach(g => {
+      const color = g.idx.length === 2 ? RED : INK;
+      [1, -1].forEach(s => {
+        const v = view(g.d.map(c => c * s));
+        if ((v[2] >= 0) !== front) return;
+        const p = scr(v);
+        if (front) disk(p, 7.5, color, '#ffffff', 2);
+        else disk(p, 5.5, withAlpha(color, 0.35), null);
+      });
+    });
+  }
+
+  // Clip the line through plane points a, b to the square [-HALF, HALF]^2.
+  function clipLine(a, b) {
+    const d = [b[0] - a[0], b[1] - a[1]];
+    let t0 = -Infinity, t1 = Infinity;
+    for (let k = 0; k < 2; k++) {
+      if (Math.abs(d[k]) < 1e-12) {
+        if (Math.abs(a[k]) > HALF) return null;
+      } else {
+        let ta = (-HALF - a[k]) / d[k], tb = (HALF - a[k]) / d[k];
+        if (ta > tb) [ta, tb] = [tb, ta];
+        t0 = Math.max(t0, ta);
+        t1 = Math.min(t1, tb);
+      }
+    }
+    if (t0 >= t1) return null;
+    return [[a[0] + t0 * d[0], a[1] + t0 * d[1]], [a[0] + t1 * d[0], a[1] + t1 * d[1]]];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const gs = groups();
+    const normals = pts.map(p => unit(vec(p)));
+    const circles = step >= 2 ? normals.map(n => circlePoints(n)) : [];
+    const focus = drag >= 0 ? drag : hover;
+
+    // 1. Back halves, seen through the ball.
+    ctx.lineCap = 'round';
+    circles.forEach((P, i) => {
+      ctx.strokeStyle = withAlpha(COLORS[i], 0.45);
+      ctx.lineWidth = 1.6;
+      strokeHalf(P, false);
+    });
+    if (step >= 3) crossings(gs, false);
+
+    // 2. The ball: an opaque, softly lit sphere (light source upper-left).
+    const c = scr(view([0, 0, 0]));
+    const grad = ctx.createRadialGradient(
+      c[0] - R * 0.38, c[1] - R * 0.42, R * 0.05,
+      c[0], c[1], R * 1.05
+    );
+    grad.addColorStop(0, 'rgba(255,255,255,0.78)');
+    grad.addColorStop(0.35, 'rgba(238,243,249,0.72)');
+    grad.addColorStop(0.7, 'rgba(211,220,237,0.64)');
+    grad.addColorStop(1, 'rgba(174,188,214,0.58)');
+    disk(c, R, grad, 'rgba(143,160,191,0.7)', 1.5);
+
+    // 3. Front halves and front crossings.
+    circles.forEach((P, i) => {
+      ctx.strokeStyle = COLORS[i];
+      ctx.lineWidth = i === focus ? 5.5 : 3;
+      strokeHalf(P, true);
+    });
+    if (step >= 3) crossings(gs, true);
+
+    // 4. Ray from the centre to the focused point, and its pole on the sphere.
+    if (focus >= 0 && step >= 2) {
+      const p = scr(view(vec(pts[focus])));
+      ctx.strokeStyle = withAlpha(INK, 0.7);
+      ctx.lineWidth = 1.3;
+      ctx.setLineDash([4, 5]);
+      ctx.beginPath(); ctx.moveTo(...c); ctx.lineTo(...p); ctx.stroke();
+      ctx.setLineDash([]);
+      disk(c, 3, INK, null);
+      [1, -1].forEach(s => {
+        const v = view(normals[focus].map(x => x * s));
+        disk(scr(v), 5, '#ffffff', withAlpha(COLORS[focus], v[2] >= 0 ? 1 : 0.4), 2);
+      });
+    }
+
+    // 5. The plane z = PLANE_Z, its lines and its points.
+    const cornerV = [[-HALF, -HALF], [HALF, -HALF], [HALF, HALF], [-HALF, HALF]]
+      .map(q => view([q[0], q[1], PLANE_Z]));
+    const corners = cornerV.map(scr);
+    ctx.beginPath();
+    corners.forEach((q, k) => (k ? ctx.lineTo(...q) : ctx.moveTo(...q)));
+    ctx.closePath();
+    // A light, cool tint that fades from one fixed edge of the plane to the
+    // opposite edge, like a decal painted on its surface — anchored to the
+    // plane itself (not the camera), so it turns rigidly with the scene
+    // instead of recomputing (and flickering) as the view rotates.
+    const fadeFrom = scr(view([0, -HALF, PLANE_Z]));
+    const fadeTo = scr(view([0, HALF, PLANE_Z]));
+    const nearAlpha = 0.65;
+    const pgrad = ctx.createLinearGradient(fadeFrom[0], fadeFrom[1], fadeTo[0], fadeTo[1]);
+    pgrad.addColorStop(0, `rgba(210, 224, 245, ${nearAlpha})`);
+    pgrad.addColorStop(1, 'rgba(210, 224, 245, 0)');
+    ctx.fillStyle = pgrad;
+    ctx.fill();
+    ctx.strokeStyle = '#b7c4dd';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(70,90,130,0.10)';
+    ctx.lineWidth = 1;
+    for (let t = -LIM; t <= LIM + 1e-9; t += GRID_STEP) {
+      ctx.beginPath();
+      ctx.moveTo(...scr(view([t, -HALF, PLANE_Z]))); ctx.lineTo(...scr(view([t, HALF, PLANE_Z])));
+      ctx.moveTo(...scr(view([-HALF, t, PLANE_Z]))); ctx.lineTo(...scr(view([HALF, t, PLANE_Z])));
+      ctx.stroke();
+    }
+
+    gs.slice().sort((a, b) => b.idx.length - a.idx.length).forEach(g => {
+      const seg = clipLine(pts[g.idx[0]], pts[g.idx[1]]);
+      if (!seg) return;
+      const ordinary = g.idx.length === 2;
+      ctx.strokeStyle = ordinary ? RED : GREY;
+      ctx.lineWidth = ordinary ? 2.6 : 2;
+      ctx.beginPath();
+      ctx.moveTo(...scr(view([seg[0][0], seg[0][1], PLANE_Z])));
+      ctx.lineTo(...scr(view([seg[1][0], seg[1][1], PLANE_Z])));
+      ctx.stroke();
+    });
+
+    pts.forEach((p, i) => {
+      const q = scr(view(vec(p)));
+      disk(q, i === focus ? 10 : 8, COLORS[i], '#ffffff', 2.5);
+      labelEls[i].style.left = (q[0] + 12) + 'px';
+      labelEls[i].style.top = (q[1] - 26) + 'px';
+    });
+
+    updateHud(gs);
+  }
+
+  // ---------- HUD ----------
+  const LEGENDS = {
+    1: 'Le plan : les points et les droites qui les relient. <span class="red">Rouge</span> : droite ordinaire.',
+    2: 'Chaque point p devient le grand cercle perpendiculaire au rayon qui va du centre à p.',
+    3: '<span class="black">Noir</span> : 3 cercles ou plus, une droite à 3 points. ' +
+       '<span class="red">Rouge</span> : 2 cercles seulement, une droite ordinaire.',
+  };
+  let lastHud = '';
+
+  function updateHud(gs) {
+    const nOrd = gs.filter(g => g.idx.length === 2).length;
+    const S = 2 * gs.length;
+    const A = 2 * gs.reduce((s, g) => s + g.idx.length, 0);
+    const F = 2 - S + A;
+    const collinear = gs.length === 1;
+    const key = [nOrd, S, A, step, collinear].join('|');
+    if (key === lastHud) return;
+    lastHud = key;
+
+    $('nOrd').textContent = nOrd;
+    $('euler').hidden = step < 3;
+    $('S').textContent = S;
+    $('A').textContent = A;
+    $('F').textContent = F;
+    $('chi').textContent = S - A + F;
+    $('d4').textContent = 2 * nOrd;
+    $('status').textContent = collinear
+      ? 'Tous alignés : un seul croisement, aucun sommet de degré 4.'
+      : '';
+    $('legend').innerHTML = LEGENDS[step];
+    document.querySelectorAll('[data-step]').forEach(b =>
+      b.setAttribute('aria-pressed', String(Number(b.dataset.step) === step)));
+    document.querySelector('[data-action="auto"]').setAttribute('aria-pressed', String(auto));
+  }
+
+  // ---------- actions ----------
+  function setStep(s) { step = s; lastHud = ''; }
+
+  function align() {
+    pts = pts.map((p, i) => (i < 3 ? START[i].slice() : p));
+    const onAxis = pts[3][0] === ALIGNED[0] && pts[3][1] === ALIGNED[1];
+    anim = { from: pts[3].slice(), to: onAxis ? START[3].slice() : ALIGNED.slice(),
+             t0: performance.now(), dur: 1600 };
+  }
+
+  function reset() {
+    pts = START.map(p => p.slice());
+    yaw = VIEW0.yaw; elev = VIEW0.elev;
+    setZoom(1);
+    anim = null;
+  }
+
+  function toggleAuto() { auto = !auto; lastHud = ''; }
+
+  function setZoom(z) {
+    zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z));
+    R = Rbase * zoom;
+  }
+  const zoomIn = () => setZoom(zoom * 1.2);
+  const zoomOut = () => setZoom(zoom / 1.2);
+
+  document.querySelectorAll('[data-step]').forEach(b =>
+    b.addEventListener('click', () => { setStep(Number(b.dataset.step)); b.blur(); }));
+  const ACTIONS = { align, reset, auto: toggleAuto, zoomIn, zoomOut };
+  document.querySelectorAll('[data-action]').forEach(b =>
+    b.addEventListener('click', () => { ACTIONS[b.dataset.action](); b.blur(); }));
+
+  // ---------- pointer ----------
+  function hit(x, y) {
+    let best = -1, bestD = 22;
+    pts.forEach((p, i) => {
+      const q = scr(view(vec(p)));
+      const d = Math.hypot(q[0] - x, q[1] - y);
+      if (d < bestD) { best = i; bestD = d; }
+    });
+    return best;
+  }
+
+  cv.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    const i = hit(e.clientX, e.clientY);
+    if (i >= 0 && !anim) {
+      drag = i;
+    } else {
+      rot = { x: e.clientX, y: e.clientY, yaw, elev };
+    }
+    cv.setPointerCapture(e.pointerId);
+    cv.className = 'grabbing';
+  });
+
+  const MIN_SEP = GRID_STEP * 0.6; // keep dragged points from landing exactly on another
+  const SNAP_CAPTURE = GRID_STEP * 0.3; // magnetic radius around each grid intersection
+
+  // Smooth everywhere, but locks onto the nearest grid intersection once close to it.
+  function magnetSnap(v) {
+    const gx = Math.round(v[0] / GRID_STEP) * GRID_STEP;
+    const gy = Math.round(v[1] / GRID_STEP) * GRID_STEP;
+    return Math.hypot(v[0] - gx, v[1] - gy) < SNAP_CAPTURE ? [gx, gy] : v;
+  }
+
+  cv.addEventListener('pointermove', e => {
+    if (drag >= 0) {
+      const q = screenToPlane(e.clientX, e.clientY);
+      const s = magnetSnap(q.map(v => Math.max(-LIM, Math.min(LIM, v))));
+      const taken = pts.some((p, i) => i !== drag && Math.hypot(p[0] - s[0], p[1] - s[1]) < MIN_SEP);
+      if (!taken) pts[drag] = s;
+      return;
+    }
+    if (rot) {
+      yaw = rot.yaw + (e.clientX - rot.x) * 0.008;
+      elev = Math.max(ELEV_MIN, Math.min(ELEV_MAX, rot.elev + (e.clientY - rot.y) * 0.006));
+      return;
+    }
+    hover = hit(e.clientX, e.clientY);
+    cv.className = hover >= 0 ? 'point' : '';
+  });
+
+  cv.addEventListener('wheel', e => {
+    e.preventDefault();
+    setZoom(zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08));
+  }, { passive: false });
+
+  const end = () => { drag = -1; rot = null; cv.className = hover >= 0 ? 'point' : ''; };
+  cv.addEventListener('pointerup', end);
+  cv.addEventListener('pointercancel', end);
+  cv.addEventListener('pointerleave', () => { if (drag < 0 && !rot) hover = -1; });
+
+  // ---------- keyboard (arrows forwarded to reveal.js) ----------
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === '1' || k === '2' || k === '3') setStep(Number(k));
+    else if (k === 'a') align();
+    else if (k === 'r') toggleAuto();
+    else if (k === '0') reset();
+    else if (k === '+' || k === '=') zoomIn();
+    else if (k === '-' || k === '_') zoomOut();
+    else if (k === 'h') document.body.classList.toggle('hide-ui');
+    else if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+    } else return;
+    e.preventDefault();
+  });
+
+  // ---------- loop ----------
+  function frame(ts) {
+    if (auto && drag < 0 && !rot) yaw += 0.004;
+    if (anim) {
+      const t = Math.min(1, (ts - anim.t0) / anim.dur);
+      const s = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      pts[3] = [anim.from[0] + (anim.to[0] - anim.from[0]) * s,
+                anim.from[1] + (anim.to[1] - anim.from[1]) * s];
+      if (t >= 1) { pts[3] = anim.to.slice(); anim = null; }
+    }
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(frame);
+
+  // Test hook.
+  window.__sphere = {
+    setStep, align, reset,
+    stats: () => {
+      const gs = groups();
+      const S = 2 * gs.length, A = 2 * gs.reduce((s, g) => s + g.idx.length, 0);
+      return { S, A, F: 2 - S + A, ordinary: gs.filter(g => g.idx.length === 2).length,
+               degrees: gs.map(g => 2 * g.idx.length), p4: pts[3] };
+    },
+  };
+})();
+</script>
+</body>
+</html>

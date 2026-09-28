@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphes plans</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --blue: #2a62c9;
+    --red: #ff3b30;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  canvas.point { cursor: pointer; }
+  canvas.grabbing { cursor: grabbing; }
+
+  .hud {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    min-width: 11em;
+    padding: 12px 16px 14px;
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    pointer-events: none;
+    font-size: clamp(13px, 1.45vw, 21px);
+  }
+  .hud .caption { color: var(--muted); }
+  .hud .big {
+    font-size: clamp(34px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--blue);
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5em;
+    margin-top: 0.3em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud .row span:first-child { color: var(--muted); }
+  .hud .row.total { margin-top: 0.5em; padding-top: 0.4em; border-top: 1px solid var(--line); }
+  .hud .row.total span:last-child { font-weight: 700; }
+  .hud .status {
+    margin-top: 0.6em;
+    max-width: 12em;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--red);
+  }
+  .hud .status:empty { display: none; }
+
+  .presets {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  button {
+    font: inherit;
+    font-size: clamp(12px, 1.25vw, 18px);
+    padding: 0.45em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+  button:hover { border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  button kbd {
+    display: inline-block;
+    min-width: 1.1em;
+    margin-right: 0.5em;
+    font-family: inherit;
+    color: var(--muted);
+  }
+
+  .hint {
+    position: fixed;
+    left: 16px;
+    bottom: 12px;
+    color: var(--muted);
+    font-size: clamp(11px, 1.1vw, 16px);
+    pointer-events: none;
+  }
+
+  /* The counter stays visible; H toggles the buttons and the hint. */
+  body.hide-ui .presets,
+  body.hide-ui .hint {
+    display: none;
+  }
+</style>
+</head>
+<body class="hide-ui">
+
+<canvas id="cv" aria-label="Plan : dessinez un graphe"></canvas>
+
+<div class="hud" aria-live="polite">
+  <div class="caption">degré du sommet</div>
+  <div class="big" id="deg">–</div>
+  <div class="row"><span>sommets S</span><span id="S"></span></div>
+  <div class="row"><span>arêtes A</span><span id="A"></span></div>
+  <div class="row"><span>faces F</span><span id="F"></span></div>
+  <div class="row total"><span>S − A + F</span><span id="chi"></span></div>
+  <div class="row"><span>degré min</span><span id="dmin"></span></div>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="presets">
+  <button data-preset="diamant"><kbd>1</kbd>Diamant</button>
+  <button data-preset="triangulation"><kbd>2</kbd>Triangulation</button>
+  <button data-preset="icosaedre"><kbd>3</kbd>Icosaèdre</button>
+  <button data-preset="vide"><kbd>E</kbd>Effacer</button>
+</div>
+
+<div class="hint">Clic : sommet. Glisser depuis un sommet : arête. Clic sur un sommet : son degré. Maj + glisser : déplacer. Clic droit : supprimer. H : contrôles.</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  const INK = '#1a1a1a', EDGE = '#9a9a9a', BLUE = '#2a62c9', RED = '#ff3b30';
+  const R_V = 8;          // vertex radius (px)
+  const HIT = 16;         // pick radius (px)
+  const DRAG_START = 6;   // px of motion before a press becomes a drag
+
+  // Vertices are stored in normalized units (1 = s pixels) around the canvas centre.
+  let V = [];
+  let E = [];             // [i, j] with i < j, no loops, no duplicates: the graph stays simple
+  let sel = -1, hover = -1;
+  let press = null;       // { mode, from, x0, y0, moved }
+  let cursor = null;
+  let W, H, s, cx, cy;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    s = Math.min(W, H) * 0.42;
+    cx = W * 0.56;
+    cy = H * 0.52;
+    draw();
+  }
+
+  const toPx = p => [cx + p.x * s, cy + p.y * s];
+  const toUnit = (x, y) => ({ x: (x - cx) / s, y: (y - cy) / s });
+  const hasEdge = (i, j) => E.some(([a, b]) => (a === Math.min(i, j) && b === Math.max(i, j)));
+
+  function hitVertex(x, y) {
+    let best = -1, bestD = HIT;
+    V.forEach((p, i) => {
+      const [px, py] = toPx(p);
+      const d = Math.hypot(px - x, py - y);
+      if (d <= bestD) { best = i; bestD = d; }
+    });
+    return best;
+  }
+
+  function segDist(x, y, ax, ay, bx, by) {
+    const L2 = (bx - ax) ** 2 + (by - ay) ** 2;
+    const t = L2 ? Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / L2)) : 0;
+    return Math.hypot(x - ax - t * (bx - ax), y - ay - t * (by - ay));
+  }
+
+  function hitEdge(x, y) {
+    let best = -1, bestD = 8;
+    E.forEach(([a, b], k) => {
+      const [ax, ay] = toPx(V[a]), [bx, by] = toPx(V[b]);
+      const d = segDist(x, y, ax, ay, bx, by);
+      if (d <= bestD) { best = k; bestD = d; }
+    });
+    return best;
+  }
+
+  // ---------- graph invariants ----------
+  const degree = i => E.reduce((n, [a, b]) => n + (a === i || b === i), 0);
+
+  function components() {
+    const parent = V.map((_, i) => i);
+    const find = i => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+    E.forEach(([a, b]) => { parent[find(a)] = find(b); });
+    const roots = new Set(V.map((_, i) => find(i)));
+    const withEdges = new Set(E.map(([a]) => find(a)));
+    return { all: roots.size, withEdges: withEdges.size };
+  }
+
+  // Edges that cross another edge, or pass through a vertex: the drawing is then not plane.
+  function crossingEdges() {
+    const bad = new Set();
+    const orient = (p, q, r) => (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
+    for (let k = 0; k < E.length; k++) {
+      for (let l = k + 1; l < E.length; l++) {
+        const [a, b] = E[k], [c, d] = E[l];
+        if (a === c || a === d || b === c || b === d) continue;
+        const A = V[a], B = V[b], C = V[c], D = V[d];
+        if (orient(A, B, C) * orient(A, B, D) < 0 && orient(C, D, A) * orient(C, D, B) < 0) {
+          bad.add(k); bad.add(l);
+        }
+      }
+      const [a, b] = E[k];
+      V.forEach((p, i) => {
+        if (i === a || i === b) return;
+        if (segDist(p.x, p.y, V[a].x, V[a].y, V[b].x, V[b].y) * s < 3) bad.add(k);
+      });
+    }
+    return bad;
+  }
+
+  // Faces of a straight-line plane drawing: trace the boundary walks
+  // (turn to the next neighbour in angular order at each vertex). Each
+  // component contributes its own outer walk; they all bound one outer face.
+  function faceCount() {
+    if (!E.length) return 1;
+    const nbr = V.map(() => []);
+    E.forEach(([a, b]) => { nbr[a].push(b); nbr[b].push(a); });
+    nbr.forEach((list, v) => list.sort((i, j) =>
+      Math.atan2(V[i].y - V[v].y, V[i].x - V[v].x) - Math.atan2(V[j].y - V[v].y, V[j].x - V[v].x)));
+    const seen = new Set();
+    let walks = 0;
+    E.forEach(([a, b]) => {
+      [[a, b], [b, a]].forEach(([u0, v0]) => {
+        if (seen.has(u0 + ',' + v0)) return;
+        walks++;
+        let u = u0, v = v0;
+        while (!seen.has(u + ',' + v)) {
+          seen.add(u + ',' + v);
+          const list = nbr[v];
+          const w = list[(list.indexOf(u) - 1 + list.length) % list.length];
+          u = v; v = w;
+        }
+      });
+    });
+    return walks - components().withEdges + 1;
+  }
+
+  // ---------- drawing ----------
+  function drawEdge(a, b, color, width) {
+    const [ax, ay] = toPx(V[a]), [bx, by] = toPx(V[b]);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+    const bad = crossingEdges();
+
+    E.forEach(([a, b], k) => {
+      if (bad.has(k)) drawEdge(a, b, RED, 3);
+      else if (a === sel || b === sel) drawEdge(a, b, BLUE, 4);
+      else drawEdge(a, b, EDGE, 2.5);
+    });
+
+    if (press && press.mode === 'edge' && press.moved && cursor) {
+      const [ax, ay] = toPx(V[press.from]);
+      ctx.strokeStyle = BLUE;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([7, 6]);
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(cursor.x, cursor.y); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    V.forEach((p, i) => {
+      const [x, y] = toPx(p);
+      if (i === hover && i !== sel) {
+        ctx.strokeStyle = INK; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, y, R_V + 5, 0, 2 * Math.PI); ctx.stroke();
+      }
+      ctx.fillStyle = i === sel ? BLUE : INK;
+      ctx.beginPath(); ctx.arc(x, y, i === sel ? R_V + 2 : R_V, 0, 2 * Math.PI); ctx.fill();
+    });
+
+    if (sel >= 0) {
+      const [x, y] = toPx(V[sel]);
+      ctx.strokeStyle = BLUE; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(x, y, R_V + 8, 0, 2 * Math.PI); ctx.stroke();
+      ctx.fillStyle = BLUE;
+      ctx.font = '700 22px "Helvetica Neue", Helvetica, Arial, sans-serif';
+      ctx.fillText(String(degree(sel)), x + R_V + 12, y - R_V - 8);
+    }
+
+    updateHud(bad.size > 0);
+  }
+
+  function updateHud(crossing) {
+    const nS = V.length, nA = E.length;
+    const comp = components();
+    $('deg').textContent = sel >= 0 ? degree(sel) : '–';
+    $('S').textContent = nS;
+    $('A').textContent = nA;
+    const plane = nS > 0 && !crossing;
+    const nF = plane ? faceCount() : null;
+    $('F').textContent = plane ? nF : '–';
+    $('chi').textContent = plane ? nS - nA + nF : '–';
+    $('dmin').textContent = nS ? Math.min(...V.map((_, i) => degree(i))) : '–';
+    $('status').textContent = crossing
+      ? 'Des arêtes se croisent : le dessin n’est pas plan.'
+      : (nS && comp.all > 1 ? 'Graphe non connexe.' : '');
+  }
+
+  // ---------- presets ----------
+  const PRESETS = {
+    // A triangulated triangle: 10 vertices, one of degree 6, the others ≤ 4.
+    // The gem from the example slide: 9 vertices, 15 edges, 8 faces.
+    diamant: {
+      v: [[-0.644, -0.828], [0.644, -0.828], [-1.38, -0.322], [-0.736, -0.322], [0.0, -0.322], [0.736, -0.322], [1.38, -0.322], [0.0, 0.184], [0.0, 0.828]],
+      e: [[0, 1], [2, 0], [0, 3], [1, 5], [1, 6], [2, 3], [3, 4], [4, 5], [5, 6], [2, 8], [3, 7], [4, 7], [5, 7], [6, 8], [7, 8]],
+    },
+    triangulation: {
+      v: [[0, -0.95], [-0.317, -0.317], [0.317, -0.317], [-0.633, 0.317], [0, 0.317],
+          [0.633, 0.317], [-0.95, 0.95], [-0.317, 0.95], [0.317, 0.95], [0.95, 0.95]],
+      e: [[0, 1], [0, 2], [1, 2], [1, 3], [1, 4], [2, 4], [2, 5], [3, 4], [3, 6], [3, 7],
+          [4, 5], [4, 7], [4, 8], [5, 8], [5, 9], [6, 7], [7, 8], [8, 9]],
+    },
+    // The icosahedron: every vertex has degree exactly 5, so the bound is sharp.
+    icosaedre: {
+      v: [[0, -0.75], [-0.866, 0.75], [0.866, 0.75], [0.312, 0.07], [0, -0.01], [-0.312, 0.07],
+          [-0.225, 0.38], [0, 0.61], [0.225, 0.38], [0.121, 0.18], [-0.121, 0.18], [0, 0.39]],
+      e: [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 2], [2, 3], [3, 4], [4, 5], [1, 5],
+          [6, 7], [7, 8], [8, 9], [9, 10], [6, 10], [6, 11], [7, 11], [8, 11], [9, 11], [10, 11],
+          [1, 6], [1, 7], [2, 7], [2, 8], [3, 8], [3, 9], [4, 9], [4, 10], [5, 10], [5, 6]],
+    },
+    vide: { v: [], e: [] },
+  };
+
+  function preset(name) {
+    const P = PRESETS[name];
+    V = P.v.map(([x, y]) => ({ x, y }));
+    E = P.e.map(([a, b]) => [Math.min(a, b), Math.max(a, b)]);
+    sel = hover = -1;
+    press = null;
+    draw();
+  }
+
+  document.querySelectorAll('[data-preset]').forEach(b =>
+    b.addEventListener('click', () => { preset(b.dataset.preset); b.blur(); }));
+
+  // ---------- editing ----------
+  function addVertex(x, y) {
+    V.push(toUnit(x, y));
+    return V.length - 1;
+  }
+
+  function addEdge(i, j) {
+    if (i === j || hasEdge(i, j)) return;
+    E.push([Math.min(i, j), Math.max(i, j)]);
+  }
+
+  function removeVertex(i) {
+    V.splice(i, 1);
+    E = E.filter(([a, b]) => a !== i && b !== i).map(([a, b]) => [a - (a > i), b - (b > i)]);
+    if (sel === i) sel = -1; else if (sel > i) sel--;
+    hover = -1;
+  }
+
+  // ---------- pointer ----------
+  cv.addEventListener('contextmenu', e => e.preventDefault());
+
+  cv.addEventListener('pointerdown', e => {
+    const i = hitVertex(e.clientX, e.clientY);
+    if (e.button === 2) {
+      if (i >= 0) removeVertex(i);
+      else { const k = hitEdge(e.clientX, e.clientY); if (k >= 0) E.splice(k, 1); }
+      draw();
+      return;
+    }
+    if (e.button !== 0) return;
+    press = {
+      mode: i >= 0 ? (e.shiftKey ? 'move' : 'edge') : 'new',
+      from: i, x0: e.clientX, y0: e.clientY, moved: false,
+    };
+    cv.setPointerCapture(e.pointerId);
+    if (press.mode === 'move') cv.className = 'grabbing';
+  });
+
+  cv.addEventListener('pointermove', e => {
+    cursor = { x: e.clientX, y: e.clientY };
+    if (press) {
+      if (Math.hypot(e.clientX - press.x0, e.clientY - press.y0) > DRAG_START) press.moved = true;
+      if (press.mode === 'move' && press.moved) V[press.from] = toUnit(e.clientX, e.clientY);
+      draw();
+      return;
+    }
+    const h = hitVertex(e.clientX, e.clientY);
+    if (h !== hover) {
+      hover = h;
+      cv.className = h >= 0 ? 'point' : '';
+      draw();
+    }
+  });
+
+  cv.addEventListener('pointerup', e => {
+    if (!press) return;
+    const { mode, from, moved } = press;
+    press = null;
+    if (mode !== 'new' && !moved) {
+      sel = sel === from ? -1 : from;
+    } else if (mode === 'edge') {
+      let to = hitVertex(e.clientX, e.clientY);
+      if (to < 0) to = addVertex(e.clientX, e.clientY);
+      addEdge(from, to);
+    } else if (mode === 'new' && !moved) {
+      addVertex(e.clientX, e.clientY);
+      sel = -1;
+    }
+    hover = hitVertex(e.clientX, e.clientY);
+    cv.className = hover >= 0 ? 'point' : '';
+    draw();
+  });
+
+  cv.addEventListener('pointercancel', () => { press = null; draw(); });
+  cv.addEventListener('pointerleave', () => {
+    if (!press && hover >= 0) { hover = -1; draw(); }
+  });
+
+  // ---------- keyboard (arrows forwarded to reveal.js) ----------
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  const KEYS = { '1': 'diamant', '2': 'triangulation', '3': 'icosaedre', 'e': 'vide', 'E': 'vide' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (KEYS[e.key]) { preset(KEYS[e.key]); e.preventDefault(); return; }
+    if (e.key === 'h' || e.key === 'H') { document.body.classList.toggle('hide-ui'); e.preventDefault(); return; }
+    if (e.key === 'Escape') { sel = -1; draw(); return; }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      const i = hover >= 0 ? hover : sel;
+      if (i >= 0) { removeVertex(i); draw(); }
+      e.preventDefault();
+      return;
+    }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  preset('diamant');
+
+  // Test hook.
+  window.__graphe = {
+    preset,
+    select: i => { sel = i; draw(); },
+    stats: () => ({ S: V.length, A: E.length, F: faceCount(), crossing: crossingEdges().size,
+                    degrees: V.map((_, i) => degree(i)) }),
+    setGraph: (v, e) => { V = v.map(([x, y]) => ({ x, y })); E = e.map(([a, b]) => [Math.min(a, b), Math.max(a, b)]); draw(); },
+  };
+})();
+</script>
+</body>
+</html>
