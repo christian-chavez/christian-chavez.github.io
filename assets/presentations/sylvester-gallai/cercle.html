@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un point devient un grand cercle</title>
+<style>
+  /* The deck's serif for labels when available; any serif otherwise (works offline). */
+  @font-face { font-family: 'MLModern Serif'; src: url('css/theme/fonts/mlmodern/MLModernSerif-Italic.woff') format('woff'); font-style: italic; }
+  @font-face { font-family: 'MLModern Serif'; src: url('css/theme/fonts/mlmodern/MLModernSerif-Regular.woff') format('woff'); font-style: normal; }
+
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+    --p: #2a62c9;
+    --q: #e08a00;
+    --r: #2e9e4f;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+  }
+  canvas.point { cursor: pointer; }
+  canvas.grabbing { cursor: grabbing; }
+
+  .hud {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    min-width: 7em;
+    padding: 12px 16px 14px;
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    pointer-events: none;
+    font-size: clamp(13px, 1.4vw, 20px);
+  }
+  .hud .caption { color: var(--muted); }
+  .hud .big {
+    font-size: clamp(30px, 4.4vw, 64px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .presets {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  button {
+    font: inherit;
+    font-size: clamp(12px, 1.25vw, 18px);
+    padding: 0.45em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+  button:hover { border-color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: var(--ink); font-weight: 700; }
+  button kbd {
+    display: inline-block;
+    min-width: 1.1em;
+    margin-right: 0.5em;
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .sep { height: 6px; }
+
+  .legend {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    text-align: center;
+    font-size: clamp(13px, 1.5vw, 22px);
+    line-height: 1.35;
+    pointer-events: none;
+  }
+  .legend i {
+    font-family: 'MLModern Serif', 'Latin Modern Roman', 'CMU Serif', Georgia, serif;
+    font-size: 1.15em;
+  }
+  .legend sub { font-size: 0.7em; }
+  .legend .p { color: var(--p); }
+  .legend .q { color: var(--q); }
+  .legend .r { color: var(--r); }
+  .legend .l { color: #ff3b30; }
+
+  /* The caption stays; H toggles the step counter and the buttons. */
+  body.hide-ui .hud,
+  body.hide-ui .presets {
+    display: none;
+  }
+</style>
+</head>
+<body class="hide-ui">
+
+<canvas id="cv" aria-label="Un point du plan devient un grand cercle : glisser pour tourner, déplacer les points"></canvas>
+
+<div class="hud" aria-live="polite">
+  <div class="caption">étape</div>
+  <div class="big" id="stepNo">1 / 8</div>
+</div>
+
+<div class="presets">
+  <button data-step="1"><kbd>1</kbd>Le point</button>
+  <button data-step="2"><kbd>2</kbd>Le ballon</button>
+  <button data-step="3"><kbd>3</kbd>La droite (Op)</button>
+  <button data-step="4"><kbd>4</kbd>Le vecteur v<sub>p</sub></button>
+  <button data-step="5"><kbd>5</kbd>Le cercle C<sub>p</sub></button>
+  <button data-step="6"><kbd>6</kbd>La droite ℓ et le plan</button>
+  <button data-step="7"><kbd>7</kbd>Le vecteur n<sub>ℓ</sub></button>
+  <button data-step="8"><kbd>8</kbd>Sans le plan</button>
+  <button data-step="9"><kbd>9</kbd>Un second point</button>
+  <button data-step="10"><kbd>—</kbd>Un troisième point</button>
+  <div class="sep"></div>
+  <button data-action="replay"><kbd>R</kbd>Faire tourner ℓ</button>
+  <button data-action="sheet" aria-pressed="true"><kbd>P</kbd>Plan par O</button>
+  <button data-action="conn" aria-pressed="false"><kbd>L</kbd>Droites connectrices</button>
+  <button data-action="view"><kbd>0</kbd>Vue initiale</button>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  const P_COL = '#2a62c9', Q_COL = '#e08a00', R_COL = '#2e9e4f', INK = '#1a1a1a', CONN = '#7c3aed', L_COL = '#ff3b30';
+  const LABEL_FONT = '"MLModern Serif", "Latin Modern Roman", "CMU Serif", Georgia, serif';
+  const LAST = 10;
+
+  // The paper is the plane z = PLANE_Z, floating above the unit ball centred at O.
+  const PLANE_Z = 1.6;
+  const LIM = 1.5 * PLANE_Z, HALF = 1.75 * PLANE_Z, GRID_STEP = LIM / 14;
+  const P0 = [1.05, -0.55], Q0 = [-0.95, 0.35];
+  const RT0 = 0.5;               // r sits at p + RT0·(q − p) on the line (pq)
+  const R_SNAP = 0.12;           // r snaps back onto (pq) within this distance
+  const THETA0 = 0.35;           // starting direction of the line ℓ through p
+  const VIEW0 = { yaw: -0.55, elev: 0.36 };
+  const TOP = { yaw: 0, elev: Math.PI / 2 };   // step 1: straight down on the sheet, like a flat page
+  const CAM_D = 9;
+  const ELEV_MIN = 0, ELEV_MAX = Math.PI / 2 - 0.03, ZOOM_MIN = 0.5, ZOOM_MAX = 3;
+
+  const vp = '<i class="p">v</i><sub class="p">p</sub>';
+  const nl = '<i class="l">n</i><sub class="l">ℓ</sub>';
+  const Cp = '<i class="p">C</i><sub class="p">p</sub>';
+  const Cq = '<i class="q">C</i><sub class="q">q</sub>';
+  const Cr = '<i class="r">C</i><sub class="r">r</sub>';
+  const vq = '<i class="q">v</i><sub class="q">q</sub>';
+  const CAPTIONS = {
+    1: 'Une feuille de papier et un point <i class="p">p</i> (on peut le déplacer).',
+    2: 'Un ballon apparaît sous la feuille, de centre <i>O</i>.',
+    3: 'La droite qui passe par <i>O</i> et par <i class="p">p</i>.',
+    4: `Le vecteur unitaire ${vp} : de <i>O</i> jusqu'au bord du ballon, en direction de <i class="p">p</i>.`,
+    5: `Le grand cercle ${Cp} : les points du ballon perpendiculaires à ${vp}, l'« équateur » de <i class="p">p</i>.`,
+    6: 'Une droite <i class="l">ℓ</i> sur la feuille passant par <i class="p">p</i> (on peut la faire tourner), puis le plan passant par <i>O</i> qui contient <i class="l">ℓ</i>.',
+    7: `Le vecteur ${nl}, perpendiculaire à ce plan : ±${nl} perce le ballon en deux points, toujours sur ${Cp}, même quand <i class="l">ℓ</i> tourne.`,
+    8: `Le plan a fait son travail : il ne reste que <i class="l">ℓ</i>, ${nl} et ${Cp}.`,
+    9: `Un second point <i class="q">q</i>, son vecteur ${vq} et son cercle ${Cq}. Quand <i class="l">ℓ</i> passe par <i class="q">q</i>, `
+      + `les deux points tombent exactement sur les croisements de ${Cp} et ${Cq}, de degré 4.`,
+    10: `Un troisième point <i class="r">r</i> sur la droite : ${Cr} passe par les mêmes croisements. `
+      + `Trois cercles s'y croisent (degré 6) : la droite n'est plus ordinaire.`,
+    '10off': `Hors de la droite, ${Cr} évite ces croisements : ils redeviennent de degré 4 et la droite (<i class="p">p</i><i class="q">q</i>) est ordinaire.`,
+  };
+
+  // ---------- vector helpers ----------
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const unit = v => { const l = Math.hypot(v[0], v[1], v[2]); return v.map(c => c / l); };
+  const scale3 = (v, k) => v.map(c => c * k);
+  const add3 = (a, b, k = 1) => [a[0] + k * b[0], a[1] + k * b[1], a[2] + k * b[2]];
+
+  // ---------- state ----------
+  let p = P0.slice(), q = Q0.slice();
+  let rt = RT0, roff = 0;         // r = p + rt·(q − p) + roff·(unit normal of pq)
+  let step = 1, stepStart = 0, theta = THETA0;
+  let lineOnQ = false;           // steps 8–9: ℓ is kept through q
+  let sheetForced = null;       // null: the plane through O follows the steps; P forces it on/off
+  let showConn = false;          // connecting lines between the points, and their normals
+  let hoverLine = false;
+  let yaw = TOP.yaw, elev = TOP.elev, zoom = 1;
+  let camAnim = null;             // camera move between the top view and the 3D view
+  let rot = null, dragPt = null, hover = null, anim = null;
+  let W, H, Rbase, R, ox, oy;
+
+  const Pv = () => [p[0], p[1], PLANE_Z];
+  const Qv = () => [q[0], q[1], PLANE_Z];
+  function Rv() {
+    const d = [q[0] - p[0], q[1] - p[1]], L = Math.hypot(d[0], d[1]) || 1, nrm = [-d[1] / L, d[0] / L];
+    return [p[0] + rt * d[0] + roff * nrm[0], p[1] + rt * d[1] + roff * nrm[1], PLANE_Z];
+  }
+  const dirOf = t => [Math.cos(t), Math.sin(t), 0];
+  // The sheet through O containing ℓ has normal P × d. It is orthogonal to P for
+  // every direction of ℓ, so ±n_ℓ always lies on C_p (the circle orthogonal to v_p).
+  const nOf = t => unit(cross(Pv(), dirOf(t)));
+
+  // ---------- camera (as in the sphere applet) ----------
+  function view(v) {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), ce = Math.cos(elev), se = Math.sin(elev);
+    const x1 = cy * v[0] - sy * v[1];
+    const y1 = sy * v[0] + cy * v[1];
+    return [x1, y1 * se + v[2] * ce, -y1 * ce + v[2] * se];
+  }
+  function unrotate(X, Y, Z) {
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), ce = Math.cos(elev), se = Math.sin(elev);
+    const y1 = se * Y - ce * Z;
+    const z = ce * Y + se * Z;
+    return [cy * X + sy * y1, -sy * X + cy * y1, z];
+  }
+  const scr = v => {
+    const k = CAM_D / (CAM_D - v[2]);
+    return [ox + v[0] * R * k, oy - v[1] * R * k];
+  };
+  const at = v => scr(view(v));
+  function screenToPlane(x, y) {
+    const eye = unrotate(0, 0, CAM_D);
+    const dir = unrotate((x - ox) / R, (oy - y) / R, -CAM_D);
+    const t = (PLANE_Z - eye[2]) / dir[2];
+    return [eye[0] + t * dir[0], eye[1] + t * dir[1]];
+  }
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    Rbase = Math.min(W * 0.2, H * 0.27);
+    R = Rbase * zoom;
+    ox = W * 0.52;
+    oy = H * 0.6;
+  }
+
+  // ---------- drawing helpers ----------
+  function withAlpha(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  }
+  function disk(c, r, fill, stroke, lw = 2) {
+    ctx.beginPath();
+    ctx.arc(c[0], c[1], r, 0, 2 * Math.PI);
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
+  }
+  // Italic label with an optional subscript, centred on (x, y).
+  function label(base, sub, c, color, dx = 0, dy = 0) {
+    ctx.font = `italic 22px ${LABEL_FONT}`;
+    const wb = ctx.measureText(base).width;
+    ctx.font = `italic 15px ${LABEL_FONT}`;
+    const ws = sub ? ctx.measureText(sub).width + 1 : 0;
+    const x = c[0] + dx - (wb + ws) / 2, y = c[1] + dy;
+    ctx.fillStyle = color;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.font = `italic 22px ${LABEL_FONT}`;
+    ctx.fillText(base, x, y);
+    if (sub) {
+      ctx.font = `italic 15px ${LABEL_FONT}`;
+      ctx.fillText(sub, x + wb + 1, y + 7);
+    }
+  }
+  function arrow(from, to, color, width = 2.6) {
+    const a = at(from), b = at(to);
+    const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), hl = 13;
+    ctx.strokeStyle = ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(...a);
+    ctx.lineTo(b[0] - Math.cos(ang) * hl * 0.8, b[1] - Math.sin(ang) * hl * 0.8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(...b);
+    ctx.lineTo(b[0] - hl * Math.cos(ang - 0.4), b[1] - hl * Math.sin(ang - 0.4));
+    ctx.lineTo(b[0] - hl * Math.cos(ang + 0.4), b[1] - hl * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+    return b;
+  }
+  function greatCircle(n, N = 240) {
+    const a = Math.abs(n[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+    const u = unit(cross(n, a)), w = cross(n, u);
+    const out = [];
+    for (let k = 0; k <= N; k++) {
+      const t = 2 * Math.PI * k / N;
+      out.push(view(add3(scale3(u, Math.cos(t)), w, Math.sin(t))));
+    }
+    return out;
+  }
+  function strokeSide(V, front, color) {
+    ctx.strokeStyle = front ? color : withAlpha(color, 0.35);
+    ctx.lineWidth = front ? 3 : 1.6;
+    ctx.beginPath();
+    let pen = false;
+    for (let k = 0; k < V.length - 1; k++) {
+      if ((V[k][2] + V[k + 1][2] >= 0) === front) {
+        if (!pen) { ctx.moveTo(...scr(V[k])); pen = true; }
+        ctx.lineTo(...scr(V[k + 1]));
+      } else {
+        pen = false;
+      }
+    }
+    ctx.stroke();
+  }
+  // A spot for a circle's label: its front point furthest in a screen direction, pushed outward.
+  function circleLabelSpot(V, dir, avoid = []) {
+    let bi = -1, bestS = -Infinity;
+    V.forEach((v, i) => {
+      if (v[2] < 0 || i === 0 || i === V.length - 1) return;
+      const c = scr(v), sc = c[0] * dir[0] + c[1] * dir[1];
+      if (avoid.some(a => Math.hypot(c[0] - a[0], c[1] - a[1]) < 60)) return;
+      if (sc > bestS) { bestS = sc; bi = i; }
+    });
+    if (bi < 0) return null;
+    // Offset across the curve (not along it), on the side away from O.
+    const c = scr(V[bi]), a = scr(V[bi - 1]), b = scr(V[bi + 1]), o = at([0, 0, 0]);
+    const t = [b[0] - a[0], b[1] - a[1]], L = Math.hypot(t[0], t[1]) || 1;
+    let nrm = [-t[1] / L, t[0] / L];
+    if ((c[0] - o[0]) * nrm[0] + (c[1] - o[1]) * nrm[1] < 0) nrm = [-nrm[0], -nrm[1]];
+    return [c[0] + nrm[0] * 24, c[1] + nrm[1] * 24];
+  }
+  // A great circle drawn dashed and light (the sheet through O meets the ball there).
+  function faintSide(V, front, alpha) {
+    ctx.strokeStyle = `rgba(71, 85, 105, ${(front ? 0.5 : 0.22) * alpha})`;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 5]);
+    ctx.beginPath();
+    let pen = false;
+    for (let k = 0; k < V.length - 1; k++) {
+      if ((V[k][2] + V[k + 1][2] >= 0) === front) {
+        if (!pen) { ctx.moveTo(...scr(V[k])); pen = true; }
+        ctx.lineTo(...scr(V[k + 1]));
+      } else {
+        pen = false;
+      }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  function clipToSheet(a, d) {
+    let t0 = -Infinity, t1 = Infinity;
+    for (let k = 0; k < 2; k++) {
+      if (Math.abs(d[k]) < 1e-12) continue;
+      let ta = (-HALF - a[k]) / d[k], tb = (HALF - a[k]) / d[k];
+      if (ta > tb) [ta, tb] = [tb, ta];
+      t0 = Math.max(t0, ta);
+      t1 = Math.min(t1, tb);
+    }
+    return [add3(a, d, t0), add3(a, d, t1)];
+  }
+  const ramp = (ms, delay = 0, dur = 450) => Math.max(0, Math.min(1, (ms - delay) / dur));
+
+  // ---------- connecting lines (option L) ----------
+  // Every line through two of the points, with its normal n = A × B (normalised) on the ball.
+  // Lines that coincide share one normal; they are grouped so their names merge.
+  function connecting() {
+    const pts = [['p', Pv()], ['q', Qv()]];
+    if (step >= 10) pts.push(['r', Rv()]);
+    const out = [];
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const [na, A] = pts[i], [nb, B] = pts[j];
+        const c = cross(A, B), L = Math.hypot(c[0], c[1], c[2]);
+        if (L < 1e-9) continue;
+        const n = c.map(x => x / L);
+        const dd = [B[0] - A[0], B[1] - A[1]], dl = Math.hypot(dd[0], dd[1]);
+        const g = out.find(o => Math.abs(dot(o.n, n)) > 1 - 1e-9);
+        if (g) { g.names.push(na + nb); continue; }
+        out.push({ n, A, d: [dd[0] / dl, dd[1] / dl, 0], names: [na + nb] });
+      }
+    }
+    return out;
+  }
+
+  // Arrows and ± points of the normals; returns where their labels should go.
+  function drawNormals(conn) {
+    return conn.map(c => {
+      [c.n, scale3(c.n, -1)].forEach(m => {
+        const v = view(m);
+        disk(scr(v), v[2] >= 0 ? 6 : 4.5, '#ffffff', withAlpha(CONN, v[2] >= 0 ? 1 : 0.4), 2.2);
+      });
+      return { tip: arrow([0, 0, 0], c.n, CONN, 2), sub: c.names.join('=') };
+    });
+  }
+
+  // The plane through O fades in with ℓ (step 6) and out once n_ℓ is known (step 8).
+  function sheetLevel(since) {
+    if (sheetForced !== null) return sheetForced && step >= 6 ? 1 : 0;
+    if (step === 6) return ramp(since, 700, 600);
+    if (step === 7) return 1;
+    if (step === 8) return 1 - ramp(since, 200, 1000);
+    return 0;
+  }
+
+  // ---------- scene ----------
+  function draw(now) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+    const since = now - stepStart;
+    const P = Pv(), vP = unit(P), O = at([0, 0, 0]);
+    const n = nOf(theta), marks = [n, scale3(n, -1)];
+    const ball = step >= 2 ? (step === 2 ? ramp(since, 1000, 600) : 1) : 0;
+    const sheet = sheetLevel(since);
+    // C_p gets its own entrance in step 5: it is drawn in, like a pen tracing it.
+    const drawn = step === 5 ? ease(ramp(since, 150, 1400)) : 1;
+    let circleP = step >= 5 ? greatCircle(vP) : null;
+    if (circleP && drawn < 1) circleP = circleP.slice(0, Math.max(2, Math.round(drawn * (circleP.length - 1)) + 1));
+    const circleQ = step >= 9 ? greatCircle(unit(Qv())) : null;
+    const qIn = step === 9 ? ramp(since, 0, 450) : 1;       // q fades in,
+    const vqIn = step === 9 ? ramp(since, 600, 450) : 1;    // then v_q,
+    const cqIn = step === 9 ? ramp(since, 1200, 600) : 1;   // then C_q; then ℓ turns (goStep).
+    const circleR = step >= 10 ? greatCircle(unit(Rv())) : null;
+    const conn = showConn && step >= 9 ? connecting() : [];
+    const cut = sheet > 0 ? greatCircle(n) : null;      // where the sheet through O meets the ball
+    // A normal along n_ℓ points the same way as n_ℓ; the others point towards the viewer.
+    conn.forEach(c => {
+      const al = dot(c.n, n);
+      if (step >= 7 && Math.abs(al) > 1 - 1e-9) { if (al < 0) c.n = scale3(c.n, -1); }
+      else if (view(c.n)[2] < 0) c.n = scale3(c.n, -1);
+    });
+
+    // Labels are placed outward from their anchor, sliding further out until clear of the others.
+    const placed = [];
+    const place = (base, sub, tip, color, first = 20, width = 0) => {
+      const d = Math.hypot(tip[0] - O[0], tip[1] - O[1]) || 1, u = [(tip[0] - O[0]) / d, (tip[1] - O[1]) / d];
+      const w = width || 16 + (sub ? sub.length * 8 : 0);
+      let pos;
+      for (let k = 0; k < 6; k++) {
+        pos = [tip[0] + u[0] * (first + 16 * k), tip[1] + u[1] * (first + 16 * k)];
+        if (!placed.some(o => Math.abs(o[0] - pos[0]) < (o[2] + w) / 2 + 4 && Math.abs(o[1] - pos[1]) < 22)) break;
+      }
+      placed.push([pos[0], pos[1], w]);
+      if (base) label(base, sub, pos, color);
+      return pos;
+    };
+
+    // 1. Behind the ball: the sheet through O, the line (Op), far halves and far points.
+    if (sheet > 0) {
+      const d = dirOf(theta), A = add3(P, d, -1.3), B = add3(P, d, 1.3);
+      const quad = [A, B, scale3(A, -1), scale3(B, -1)].map(at);
+      ctx.beginPath();
+      quad.forEach((c, k) => (k ? ctx.lineTo(...c) : ctx.moveTo(...c)));
+      ctx.closePath();
+      ctx.fillStyle = `rgba(71, 85, 105, ${0.10 * sheet})`;
+      ctx.fill();
+      ctx.strokeStyle = `rgba(71, 85, 105, ${0.35 * sheet})`;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+    if (step >= 3) {
+      const k = step === 3 ? ramp(since) : 1;
+      ctx.strokeStyle = withAlpha(P_COL, 0.55 * k);
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(...at(scale3(vP, -1.6)));
+      ctx.lineTo(...at(scale3(P, 1.35)));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if (cut) faintSide(cut, false, sheet);
+    if (circleR) strokeSide(circleR, false, R_COL);
+    if (circleQ) { ctx.globalAlpha = cqIn; strokeSide(circleQ, false, Q_COL); ctx.globalAlpha = 1; }
+    if (circleP) strokeSide(circleP, false, P_COL);
+    if (step >= 7) {
+      marks.forEach(m => { const v = view(m); if (v[2] < 0) disk(scr(v), 5.5, withAlpha(INK, 0.35), null); });
+    }
+
+    // 2. The ball (same translucent, softly lit look as the sphere applet).
+    if (ball > 0) {
+      ctx.globalAlpha = ball;
+      const grad = ctx.createRadialGradient(O[0] - R * 0.38, O[1] - R * 0.42, R * 0.05, O[0], O[1], R * 1.05);
+      grad.addColorStop(0, 'rgba(255,255,255,0.78)');
+      grad.addColorStop(0.35, 'rgba(238,243,249,0.72)');
+      grad.addColorStop(0.7, 'rgba(211,220,237,0.64)');
+      grad.addColorStop(1, 'rgba(174,188,214,0.58)');
+      disk(O, R, grad, 'rgba(143,160,191,0.7)', 1.5);
+      ctx.globalAlpha = 1;
+    }
+
+    // 3. In front: near halves of the circles, the vectors, the marked points, O.
+    if (cut) faintSide(cut, true, sheet);
+    const avoid = step >= 9 ? marks.map(view).filter(v => v[2] >= 0).map(scr) : [];
+    if (circleR) {
+      strokeSide(circleR, true, R_COL);
+      const s = circleLabelSpot(circleR, [0, 1], avoid);
+      if (s) { label('C', 'r', s, R_COL); placed.push([s[0], s[1], 30]); }
+    }
+    if (circleQ) {
+      ctx.globalAlpha = cqIn;
+      strokeSide(circleQ, true, Q_COL);
+      const s = circleLabelSpot(circleQ, [-1, 0], avoid);
+      if (s) { label('C', 'q', s, Q_COL); placed.push([s[0], s[1], 30]); }
+      ctx.globalAlpha = 1;
+    }
+    if (circleP) {
+      strokeSide(circleP, true, P_COL);
+      const s = drawn === 1 ? circleLabelSpot(circleP, [1, 0], avoid) : null;
+      if (s) { label('C', 'p', s, P_COL); placed.push([s[0], s[1], 30]); }
+    }
+    if (step >= 4) {
+      place('v', 'p', arrow([0, 0, 0], vP, P_COL), P_COL, 18);
+    }
+    if (step >= 9) {
+      ctx.globalAlpha = vqIn;
+      place('v', 'q', arrow([0, 0, 0], unit(Qv()), Q_COL), Q_COL, 18);
+      ctx.globalAlpha = 1;
+    }
+    const connLabels = drawNormals(conn);
+    if (step >= 7) {
+      ctx.strokeStyle = withAlpha(L_COL, 0.6);
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(...O);
+      ctx.lineTo(...at(scale3(n, -1)));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      place('n', 'ℓ', arrow([0, 0, 0], n, L_COL), L_COL, 18);
+      marks.forEach(m => {
+        const v = view(m);
+        if (v[2] >= 0) disk(scr(v), 7.5, INK, '#ffffff', 2);
+      });
+    }
+    connLabels.forEach(c => place('n', c.sub, c.tip, CONN, 20));
+    if (ball > 0) {
+      ctx.globalAlpha = ball;
+      disk(O, 3.5, INK, null);
+      label('O', null, O, INK, -14, 12);
+      ctx.globalAlpha = 1;
+    }
+
+    // 4. The paper, the line ℓ and the points on it.
+    const corners = [[-HALF, -HALF], [HALF, -HALF], [HALF, HALF], [-HALF, HALF]].map(c => at([c[0], c[1], PLANE_Z]));
+    ctx.beginPath();
+    corners.forEach((c, k) => (k ? ctx.lineTo(...c) : ctx.moveTo(...c)));
+    ctx.closePath();
+    const f0 = at([0, -HALF, PLANE_Z]), f1 = at([0, HALF, PLANE_Z]);
+    const pg = ctx.createLinearGradient(f0[0], f0[1], f1[0], f1[1]);
+    pg.addColorStop(0, 'rgba(210, 224, 245, 0.65)');
+    pg.addColorStop(1, 'rgba(210, 224, 245, 0)');
+    ctx.fillStyle = pg;
+    ctx.fill();
+    ctx.strokeStyle = '#b7c4dd';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(70,90,130,0.10)';
+    ctx.lineWidth = 1;
+    for (let t = -LIM; t <= LIM + 1e-9; t += GRID_STEP) {
+      ctx.beginPath();
+      ctx.moveTo(...at([t, -HALF, PLANE_Z])); ctx.lineTo(...at([t, HALF, PLANE_Z]));
+      ctx.moveTo(...at([-HALF, t, PLANE_Z])); ctx.lineTo(...at([HALF, t, PLANE_Z]));
+      ctx.stroke();
+    }
+    conn.forEach(c => {
+      const [a, b] = clipToSheet(c.A, c.d).map(at);
+      ctx.strokeStyle = withAlpha(CONN, 0.75);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(...a);
+      ctx.lineTo(...b);
+      ctx.stroke();
+    });
+    if (step >= 6) {
+      const [a, b] = clipToSheet(P, dirOf(theta)).map(at);
+      ctx.strokeStyle = L_COL;
+      ctx.lineWidth = hoverLine || dragPt === 'l' ? 4 : 2.6;
+      ctx.beginPath();
+      ctx.moveTo(...a);
+      ctx.lineTo(...b);
+      ctx.stroke();
+      label('ℓ', null, at(add3(P, dirOf(theta), 1.25)), L_COL, 0, -16);
+    }
+    if (step >= 10) {
+      const c = at(Rv());
+      disk(c, hover === 'r' || dragPt === 'r' ? 10 : 8, R_COL, '#ffffff', 2.5);
+      label('r', null, c, R_COL, 15, -15);
+    }
+    if (step >= 9) {
+      const c = at(Qv());
+      ctx.globalAlpha = qIn;
+      disk(c, hover === 'q' || dragPt === 'q' ? 10 : 8, Q_COL, '#ffffff', 2.5);
+      label('q', null, c, Q_COL, 15, -15);
+      ctx.globalAlpha = 1;
+    }
+    const c = at(P);
+    disk(c, hover === 'p' || dragPt === 'p' ? 10 : 8, P_COL, '#ffffff', 2.5);
+    label('p', null, c, P_COL, 15, -15);
+  }
+
+  // ---------- steps ----------
+  function setHud() {
+    $('stepNo').textContent = `${step} / ${LAST}`;
+    $('legend').innerHTML = CAPTIONS[step === 10 && roff !== 0 ? '10off' : step];
+    document.querySelectorAll('[data-step]').forEach(b =>
+      b.setAttribute('aria-pressed', String(Number(b.dataset.step) === step)));
+  }
+
+  const ease = u => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+  function animate(from, to, dur, delay = 0) {
+    anim = { from, to, dur, t0: performance.now() + delay };
+  }
+
+  // ℓ's direction is defined mod π: turn the shortest way onto the line pq.
+  function thetaThroughQ(from) {
+    const t = Math.atan2(q[1] - p[1], q[0] - p[0]);
+    return t + Math.PI * Math.round((from - t) / Math.PI);
+  }
+
+  function camTo(v, dur = 1600) {
+    camAnim = { from: { yaw, elev }, to: v, t0: performance.now(), dur };
+  }
+
+  function goStep(k) {
+    const prev = step;
+    step = Math.max(1, Math.min(LAST, k));
+    // Step 1 is seen from straight above; from step 2 on the camera tilts to show the ball.
+    if (step === 1 && prev !== 1) camTo(TOP);
+    else if (prev === 1 && step >= 2) camTo(VIEW0);
+    stepStart = performance.now();
+    anim = null;
+    theta = THETA0;
+    lineOnQ = false;
+    sheetForced = null;
+    if (step === 9) animate(THETA0, thetaThroughQ(THETA0), 1800, 2000);
+    if (step === 10) { theta = thetaThroughQ(THETA0); lineOnQ = true; rt = RT0; roff = 0; }
+    document.querySelector('[data-action="sheet"]').setAttribute('aria-pressed', String(step === 6 || step === 7));
+    setHud();
+  }
+
+  function setTheta(t) { theta = t; }
+
+  // R: in step 9, turn ℓ onto q again; otherwise give ℓ half a turn.
+  function replay() {
+    if (step === 9) goStep(9);
+    else if (step >= 6) { lineOnQ = false; animate(theta, theta + Math.PI, 4500); }
+  }
+
+  function toggleConn() {
+    showConn = !showConn;
+    document.querySelector('[data-action="conn"]').setAttribute('aria-pressed', String(showConn));
+  }
+
+  function toggleSheet() {
+    sheetForced = !(sheetLevel(performance.now() - stepStart) > 0.5);
+    document.querySelector('[data-action="sheet"]').setAttribute('aria-pressed', String(sheetForced));
+  }
+
+  function resetView() {
+    zoom = 1; R = Rbase;
+    camTo(step === 1 ? TOP : VIEW0, 800);
+  }
+
+  document.querySelectorAll('[data-step]').forEach(b =>
+    b.addEventListener('click', () => { goStep(Number(b.dataset.step)); b.blur(); }));
+  document.querySelector('[data-action="replay"]').addEventListener('click', e => { replay(); e.currentTarget.blur(); });
+  document.querySelector('[data-action="view"]').addEventListener('click', e => { resetView(); e.currentTarget.blur(); });
+  document.querySelector('[data-action="sheet"]').addEventListener('click', e => { toggleSheet(); e.currentTarget.blur(); });
+  document.querySelector('[data-action="conn"]').addEventListener('click', e => { toggleConn(); e.currentTarget.blur(); });
+
+  // ---------- pointer: drag p (and q) on the paper, drag elsewhere to turn, wheel to zoom ----------
+  function hitPoint(x, y) {
+    const cand = [['p', Pv()]];
+    if (step >= 9) cand.unshift(['q', Qv()]);
+    if (step >= 10) cand.unshift(['r', Rv()]);
+    for (const [name, v] of cand) {
+      const c = at(v);
+      if (Math.hypot(c[0] - x, c[1] - y) < 18) return name;
+    }
+    return null;
+  }
+  // Near the drawn line ℓ (from step 6 on)?
+  function hitLine(x, y) {
+    if (step < 6) return false;
+    const [a, b] = clipToSheet(Pv(), dirOf(theta)).map(at);
+    const L2 = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2;
+    const t = L2 ? Math.max(0, Math.min(1, ((x - a[0]) * (b[0] - a[0]) + (y - a[1]) * (b[1] - a[1])) / L2)) : 0;
+    return Math.hypot(x - a[0] - t * (b[0] - a[0]), y - a[1] - t * (b[1] - a[1])) < 10;
+  }
+  cv.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    dragPt = hitPoint(e.clientX, e.clientY) || (hitLine(e.clientX, e.clientY) ? 'l' : null);
+    if (!dragPt) { camAnim = null; rot = { x: e.clientX, y: e.clientY, yaw, elev }; }
+    cv.setPointerCapture(e.pointerId);
+    cv.className = 'grabbing';
+  });
+  cv.addEventListener('pointermove', e => {
+    if (dragPt) {
+      const s = screenToPlane(e.clientX, e.clientY).map(v => Math.max(-LIM, Math.min(LIM, v)));
+      if (dragPt === 'l') {
+        // Turn ℓ about p towards the cursor (direction defined mod π), snapping onto q.
+        if (Math.hypot(s[0] - p[0], s[1] - p[1]) < 0.08) return;
+        let t = Math.atan2(s[1] - p[1], s[0] - p[0]);
+        t += Math.PI * Math.round((theta - t) / Math.PI);
+        lineOnQ = false;
+        if (step >= 9) {
+          // Snap once ℓ passes within 0.15 of q on the paper.
+          const d = dirOf(t), w = [q[0] - p[0], q[1] - p[1]];
+          if (Math.abs(d[0] * w[1] - d[1] * w[0]) < 0.15) { t = thetaThroughQ(t); lineOnQ = true; }
+        }
+        anim = null;
+        setTheta(t);
+        setHud();
+        return;
+      }
+      if (dragPt === 'r') {
+        // r moves freely but is expressed relative to (pq); it snaps back onto the line.
+        const d = [q[0] - p[0], q[1] - p[1]], L2 = d[0] * d[0] + d[1] * d[1], L = Math.sqrt(L2);
+        const w = [s[0] - p[0], s[1] - p[1]];
+        rt = (w[0] * d[0] + w[1] * d[1]) / L2;
+        roff = (-w[0] * d[1] + w[1] * d[0]) / L;
+        if (Math.abs(roff) < R_SNAP) roff = 0;
+        setHud();
+        return;
+      }
+      const other = dragPt === 'p' ? q : p;
+      if (step < 9 || Math.hypot(s[0] - other[0], s[1] - other[1]) > 0.15) {
+        if (dragPt === 'p') p = s; else q = s;
+      }
+      // Once ℓ is on q, keep it through q while either point moves.
+      if (lineOnQ && !anim) theta = thetaThroughQ(theta);
+      return;
+    }
+    if (rot) {
+      yaw = rot.yaw + (e.clientX - rot.x) * 0.008;
+      elev = Math.max(ELEV_MIN, Math.min(ELEV_MAX, rot.elev + (e.clientY - rot.y) * 0.006));
+      return;
+    }
+    hover = hitPoint(e.clientX, e.clientY);
+    hoverLine = !hover && hitLine(e.clientX, e.clientY);
+    cv.className = hover || hoverLine ? 'point' : '';
+  });
+  const endDrag = () => { rot = null; dragPt = null; cv.className = hover || hoverLine ? 'point' : ''; };
+  cv.addEventListener('pointerup', endDrag);
+  cv.addEventListener('pointercancel', endDrag);
+  cv.addEventListener('wheel', e => {
+    e.preventDefault();
+    zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)));
+    R = Rbase * zoom;
+  }, { passive: false });
+
+  // ---------- keyboard ----------
+  // Space: next step (Shift+Space: previous). Embedded in the deck, Space and the
+  // arrows go to reveal.js, whose fragments drive the steps (see the message below).
+  // 1–9 jump to a step (the 10th: Space), R turns ℓ, P toggles the plane through O, L the connecting lines,
+  // 0 resets the view, H the controls.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev' };
+  const toDeck = method => {
+    if (window.parent !== window) window.parent.postMessage(JSON.stringify({ method, args: [] }), '*');
+  };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (e.key === ' ') {
+      // Embedded, the deck owns the steps (one fragment each), so hand the key over.
+      if (window.parent !== window) toDeck(e.shiftKey ? 'prev' : 'next');
+      else if (e.shiftKey) goStep(step - 1);
+      else goStep(step + 1);
+    }
+    else if (k >= '1' && k <= '9') goStep(Number(k));
+    else if (k === 'r') replay();
+    else if (k === 'p') toggleSheet();
+    else if (k === 'l') toggleConn();
+    else if (k === '0') resetView();
+    else if (k === 'h') document.body.classList.toggle('hide-ui');
+    else if (NAV[e.key]) toDeck(NAV[e.key]);
+    else return;
+    e.preventDefault();
+  });
+
+  // ---------- loop ----------
+  function frame(now) {
+    if (camAnim) {
+      const u = Math.min(1, (now - camAnim.t0) / camAnim.dur), e = ease(u);
+      yaw = camAnim.from.yaw + (camAnim.to.yaw - camAnim.from.yaw) * e;
+      elev = camAnim.from.elev + (camAnim.to.elev - camAnim.from.elev) * e;
+      if (u >= 1) camAnim = null;
+    }
+    if (anim && now >= anim.t0) {
+      const u = Math.min(1, (now - anim.t0) / anim.dur);
+      setTheta(anim.from + (anim.to - anim.from) * ease(u));
+      if (u >= 1) { anim = null; if (step === 9) lineOnQ = true; }
+    }
+    draw(now);
+    requestAnimationFrame(frame);
+  }
+
+  // The deck tells us which step its fragments are on.
+  window.addEventListener('message', e => {
+    let d = e.data;
+    if (typeof d === 'string') { try { d = JSON.parse(d); } catch { return; } }
+    if (d && typeof d.cercleStep === 'number' && d.cercleStep !== step) goStep(d.cercleStep);
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  goStep(1);
+  requestAnimationFrame(frame);
+
+  // Test hook: geometry checks.
+  window.__cercle = {
+    cam: () => ({ yaw, elev }),
+    goStep,
+    state: () => ({ step, theta, p: p.slice(), q: q.slice() }),
+    setPoints: (np, nq) => { if (np) p = np.slice(); if (nq) q = nq.slice(); if (lineOnQ && !anim) theta = thetaThroughQ(theta); },
+    normals: () => connecting().map(c => c.names.join('=')),
+    toggleConn,
+    // Screen position of the point of ℓ at distance k from p (for tests).
+    onLine: k => at(add3(Pv(), dirOf(theta), k)),
+    setR: (t, off) => { rt = t; roff = off; setHud(); },
+    offCr: () => Math.abs(dot(nOf(theta), unit(Rv()))),
+    // Largest |n_ℓ · v_p| over a full turn of ℓ: ±n_ℓ never leaves C_p.
+    maxOffCp: () => {
+      let m = 0;
+      const v = unit(Pv());
+      for (let k = 0; k <= 720; k++) m = Math.max(m, Math.abs(dot(nOf(THETA0 + Math.PI * k / 720), v)));
+      return m;
+    },
+    // Current distance of ±n_ℓ from both circles (both 0 on a crossing).
+    offCircles: () => {
+      const n = nOf(theta);
+      return { Cp: Math.abs(dot(n, unit(Pv()))), Cq: Math.abs(dot(n, unit(Qv()))) };
+    },
+  };
+})();
+</script>
+</body>
+</html>
