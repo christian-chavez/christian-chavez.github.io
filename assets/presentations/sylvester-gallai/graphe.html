@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Graphes plans</title>
+<title>Graphes planaires</title>
 <style>
   :root {
     --ink: #1a1a1a;
@@ -327,7 +327,7 @@
     $('chi').textContent = plane ? nS - nA + nF : '–';
     $('dmin').textContent = nS ? Math.min(...V.map((_, i) => degree(i))) : '–';
     $('status').textContent = crossing
-      ? 'Des arêtes se croisent : le dessin n’est pas plan.'
+      ? 'Des arêtes se croisent : dessinez le graphe sans croisement.'
       : (nS && comp.all > 1 ? 'Graphe non connexe.' : '');
   }
 

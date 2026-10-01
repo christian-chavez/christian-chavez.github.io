@@ -76,6 +76,67 @@
 				max-height: 260px;
 				margin-top: 36px;
 			}
+			.reveal .slides section .fragment.unfold.tall.visible {
+				max-height: 480px;
+				margin-top: 18px;
+			}
+
+			/* Euler title morph (slides 7 → 8): "Euler" glides while the first half
+			   crossfades; each title carries an invisible ghost of the other one. */
+			.ttl-slot { position: relative; display: inline-block; }
+			.ttl-part { display: inline-block; white-space: pre; }
+			.ttl-ghost { position: absolute; right: 0; top: 0; opacity: 0; }
+
+			/* Shown only once the wrapping animation has finished (hides immediately) */
+			.reveal .slides section .fragment.late.visible { transition: opacity 0.6s ease 2.4s; }
+
+			/* Plane ↔ sphere translation table: a floating card like the blocks */
+			.trad {
+				width: 760px;
+				margin: 1.4em auto 0;
+				border-radius: 6px;
+				overflow: hidden;
+				background: #fff;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.08);
+			}
+			.reveal .trad table { width: 100%; margin: 0; border-collapse: collapse; font-size: 0.6em; }
+			.reveal .trad th, .reveal .trad td { width: 50%; padding: 0.5em 0.9em; text-align: left; border: none; }
+			.reveal .trad th {
+				background: #dce8f7;
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+				font-weight: normal;
+				font-size: 1.12em;
+			}
+			.reveal .trad th + th, .reveal .trad td + td { border-left: 1px solid #d4dce8; }
+			.reveal .trad tbody tr { border-top: 1px solid #e3e8ef; }
+
+			/* Slides 9 → 10: the example card fades out while the diamond zooms into place */
+			.gem-ghost {
+				position: absolute;
+				left: calc(50% - 380px);
+				top: 42px;
+				opacity: 0;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			/* Section divider between the two proofs */
+			.reveal .part h2 { margin: 0.1em 0 0.35em; }
+			.reveal .part .part-kicker {
+				margin: 0;
+				font-size: 0.55em;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--r-link-color);
+			}
+			.reveal .part .part-sub {
+				display: inline-block;
+				margin: 0;
+				padding-top: 0.6em;
+				border-top: 1px solid #cfd8e3;
+				font-size: 0.6em;
+				color: #555;
+			}
 
 			/* Tally above the Euler example */
 			.ex-tally { font-size: 1.15em; }
@@ -170,6 +231,25 @@
 					</p>
 				</section>
 
+				<section class="part">
+					<p class="part-kicker">Première partie</p>
+					<h2>La preuve de Kelly</h2>
+					<p class="part-sub">Idée&nbsp;: regarder le point le plus proche d'une droite.</p>
+				</section>
+
+				<section>
+					<h3 style="font-size: 0.7em; margin-bottom: 0.15em;">Détecteur de droites ordinaires</h3>
+					<div class="applet">
+						<iframe data-src="detecteur.html" title="Détecteur de droites ordinaires interactif"></iframe>
+						<!--
+						<div class="qr">
+							<img src="images/qr/detecteur-qr.png" alt="QR code vers le détecteur" />
+							<span>essayer</span>
+						</div>
+						-->
+					</div>
+				</section>
+
 				<section>
 					<div class="stage">
 						<div class="block">
@@ -180,9 +260,9 @@
 							</div>
 						</div>
 						<div class="block fragment unfold">
-							<div class="block-title">Idée de la démonstration</div>
+							<div class="block-title">Idée de la démonstration (Kelly 1948)</div>
 							<div class="block-body">
-								<p>Parmi les couples $(P,\ell)$ avec $\ell$ connectrice et $P \notin \ell$, choisir $(P_0,\ell_0)$ de distance minimale.</p>
+								<p>Parmi les cosuples $(P,\ell)$ avec $\ell$ connectrice et $P \notin \ell$, choisir $(P_0,\ell_0)$ de distance minimale.</p>
 								<p>Affirmation&nbsp;: $\ell_0$ est ordinaire.</p>
 							</div>
 						</div>
@@ -190,7 +270,9 @@
 				</section>
 
 				<section>
-						<svg viewBox="-265 -285 545 480" style="width: 734px; height: 646px;">
+						<svg viewBox="-265 -285 545 480" style="width: 681px; height: 600px; display: block; margin: 0 auto;">
+							<!-- triangle A B P0, shaded (under everything) -->
+							<polygon class="fragment" data-fragment-index="2" points="-155.9,90.0 -47.6,27.5 -110.0,-190.5" fill="#F0AC5F" fill-opacity="0.28" />
 							<!-- lines -->
 							<line x1="-225.2" y1="130.0" x2="207.8" y2="-120.0" stroke="#2a62c9" stroke-width="3" />
 							<line x1="-110.0" y1="-190.5" x2="0.0" y2="-0.0" stroke="var(--r-main-color)" stroke-width="1.8" stroke-dasharray="6,6" opacity="0.75" />
@@ -202,18 +284,62 @@
 							<circle cx="0.0" cy="-0.0" r="5.5" fill="white" stroke="var(--r-main-color)" stroke-width="2" />
 							<g class="fragment" data-fragment-index="0"><circle cx="-155.9" cy="90.0" r="6.5" fill="var(--r-main-color)" /><circle cx="-47.6" cy="27.5" r="6.5" fill="var(--r-main-color)" /><circle cx="112.6" cy="-65.0" r="6.5" fill="var(--r-main-color)" /></g>
 							<!-- labels -->
-							<foreignObject x="-185.9" y="-198.7" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$P_0$</div></foreignObject>
-							<foreignObject x="-19.8" y="1.0" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$Q$</div></foreignObject>
-							<foreignObject x="-72.5" y="-130.3" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$H$</div></foreignObject>
-							<foreignObject x="195.9" y="-137.4" width="80" height="44"><div class="fig-lbl" style="color: #2a62c9;">$l_0$</div></foreignObject>
-							<g class="fragment" data-fragment-index="0"><foreignObject x="-168.8" y="87.0" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$A$</div></foreignObject><foreignObject x="-65.7" y="27.5" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$B$</div></foreignObject></g>
-							<g class="fragment" data-fragment-index="1"><foreignObject x="-234.7" y="141.4" width="80" height="44"><div class="fig-lbl" style="color: #ff3b30;">$m$</div></foreignObject><foreignObject x="-131.5" y="-26.0" width="80" height="44"><div class="fig-lbl" style="color: #8e3fc2;">$h$</div></foreignObject></g>
+							<foreignObject x="-177.0" y="-212.5" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$P_0$</div></foreignObject>
+							<foreignObject x="-27.0" y="0.5" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$Q$</div></foreignObject>
+							<foreignObject x="-80.3" y="-125.8" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$H$</div></foreignObject>
+							<foreignObject x="185.2" y="-152.0" width="80" height="44"><div class="fig-lbl" style="color: #2a62c9;">$l_0$</div></foreignObject>
+							<g class="fragment" data-fragment-index="0"><foreignObject x="-182.9" y="90.5" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$A$</div></foreignObject><foreignObject x="-74.6" y="28.0" width="80" height="44"><div class="fig-lbl" style="color: var(--r-main-color);">$B$</div></foreignObject></g>
+							<g class="fragment" data-fragment-index="1"><foreignObject x="-225.2" y="128.1" width="80" height="44"><div class="fig-lbl" style="color: #ff3b30;">$m$</div></foreignObject><foreignObject x="-132.9" y="-17.1" width="80" height="44"><div class="fig-lbl" style="color: #8e3fc2;">$h$</div></foreignObject></g>
 						</svg>
+						<p class="fragment" data-fragment-index="3" style="margin: 0.1em 0 0; font-size: 0.55em; color: #555;">
+							Contradiction&nbsp;: $h &lt; H$, alors que $H$ était la plus petite distance.
+						</p>
+				</section>
+
+				<section class="part">
+					<p class="part-kicker">Deuxième partie</p>
+					<h2>La preuve de Steenrod</h2>
+					<p class="part-sub">Idée&nbsp;: transporter le problème du plan sur une sphère.</p>
+				</section>
+
+				<section id="cercle-slide">
+					<h3 style="font-size: 0.7em; margin-bottom: 0.15em;">Un point devient un grand cercle</h3>
+					<div class="applet">
+						<iframe data-src="cercle.html" title="Un point du plan devient un grand cercle sur le ballon"></iframe>
+					</div>
+					<span class="fragment" data-cercle="2"></span>
+					<span class="fragment" data-cercle="3"></span>
+					<span class="fragment" data-cercle="4"></span>
+					<span class="fragment" data-cercle="5"></span>
+					<span class="fragment" data-cercle="6"></span>
+					<span class="fragment" data-cercle="7"></span>
+					<span class="fragment" data-cercle="8"></span>
+					<span class="fragment" data-cercle="9"></span>
+					<span class="fragment" data-cercle="10"></span>
+				</section>
+
+				<section>
+					<h3 style="font-size: 0.75em;">Traduction plan &harr; sphère</h3>
+					<div class="trad">
+						<table>
+							<thead>
+								<tr><th>Plan</th><th>Sphère</th></tr>
+							</thead>
+							<tbody>
+								<tr><td>point $p \in \mathcal{P}$</td><td>grand cercle</td></tr>
+								<tr><td>droite ordinaire</td><td>croisement de deux cercles</td></tr>
+								<tr><td>droite à $\ge 3$ points</td><td>croisement de $\ge 3$ cercles</td></tr>
+							</tbody>
+						</table>
+					</div>
+					<p class="fragment" style="margin-top: 1.1em; font-size: 0.62em;">
+						Des sommets, des arcs, c'est un graphe!
+					</p>
 				</section>
 
 				<!--
 				Commented out: redundant now that the interactive détecteur applet
-				(next slide) lets the audience explore ordinary lines themselves.
+				lets the audience explore ordinary lines themselves.
 				<section>
 					<h3>Vérification de compréhension</h3>
 					<p style="font-size: 0.55em; margin: 0.5em 0 0 0;">
@@ -254,51 +380,39 @@
 				</section>
 				-->
 
-				<section>
-					<h3 style="font-size: 0.7em; margin-bottom: 0.15em;">Détecteur de droites ordinaires</h3>
-					<div class="applet">
-						<iframe data-src="detecteur.html" title="Détecteur de droites ordinaires interactif"></iframe>
-						<!--
-						<div class="qr">
-							<img src="images/qr/detecteur-qr.png" alt="QR code vers le détecteur" />
-							<span>essayer</span>
-						</div>
-						-->
-					</div>
-				</section>
-
 				<section data-auto-animate>
-					<h3>Leonhard Euler</h3>
+					<h3><span class="ttl-slot"><span data-id="ttl-lead" class="ttl-part">Leonhard </span><span data-id="ttl-new" class="ttl-part ttl-ghost">La formule d'</span></span><span data-id="ttl-euler" class="ttl-part">Euler</span></h3>
 					<img data-id="euler" class="r-frame" src="images/euler-flip.jpg" alt="Leonhard Euler" style="height: 500px;" />
 				</section>
 
 				<section data-auto-animate>
-					<h3>La formule d'Euler</h3>
+					<h3><span class="ttl-slot"><span data-id="ttl-lead" class="ttl-part ttl-ghost">Leonhard </span><span data-id="ttl-new" class="ttl-part">La formule d'</span></span><span data-id="ttl-euler" class="ttl-part">Euler</span></h3>
 					<div style="display: flex; align-items: center; justify-content: center; gap: 2.2em;">
 						<img data-id="euler" class="r-frame" src="images/euler-flip.jpg" alt="Leonhard Euler" style="height: 420px;" />
 						<div>
 							<div class="block" style="width: 480px;">
 								<div class="block-title">Formule d'Euler</div>
 								<div class="block-body thm">
-									Si $G$ est un graphe plan connexe avec $S$ sommets, $A$ arêtes et $F$ faces, alors
+									Si $G$ est un graphe planaire connexe avec $S$ sommets, $A$ arêtes et $F$ faces, alors
 									$$S - A + F = 2.$$
 								</div>
 							</div>
 							<div class="defs" style="width: 480px;">
-								<p><em>graphe plan</em>&nbsp;: dessiné sans que deux arêtes se croisent</p>
+								<p><em>graphe planaire</em>&nbsp;: qu'on peut dessiner sans que deux arêtes se croisent</p>
 								<p><em>faces</em>&nbsp;: régions délimitées par le dessin, extérieure comprise</p>
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<section id="euler-ex">
-					<div class="block" style="width: 760px;">
+				<section id="euler-ex" data-auto-animate data-auto-animate-id="gem">
+					<div class="block" data-id="gem-card" style="width: 760px;">
 						<div class="block-title">Exemple</div>
 						<div class="block-body" style="text-align: center;">
 							<div class="ex-tally"></div>
-							<svg viewBox="-410 -225 820 510" style="width: 640px; height: 398px;">
-								<rect class="ex-f" data-k="7" x="-410" y="-225" width="820" height="510" fill="#d2e4de" style="opacity: 0; transition: opacity 0.4s;" />
+							<div data-id="gem" style="width: 680px; height: 366.2px; margin: 0 auto;">
+							<svg viewBox="-429.03 -195.02 858.06 462.03" style="width: 680px; height: 366.2px; display: block;">
+								<rect class="ex-f" data-k="7" x="-429.03" y="-195.02" width="858.06" height="462.03" fill="#d2e4de" style="opacity: 0; transition: opacity 0.4s;" />
 								<polygon class="ex-f" data-k="0" points="-360,-48.0 -168.0,-180.0 -192.0,-48.0" fill="#83C167" style="opacity: 0; transition: opacity 0.4s;" />
 								<polygon class="ex-f" data-k="1" points="-168.0,-180.0 168.0,-180.0 192.0,-48.0 0,-48.0 -192.0,-48.0" fill="#58C4DD" style="opacity: 0; transition: opacity 0.4s;" />
 								<polygon class="ex-f" data-k="2" points="168.0,-180.0 360,-48.0 192.0,-48.0" fill="#9A72AC" style="opacity: 0; transition: opacity 0.4s;" />
@@ -321,16 +435,17 @@
 								<line class="ex-e" x1="192.0" y1="-48.0" x2="0" y2="84.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
 								<line class="ex-e" x1="360" y1="-48.0" x2="0" y2="252.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
 								<line class="ex-e" x1="0" y1="84.0" x2="0" y2="252.0" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
-								<circle class="ex-v" cx="-168.0" cy="-180.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="168.0" cy="-180.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="-360" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="-192.0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="192.0" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="360" cy="-48.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="0" cy="84.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
-								<circle class="ex-v" cx="0" cy="252.0" r="9" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="-168.0" cy="-180.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="168.0" cy="-180.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="-360" cy="-48.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="-192.0" cy="-48.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="-48.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="192.0" cy="-48.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="360" cy="-48.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="84.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
+								<circle class="ex-v" cx="0" cy="252.0" r="8" fill="#1a1a1a" style="transform-box: fill-box; transform-origin: center;" />
 							</svg>
+							</div>
 						</div>
 					</div>
 					<span class="fragment" data-ex="1"></span>
@@ -339,46 +454,90 @@
 					<span class="fragment" data-ex="4"></span>
 				</section>
 
-				<section>
-					<div class="block" style="width: 900px;">
-						<div class="block-title">Théorème</div>
-						<div class="block-body thm">Tout graphe plan simple possède un sommet de degré au plus 5.</div>
-					</div>
-					<div class="defs" style="width: 900px; margin-top: 0.5em;">
-						<p><em>simple</em>&nbsp;: sans boucle ni arête multiple &emsp;&emsp; <em>degré</em> d'un sommet&nbsp;: nombre d'arêtes qui y aboutissent</p>
-					</div>
-					<div class="applet" style="margin-top: 0.6em;">
-						<iframe data-src="graphe.html" title="Graphes plans : degrés et formule d'Euler" style="height: 505px;"></iframe>
-						<!--
-						<div class="qr">
-							<img src="images/qr/graphe-qr.png" alt="QR code vers l'application graphes" />
-							<span>essayer</span>
+				<section id="ballon" data-auto-animate data-auto-animate-id="gem">
+					<h3 style="font-size: 0.7em; margin-bottom: 0.2em;">Du plan au ballon</h3>
+					<!-- invisible copy of the previous slide's card: it fades out as the diamond grows out of it -->
+					<div class="block gem-ghost" data-id="gem-card" data-auto-animate-duration="0.6" aria-hidden="true" style="width: 760px;">
+						<div class="block-title">Exemple</div>
+						<div class="block-body" style="text-align: center;">
+							<div class="ex-tally"></div>
+							<div style="width: 680px; height: 366.2px; margin: 0 auto;"></div>
 						</div>
-						-->
+					</div>
+					<div data-id="gem" style="width: 780px; height: 420px; margin: 0 auto; position: relative; z-index: 1;">
+						<canvas class="ballon-cv" style="width: 780px; height: 420px; display: block;"></canvas>
+					</div>
+					<p class="fragment late" data-ballon="1" style="font-size: 0.55em; margin: 0.4em 0 0.6em;">
+						Sur un ballon, l'extérieur devient une face comme les autres.
+					</p>
+					<div class="block fragment" data-ballon="2" style="width: 520px;">
+						<div class="block-title">Formule d'Euler sur la sphère</div>
+						<div class="block-body" style="text-align: center;">$S - A + F = 2$</div>
 					</div>
 				</section>
 
 				<section>
-					<h3 style="font-size: 0.75em;">Dictionnaire plan &harr; sphère</h3>
-					<div style="display: grid; grid-template-columns: 1fr 1fr; row-gap: 0.7em; column-gap: 2.5em; max-width: 760px; margin: 1.8em auto 0; font-size: 0.6em; text-align: left;">
-						<div style="font-weight: 700; color: var(--r-link-color);">Plan</div>
-						<div style="font-weight: 700; color: var(--r-link-color);">Sphère</div>
-
-						<div>point $p \in \mathcal{P}$</div>
-						<div>paire de points antipodaux</div>
-
-						<div>droite connectrice</div>
-						<div>grand cercle</div>
-
-						<div>droite ordinaire</div>
-						<div>croisement de degré 4</div>
-
-						<div>droite à $\ge 3$ points</div>
-						<div>croisement de degré $\ge 6$</div>
-
-						<div class="fragment" data-fragment-index="0" style="border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.5em; font-weight: 600;">$\exists$ droite ordinaire</div>
-						<div class="fragment" data-fragment-index="0" style="border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.5em; font-weight: 600;">$\exists$ sommet de degré 4</div>
+					<div class="stage" style="height: 690px;">
+						<p style="width: 900px; margin: 0 auto 0.6em; text-align: left; font-size: 0.55em; line-height: 1.4;">
+							Euler aimait beaucoup les graphes.
+							Voici une conséquence de sa formule&nbsp;:
+						</p>
+						<div class="block" style="width: 900px;">
+							<div class="block-title">Théorème</div>
+							<div class="block-body thm">Tout graphe planaire simple possède un sommet de degré au plus 5.</div>
+						</div>
+						<div class="defs" style="width: 900px; margin-top: 0.5em;">
+							<p><em>simple</em>&nbsp;: sans boucle ni arête multiple &emsp;&emsp; <em>degré</em> d'un sommet&nbsp;: nombre d'arêtes qui y aboutissent</p>
+						</div>
+						<div class="applet fragment unfold tall">
+							<iframe data-src="graphe.html" title="Graphes planaires : degrés et formule d'Euler" style="height: 450px;"></iframe>
+							<!--
+							<div class="qr">
+								<img src="images/qr/graphe-qr.png" alt="QR code vers l'application graphes" />
+								<span>essayer</span>
+							</div>
+							-->
+						</div>
 					</div>
+				</section>
+
+				<section>
+					<div class="block" style="width: 860px;">
+						<div class="block-title">Le graphe des cercles</div>
+						<div class="block-body">
+							<p>Sur la sphère, les grands cercles $C_p$ $(p \in \mathcal{P})$ dessinent un graphe $G$ où</p>
+							<p style="margin-left: 1.2em;"><em>sommets</em>&nbsp;: les croisements des cercles,<br /><em>arêtes</em>&nbsp;: les arcs de cercle entre deux croisements voisins.</p>
+						</div>
+					</div>
+					<div class="fragment" style="margin-top: 0.7em;">
+						<svg viewBox="0 0 760 290" style="width: 700px; height: 267px; display: block; margin: 0 auto;">
+							<defs><radialGradient id="patch" cx="0.38" cy="0.35" r="0.8"><stop offset="0" stop-color="#ffffff" /><stop offset="0.6" stop-color="#eef3f9" /><stop offset="1" stop-color="#d7e0ee" /></radialGradient></defs>
+							<circle cx="190" cy="128" r="118" fill="url(#patch)" stroke="#c8d2e2" stroke-width="1.2" />
+							<line x1="105.2" y1="173.1" x2="274.8" y2="82.9" stroke="#2a62c9" stroke-width="3.2" stroke-linecap="round" />
+							<line x1="108.6" y1="77.1" x2="271.4" y2="178.9" stroke="#e08a00" stroke-width="3.2" stroke-linecap="round" />
+							<text x="281.6" y="191.2" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">1</text>
+							<text x="94.6" y="184.7" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">2</text>
+							<text x="98.4" y="76.8" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">3</text>
+							<text x="285.4" y="83.3" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">4</text>
+							<circle cx="190" cy="128" r="7.5" fill="#1a1a1a" stroke="#fff" stroke-width="2" />
+							<circle cx="570" cy="128" r="118" fill="url(#patch)" stroke="#c8d2e2" stroke-width="1.2" />
+							<line x1="485.2" y1="173.1" x2="654.8" y2="82.9" stroke="#2a62c9" stroke-width="3.2" stroke-linecap="round" />
+							<line x1="488.6" y1="77.1" x2="651.4" y2="178.9" stroke="#e08a00" stroke-width="3.2" stroke-linecap="round" />
+							<line x1="570.0" y1="32.0" x2="570.0" y2="224.0" stroke="#2e9e4f" stroke-width="3.2" stroke-linecap="round" />
+							<text x="661.6" y="191.2" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">1</text>
+							<text x="570.0" y="242.0" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">2</text>
+							<text x="474.6" y="184.7" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">3</text>
+							<text x="478.4" y="76.8" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">4</text>
+							<text x="570.0" y="26.0" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">5</text>
+							<text x="665.4" y="83.3" text-anchor="middle" font-family="'MLModern Sans', sans-serif" font-size="17" fill="#667085">6</text>
+							<circle cx="570" cy="128" r="7.5" fill="#1a1a1a" stroke="#fff" stroke-width="2" />
+							<text x="190" y="280" text-anchor="middle" font-family="'MLModern Serif', serif" font-size="22" fill="#1a1a1a">deux cercles : degré 4</text>
+							<text x="570" y="280" text-anchor="middle" font-family="'MLModern Serif', serif" font-size="22" fill="#1a1a1a">trois cercles : degré 6</text>
+						</svg>
+					</div>
+					<p class="fragment" style="font-size: 0.62em; margin-top: 0.5em;">
+						Un croisement de $k$ cercles est de degré $2k$, donc  tous les degrés sont <strong>pairs</strong> et $\ge 4$.
+					</p>
 				</section>
 
 				<section>
@@ -393,6 +552,35 @@
 						-->
 					</div>
 				</section>
+
+				<section>
+					<div class="block" style="width: 860px;">
+						<div class="block-title">Fin de la preuve</div>
+						<div class="block-body">
+							<p>$G$ est planaire (il est dessiné sur la sphère) et simple.</p>
+							<p class="fragment">Par le théorème, $G$ a un sommet $v$ de degré $\le 5$.</p>
+							<p class="fragment">Tous les degrés sont pairs et $\ge 4$, donc $\deg v = 4$.</p>
+							<p class="fragment">Exactement deux cercles $C_p$ et $C_q$ passent par $v$, donc la droite $l$ qui passe par $p$ et $q$ ne contient que $p$ et $q$.</p>
+							<p class="fragment">
+                            On conclut que $l$ est ordinaire.$\blacksquare$
+                            </p> 
+						</div>
+					</div>
+					<div class="defs fragment" style="width: 860px;">
+					</div>
+				</section>
+
+				<section>
+					<div class="block" style="width: 760px;">
+						<div class="block-title">On a vu aujourd'hui deux preuves</div>
+						<div class="block-body">
+							<p><strong>Kelly</strong>&nbsp;:   distance minimale (géométrie).</p>
+							<p><strong>Steenrod</strong>&nbsp;: la formule d'Euler (topologie).</p>
+						</div>
+					</div> 
+				</section>
+
+				<section data-background-image="images/end.webp" data-background-size="cover"></section>
 			</div>
 		</div>
 
@@ -420,7 +608,278 @@
 					],
 				});
 				setupEulerExample();
+				setupBallon();
+				setupCercle();
+				Reveal.layout();   // re-centre slides now that math and tallies are drawn
+
+				// Leaving a slide unloads its applet (the iframe goes blank). If the keyboard
+				// focus was inside it, Space and the arrows would be lost there, so hand the
+				// focus back to the deck on every slide change.
+				Reveal.on('slidechanged', () => {
+					const a = document.activeElement;
+					if (a && a.tagName === 'IFRAME') {
+						a.blur();
+						window.focus();
+					}
+				});
 			});
+
+			// "Un point devient un grand cercle": one empty fragment per step of the
+			// applet, so Space/arrows walk through its steps before leaving the slide.
+			function setupCercle() {
+				const slide = document.getElementById('cercle-slide');
+				if (!slide) return;
+				const frame = slide.querySelector('iframe');
+				const sync = () => {
+					const step = 1 + slide.querySelectorAll('.fragment.visible[data-cercle]').length;
+					if (frame.contentWindow) frame.contentWindow.postMessage({ cercleStep: step }, '*');
+				};
+				frame.addEventListener('load', sync);
+				Reveal.on('fragmentshown', e => { if (slide.contains(e.fragment)) sync(); });
+				Reveal.on('fragmenthidden', e => { if (slide.contains(e.fragment)) sync(); });
+				Reveal.on('slidechanged', e => { if (e.currentSlide === slide) sync(); });
+			}
+
+			// "Du plan au ballon": the example's plane wraps onto a sphere by inverse
+			// stereographic projection onto spheres of growing curvature (the sheet
+			// bends like paper around a ball); the unbounded outer face closes up
+			// into a cap around the far pole. Plain canvas; drag to turn the ball.
+			function setupBallon() {
+				const slide = document.getElementById('ballon');
+				if (!slide) return;
+				const cv = slide.querySelector('.ballon-cv');
+				const ctx = cv.getContext('2d');
+				const W = 780, H = 420, DPR = 2;
+				cv.width = W * DPR;
+				cv.height = H * DPR;
+				ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+				// The gem of the example slide, in plane units (y up).
+				const K = 0.55;
+				const G = { t0: [-1.4, -1.5], t1: [1.4, -1.5], g0: [-3, -0.4], g1: [-1.6, -0.4], g2: [0, -0.4],
+					g3: [1.6, -0.4], g4: [3, -0.4], p: [0, 0.7], b: [0, 2.1] };
+				const V = {};
+				for (const k in G) V[k] = [G[k][0] * K, -(G[k][1] - 0.3) * K];
+				const FACES = [
+					[['g0', 't0', 'g1'], '#83C167'], [['t0', 't1', 'g3', 'g2', 'g1'], '#58C4DD'], [['t1', 'g4', 'g3'], '#9A72AC'],
+					[['g0', 'g1', 'p', 'b'], '#FC6255'], [['g1', 'g2', 'p'], '#F0AC5F'], [['g2', 'g3', 'p'], '#C55F73'],
+					[['g3', 'g4', 'b', 'p'], '#5CD0B3'],
+				];
+				const EDGES = [['t0', 't1'], ['g0', 't0'], ['t0', 'g1'], ['t1', 'g3'], ['t1', 'g4'], ['g0', 'g1'], ['g1', 'g2'],
+					['g2', 'g3'], ['g3', 'g4'], ['g0', 'b'], ['g1', 'p'], ['g2', 'p'], ['g3', 'p'], ['g4', 'b'], ['p', 'b']];
+				const OUTER = ['g0', 't0', 't1', 'g4', 'b'];   // boundary walk of the outer face (a convex pentagon)
+				const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+				const N = 12;  // subdivision per face triangle; the outer ring uses the same step along the boundary
+
+				// Plane triangles: the inner faces, fan-triangulated then subdivided...
+				const tris = [];
+				for (const [poly, col] of FACES) {
+					const rgb = hex(col);
+					for (let i = 1; i < poly.length - 1; i++) {
+						const A = V[poly[0]], B = V[poly[i]], C = V[poly[i + 1]];
+						const at = (u, v) => [A[0] + ((B[0] - A[0]) * u + (C[0] - A[0]) * v) / N,
+							A[1] + ((B[1] - A[1]) * u + (C[1] - A[1]) * v) / N];
+						for (let u = 0; u < N; u++) {
+							for (let v = 0; u + v < N; v++) {
+								tris.push({ pts: [at(u, v), at(u + 1, v), at(u, v + 1)], rgb });
+								if (u + v < N - 1) tris.push({ pts: [at(u + 1, v), at(u + 1, v + 1), at(u, v + 1)], rgb });
+							}
+						}
+					}
+				}
+				// ...and the unbounded outer face: rays from inside the pentagon out to a
+				// far radius (geometric spacing), then a small fan closing at the far pole.
+				const outerRGB = hex('#d2e4de');
+				const ring = [];
+				OUTER.forEach((k, i) => {
+					const a = V[k], b = V[OUTER[(i + 1) % OUTER.length]];
+					for (let s = 0; s < N; s++) ring.push([a[0] + (b[0] - a[0]) * s / N, a[1] + (b[1] - a[1]) * s / N]);
+				});
+				const c0 = [ring.reduce((s, q) => s + q[0], 0) / ring.length, ring.reduce((s, q) => s + q[1], 0) / ring.length];
+				const M = 30, FAR = 400;
+				const rays = ring.map(q => {
+					const d = [q[0] - c0[0], q[1] - c0[1]], L = Math.hypot(d[0], d[1]);
+					return Array.from({ length: M + 1 }, (_, j) => {
+						const s = Math.pow(FAR / L, j / M);
+						return [c0[0] + d[0] * s, c0[1] + d[1] * s];
+					});
+				});
+				rays.forEach((A, i) => {
+					const B = rays[(i + 1) % rays.length];
+					for (let j = 0; j < M; j++) {
+						tris.push({ pts: [A[j], B[j], B[j + 1]], rgb: outerRGB });
+						tris.push({ pts: [A[j], B[j + 1], A[j + 1]], rgb: outerRGB });
+					}
+					tris.push({ pts: [A[M], B[M], 'F'], rgb: outerRGB, far: true });
+				});
+
+				// Plane point -> point on the sphere of curvature kap tangent to the plane
+				// z = 1 at the origin, projecting from its far pole; also the outward normal.
+				function wrap(q, kap) {
+					if (q === 'F') return { p: [0, 0, 1 - 2 / kap], n: [0, 0, -1] };
+					if (kap < 1e-4) return { p: [q[0], q[1], 1], n: [0, 0, 1] };
+					const R = 1 / kap, a = q[0] * kap / 2, b = q[1] * kap / 2, r2 = a * a + b * b, d = 1 + r2;
+					const n = [2 * a / d, 2 * b / d, (1 - r2) / d];
+					return { p: [n[0] * R, n[1] * R, 1 - R + n[2] * R], n };
+				}
+
+				let kappa = 0, tilt = 0, dragYaw = 0, dragTilt = 0;
+				const TILT = 0;            // the diamond ends up facing the viewer, wrapped around the front
+				const D = 7;               // camera distance (perspective)
+				const scale = () => 170 + 25 * kappa;   // zooms in a little as the ball closes
+				const LIGHT = [-0.45, 0.6, 0.66].map((c, _, l) => c / Math.hypot(...l));
+				function cam(v) {
+					const t = tilt + dragTilt, ct = Math.cos(t), st = Math.sin(t);
+					const cw = Math.cos(dragYaw), sw = Math.sin(dragYaw);
+					const y = v[1] * ct - v[2] * st, z = v[1] * st + v[2] * ct;
+					return [v[0] * cw + z * sw, y, -v[0] * sw + z * cw];
+				}
+				const proj = v => { const k = D / (D - v[2]), S = scale(); return [W / 2 + v[0] * S * k, H / 2 - v[1] * S * k, k]; };
+				const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+				const facing = (pc, nc) => dot(nc, [-pc[0], -pc[1], D - pc[2]]) > 0;
+
+				// Near and far sides go on separate layers, then get blended: the ball is
+				// see-through without the mesh triangles' overlaps showing up as a grid.
+				const layer = () => {
+					const c = document.createElement('canvas');
+					c.width = W * DPR;
+					c.height = H * DPR;
+					const g = c.getContext('2d');
+					g.setTransform(DPR, 0, 0, DPR, 0, 0);
+					return [c, g];
+				};
+				const [backCv, backCtx] = layer(), [frontCv, frontCtx] = layer();
+
+				function render() {
+					const kap = kappa;
+					for (const g of [backCtx, frontCtx]) {
+						g.clearRect(0, 0, W, H);
+						g.lineWidth = 0.8;
+						g.lineJoin = 'round';
+					}
+					for (const t of tris) {
+						if (t.far && kap < 0.02) continue;
+						const w = t.pts.map(q => wrap(q, kap));
+						const c = w.map(o => cam(o.p));
+						const nc = cam([(w[0].n[0] + w[1].n[0] + w[2].n[0]) / 3, (w[0].n[1] + w[1].n[1] + w[2].n[1]) / 3,
+							(w[0].n[2] + w[1].n[2] + w[2].n[2]) / 3]);
+						const pc = [(c[0][0] + c[1][0] + c[2][0]) / 3, (c[0][1] + c[1][1] + c[2][1]) / 3, (c[0][2] + c[1][2] + c[2][2]) / 3];
+						const front = facing(pc, nc);
+						const sh = front
+							? Math.min(1.06, 0.8 + 0.2 * Math.max(0, dot(nc, LIGHT)) / LIGHT[2])   // flat sheet = exact colours
+							: 0.62 + 0.18 * Math.max(0, -dot(nc, LIGHT));                          // far side, seen from inside
+						const g = front ? frontCtx : backCtx, s = c.map(proj);
+						g.fillStyle = g.strokeStyle = `rgb(${t.rgb.map(x => Math.min(255, Math.round(x * sh))).join(',')})`;
+						g.beginPath();
+						g.moveTo(s[0][0], s[0][1]);
+						g.lineTo(s[1][0], s[1][1]);
+						g.lineTo(s[2][0], s[2][1]);
+						g.closePath();
+						g.fill();
+						g.stroke();
+					}
+
+					// Edges and vertices: far-side ones on the back layer, seen faintly through the ball.
+					const frontSegs = [], frontDots = [];
+					backCtx.strokeStyle = '#64748b';
+					backCtx.lineCap = 'round';
+					for (const [e0, e1] of EDGES) {
+						const a = V[e0], b = V[e1];
+						let prev = null;
+						for (let i = 0; i <= 24; i++) {
+							const w = wrap([a[0] + (b[0] - a[0]) * i / 24, a[1] + (b[1] - a[1]) * i / 24], kap);
+							const pc = cam(w.p), vis = facing(pc, cam(w.n)), sp = proj(pc);
+							if (prev && vis && prev.vis) frontSegs.push([prev.sp, sp]);
+							else if (prev && !vis && !prev.vis) {
+								backCtx.lineWidth = 2 * sp[2];
+								backCtx.beginPath();
+								backCtx.moveTo(prev.sp[0], prev.sp[1]);
+								backCtx.lineTo(sp[0], sp[1]);
+								backCtx.stroke();
+							}
+							prev = { sp, vis };
+						}
+					}
+					backCtx.fillStyle = '#1a1a1a';
+					for (const k in V) {
+						const w = wrap(V[k], kap), pc = cam(w.p), sp = proj(pc);
+						if (facing(pc, cam(w.n))) { frontDots.push(sp); continue; }
+						backCtx.beginPath();
+						backCtx.arc(sp[0], sp[1], 4.5 * sp[2], 0, 2 * Math.PI);
+						backCtx.fill();
+					}
+
+					// Composite: far side, then the near side (opaque while flat, see-through once wrapped).
+					ctx.clearRect(0, 0, W, H);
+					ctx.globalAlpha = 1;
+					ctx.drawImage(backCv, 0, 0, W, H);
+					ctx.globalAlpha = 1 - 0.32 * kap;
+					ctx.drawImage(frontCv, 0, 0, W, H);
+					ctx.globalAlpha = 1;
+					ctx.strokeStyle = '#64748b';
+					ctx.lineCap = 'round';
+					for (const [p0, p1] of frontSegs) {
+						ctx.lineWidth = 2.4 * p1[2];
+						ctx.beginPath();
+						ctx.moveTo(p0[0], p0[1]);
+						ctx.lineTo(p1[0], p1[1]);
+						ctx.stroke();
+					}
+					ctx.fillStyle = '#1a1a1a';
+					for (const sp of frontDots) {
+						ctx.beginPath();
+						ctx.arc(sp[0], sp[1], 6.2 * sp[2], 0, 2 * Math.PI);
+						ctx.fill();
+					}
+				}
+
+				function setState(k) { kappa = k; tilt = TILT * k; }
+				let anim = null;
+				function animateTo(target) {
+					anim = { from: kappa, target, t0: performance.now(), dur: 2300 };
+					requestAnimationFrame(function step(now) {
+						if (!anim) return;
+						const u = Math.min(1, (now - anim.t0) / anim.dur);
+						const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+						setState(anim.from + (anim.target - anim.from) * e);
+						render();
+						if (u < 1) requestAnimationFrame(step); else anim = null;
+					});
+				}
+
+				const wrapped = () => slide.querySelector('.fragment.visible[data-ballon="1"]') !== null;
+				Reveal.on('fragmentshown', e => { if (e.fragment.dataset.ballon === '1' && slide.contains(e.fragment)) animateTo(1); });
+				Reveal.on('fragmenthidden', e => { if (e.fragment.dataset.ballon === '1' && slide.contains(e.fragment)) animateTo(0); });
+				Reveal.on('slidechanged', e => {
+					if (e.currentSlide !== slide) return;
+					anim = null;
+					dragYaw = dragTilt = 0;
+					setState(wrapped() ? 1 : 0);
+					render();
+				});
+
+				// Drag to turn the ball (the arrow keys keep navigating the deck).
+				let drag = null;
+				cv.style.cursor = 'grab';
+				cv.style.touchAction = 'none';
+				cv.addEventListener('pointerdown', e => {
+					drag = { x: e.clientX, y: e.clientY, yaw: dragYaw, tilt: dragTilt };
+					cv.setPointerCapture(e.pointerId);
+				});
+				cv.addEventListener('pointermove', e => {
+					if (!drag) return;
+					dragYaw = drag.yaw + (e.clientX - drag.x) * 0.01;
+					dragTilt = drag.tilt + (e.clientY - drag.y) * 0.01;
+					if (!anim) render();
+				});
+				const endDrag = () => { drag = null; };
+				cv.addEventListener('pointerup', endDrag);
+				cv.addEventListener('pointercancel', endDrag);
+				['touchstart', 'touchmove'].forEach(t => cv.addEventListener(t, e => e.stopPropagation(), { passive: true }));
+
+				setState(wrapped() ? 1 : 0);
+				render();
+			}
 
 			// "Un exemple": each click counts one kind of object (vertices, edges,
 			// faces), lighting them up one by one while the tally below S − A + F
@@ -436,13 +895,16 @@
 				let timers = [];
 
 				// Every cell keeps a fixed width so the tally never shifts while counting.
-				function renderTally(v, e, f, done) {
-					const num = x => (x == null ? '\\hphantom{00}' : '\\hphantom{0}\\mathclap{' + x + '}\\hphantom{0}');
+				// The count being ticked (S, A or F: column 1, 2 or 3) is shown in red.
+				let activeCol = 0;
+				function renderTally(v, e, f, done, target = tally) {
+					const num = (x, col) => (x == null ? '\\hphantom{00}' : '\\hphantom{0}\\mathclap{'
+						+ (col === activeCol ? '\\textcolor{' + RED + '}{' + x + '}' : x) + '}\\hphantom{0}');
 					const op = (sym, on) => (on ? sym : '\\hphantom{' + sym + '}');
-					const row = [num(v), op('-', e != null), num(e), op('+', f != null), num(f),
+					const row = [num(v, 1), op('-', e != null), num(e, 2), op('+', f != null), num(f, 3),
 						op('=', done), done ? '2' : '\\hphantom{2}'];
 					katex.render('\\begin{array}{ccccccc} S & - & A & + & F & & \\\\ ' + row.join(' & ') + ' \\end{array}',
-						tally, { displayMode: true, throwOnError: false });
+						target, { displayMode: true, throwOnError: false });
 				}
 
 				function paint(nV, nE, nF) {
@@ -462,6 +924,7 @@
 				function show(level, animate) {
 					timers.forEach(clearTimeout);
 					timers = [];
+					activeCol = level >= 1 && level <= 3 ? level : 0;
 					const V = verts.length, E = edges.length, F = faces.length;
 					if (!animate || level === 0 || level === 4) {
 						paint(level === 1 ? V : 0, level === 2 ? E : 0, level >= 3 ? F : 0);
@@ -476,6 +939,9 @@
 					if (level === 2) { renderTally(V, null, null, false); count(E, 190, k => { paint(0, k, 0); bounce.e(edges[k - 1]); renderTally(V, k, null, false); }); }
 					if (level === 3) { renderTally(V, E, null, false); count(F, 380, k => { paint(0, 0, k); renderTally(V, E, k, false); }); }
 				}
+
+				const ghostTally = document.querySelector('#ballon .gem-ghost .ex-tally');
+				if (ghostTally) renderTally(verts.length, edges.length, faces.length, true, ghostTally);
 
 				const level = () => slide.querySelectorAll('.fragment.visible[data-ex]').length;
 				Reveal.on('fragmentshown', e => { if (slide.contains(e.fragment)) show(level(), true); });
