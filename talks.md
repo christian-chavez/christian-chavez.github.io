@@ -4,6 +4,12 @@ title: Talks & posters
 permalink: /presentations/
 ---
 
+<style>
+.poster-photo { max-width: 600px; margin: 0 auto; text-align: center; }
+.poster-photo img { box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+.poster-photo figcaption { margin-top: 0.5rem; }
+</style>
+
 | Date | Title | At |
 |---|---|---|
 | 2026-09-29 | [Le théorème de Sylvester–Gallai](/assets/presentations/sylvester-gallai/index.html) | Université de Sherbrooke, Canada |
@@ -13,6 +19,11 @@ permalink: /presentations/
 | 2023-08-01 | [Teoría de categorías](/assets/presentations/categories/index.html) | Yachay Tech University, Ecuador |
 | 2023-07-31 | [Conceptos básicos de criptografía](/assets/presentations/cryptography/index.html) | Yachay Tech University, Ecuador |
 {: .talk-list}
+
+<figure class="poster-photo">
+  <a href="/assets/media/poster-lorentz-2026.jpg" target="_blank" rel="noopener"><img src="/assets/media/poster-lorentz-2026.jpg" alt="Christian Chávez standing next to the poster “The category of chords, cluster categories and interleavings”"></a>
+  <figcaption>Poster session at the Lorentz Center, Leiden (July 2026).</figcaption>
+</figure>
 
 <script>
   document.querySelectorAll("table.talk-list a").forEach(function (a) {
