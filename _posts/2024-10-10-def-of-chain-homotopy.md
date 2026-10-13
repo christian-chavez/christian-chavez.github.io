@@ -2,7 +2,7 @@
 layout: post
 title: "On the definition(s) of homotopy"
 author: "Christian Chávez"
-published: true
+published: false
 ---
 
 
