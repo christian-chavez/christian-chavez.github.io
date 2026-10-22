@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>An interval module along an arrow</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  #fig.grab { cursor: grab; }
+  #fig.grabbing { cursor: grabbing; }
+  #fig.resize { cursor: ew-resize; }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .lbl.left { justify-content: flex-start; }
+
+  #play {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.65em;
+    font-size: clamp(12px, 1.6vw, 20px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  #play:hover { border-color: var(--ink); }
+  #play:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #play svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 720 190" aria-label="The interval module of [a, b] applied to an arrow that slides along the real line"></svg>
+
+<button id="play" title="Let the arrow move (M)" aria-pressed="false" hidden></button>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  // Options after # in the address, joined by +: 'short' draws a shorter line,
+  // for a narrow spot such as a column; 'shade' puts a light blue band behind
+  // the interval; 'nolabel' leaves out the name k^[a,b] (the slide shows it
+  // instead) and trims the space it took. E.g. interval.html#short+shade
+  const OPTS = new Set(location.hash.slice(1).split('+'));
+  const SHORT = OPTS.has('short'), SHADE = OPTS.has('shade'), NOLABEL = OPTS.has('nolabel');
+  const PLAY = OPTS.has('play');     // 'play': the arrow moves from the start
+  const Y = 120;                     // height of the real line
+  const X_LO = SHORT ? 34 : 62;      // the arrow stays between X_LO and X_HI
+  const X_HI = SHORT ? 452 : 672;
+  const LEN = SHORT ? 80 : 100;      // length of the arrow r → s
+  const PASS = SHORT ? 9300 : 14000; // ms for the arrow to cross (the same speed either way)
+  const MIN_LEN = 40;                // the interval keeps at least this length
+  const COLOR = { arrow: '#0038ff', ink: '#1a1a1a', axis: '#1a1a1a' };
+
+  // The interval I = [a, b] and the tail r of the arrow r → s, in figure units.
+  let a = SHORT ? 170 : 262, b = SHORT ? 330 : 462, r = SHORT ? 40 : 70;
+
+  // The interval module k^I sends a point to k if it lies in I and to 0
+  // otherwise, and an arrow r → s to the identity if r, s ∈ I and to 0 otherwise.
+  const inI = x => a <= x && x <= b;
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  if (SHORT) svg.setAttribute('viewBox', NOLABEL ? '0 50 480 140' : '0 0 480 190');
+  else if (NOLABEL) svg.setAttribute('viewBox', '0 50 720 140');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (w, size, color, left) => {
+    const fo = el('foreignObject', { width: w, height: 44 });
+    const div = document.createElement('div');
+    div.className = left ? 'lbl left' : 'lbl';
+    div.style.fontSize = size + 'px';
+    div.style.color = color;
+    fo.appendChild(div);
+    return { fo, div, w, left, key: null };
+  };
+  // Centred on (x, y); a left-aligned label starts at x instead.
+  const setLabel = (l, tex, x, y) => {
+    if (l.key !== tex) { katex.render(tex, l.div); l.key = tex; }
+    l.fo.setAttribute('x', l.left ? x : x - l.w / 2);
+    l.fo.setAttribute('y', y - 22);
+  };
+
+  const stroke = (color, width) => ({ fill: 'none', stroke: color, 'stroke-width': width, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+
+  // the real line
+  // the light blue band behind [a, b], as tall as the brackets
+  const band = el('rect', { y: Y - 24, height: 44, fill: '#d6e8ff', visibility: SHADE ? 'visible' : 'hidden' });
+  el('line', { x1: X_LO, y1: Y, x2: X_HI + 8, y2: Y, ...stroke(COLOR.axis, 1.6) });
+  el('path', { d: `M${X_HI - 5},${Y - 8}L${X_HI + 9},${Y}L${X_HI - 5},${Y + 8}`, ...stroke(COLOR.axis, 1.6) });
+  // the interval: two square brackets with their names underneath
+  const brA = el('path', stroke(COLOR.axis, 2)), brB = el('path', stroke(COLOR.axis, 2));
+  const nameA = label(60, 20, COLOR.axis), nameB = label(60, 20, COLOR.axis);
+  // the arrow r → s, the spaces over its two ends, and the map over its middle
+  const shaft = el('line', stroke(COLOR.arrow, 4.5)), head = el('path', stroke(COLOR.arrow, 4));
+  const atR = label(40, 17, COLOR.ink), atS = label(40, 17, COLOR.ink);
+  const map = label(70, 27, COLOR.arrow);
+  if (!NOLABEL) setLabel(label(160, 27, COLOR.ink, true), '\\mathbf{k}^{[a,b]}', 12, 30);
+
+  function draw() {
+    const s = r + LEN;
+    band.setAttribute('x', a);
+    band.setAttribute('width', b - a);
+    brA.setAttribute('d', `M${a + 11},${Y - 24}H${a}V${Y + 20}H${a + 11}`);
+    brB.setAttribute('d', `M${b - 11},${Y - 24}H${b}V${Y + 20}H${b - 11}`);
+    setLabel(nameA, 'a', a + 2, Y + 36);
+    setLabel(nameB, 'b', b + 2, Y + 36);
+
+    shaft.setAttribute('x1', r); shaft.setAttribute('y1', Y);
+    shaft.setAttribute('x2', s - 3); shaft.setAttribute('y2', Y);
+    head.setAttribute('d', `M${s - 13},${Y - 7}L${s},${Y}L${s - 13},${Y + 7}`);
+
+    setLabel(atR, inI(r) ? '\\mathbf{k}' : '\\mathbf{0}', r, Y - 15);
+    setLabel(atS, inI(s) ? '\\mathbf{k}' : '\\mathbf{0}', s, Y - 15);
+    setLabel(map, inI(r) && inI(s) ? '\\mathrm{Id}' : '0', r + LEN / 2, Y - 40);
+  }
+
+  // ---------- pointer ----------
+  // The arrow can be dragged along the line, and so can a and b.
+  function toSvg(e) {
+    return new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  function hit(e) {
+    const m = toSvg(e);
+    if (Math.abs(m.y - Y) > 34) return null;
+    if (m.x >= r - 8 && m.x <= r + LEN + 8 && Math.abs(m.y - Y) <= 16) return { arrow: true, grip: m.x - r };
+    if (Math.abs(m.x - a) < 16) return { end: 'a' };
+    if (Math.abs(m.x - b) < 16) return { end: 'b' };
+    if (m.x >= r - 8 && m.x <= r + LEN + 8) return { arrow: true, grip: m.x - r };
+    return null;
+  }
+
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = hit(e);
+    if (!drag) return;
+    svg.setPointerCapture(e.pointerId);
+    if (drag.arrow) svg.setAttribute('class', 'grabbing');
+  });
+
+  svg.addEventListener('pointermove', e => {
+    if (!drag) {
+      const h = hit(e);
+      svg.setAttribute('class', !h ? '' : h.arrow ? 'grab' : 'resize');
+      return;
+    }
+    const x = toSvg(e).x;
+    if (drag.arrow) r = Math.max(X_LO, Math.min(X_HI - LEN, x - drag.grip));
+    else if (drag.end === 'a') a = Math.max(X_LO + 20, Math.min(b - MIN_LEN, x));
+    else b = Math.min(X_HI - 20, Math.max(a + MIN_LEN, x));
+    draw();
+  });
+
+  const endDrag = () => {
+    if (!drag) return;
+    drag = null;
+    svg.setAttribute('class', '');
+  };
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  // ---------- letting the arrow move ----------
+  // The arrow crosses from left to right and starts again, as in the GIF.
+  // It moves from the start; holding it with the pointer pauses it.
+  const playBtn = document.getElementById('play');
+  const ICON = {
+    play: '<svg viewBox="0 0 10 10"><path d="M2 1 9 5 2 9z"/></svg>',
+    pause: '<svg viewBox="0 0 10 10"><path d="M1.5 1h2.6v8H1.5zM5.9 1h2.6v8H5.9z"/></svg>',
+  };
+  let moving = false, last = 0, frame = 0;
+
+  function tick(now) {
+    frame = 0;
+    if (!moving) return;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    if (!(drag && drag.arrow)) {
+      r += (X_HI - LEN - X_LO) * dt / PASS;
+      if (r > X_HI - LEN) r = X_LO;
+      draw();
+    }
+    frame = requestAnimationFrame(tick);
+  }
+
+  function setMoving(on) {
+    moving = on;
+    playBtn.innerHTML = on ? ICON.pause : ICON.play;
+    playBtn.setAttribute('aria-pressed', String(on));
+    if (on && !frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  playBtn.addEventListener('click', () => { setMoving(!moving); playBtn.blur(); });
+  // The deck forwards its M key here, so no click inside the applet is needed.
+  // ({applet: 'set', state: 0 or 1} comes from the slide's fragment: stopped or moving.)
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') setMoving(!moving);
+    if (m && m.applet === 'set') setMoving(!!m.state);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { setMoving(!moving); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  draw();
+  setMoving(PLAY);   // otherwise still until started: by the slide's first press forward, by m, or by pause
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rotating a chord</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  #fig.grab { cursor: grab; }
+  #fig.slide { cursor: ew-resize; }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .lbl.right { justify-content: flex-end; }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 900 600" aria-label="A chord of the circle and its rotation by r; drag the endpoints or r on the slider"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const TAU = 2 * Math.PI;
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = { x: 450, y: 255 }, R = 180;
+  const Y_S = 548, TRACK = 300;                // the slider for r, at the bottom
+  const TRACK_X0 = C.x - TRACK / 2;
+  const SHOW = Math.PI / 2;                    // the first press forward rotates by this much
+  const TWEEN = 1800;                          // ms for that rotation
+  const PERIOD = 12000;                        // ms for a full turn when playing
+  const APART = 0.14;                          // the two endpoints of A stay this far apart
+  const COLOR = { A: '#e01b24', moved: '#0038ff', ink: '#1a1a1a', arc: '#8a8a8a', slider: '#a8a8a8' };
+
+  // The chord A = {a, a'} (at first the red interval [π, 7π/4] of the rolling
+  // slides), drawn with Φ(x) = (cos x, sin x): 0 on the right, angles growing
+  // counterclockwise. Rotating by r gives τ_r(A) = A + r = {a + r, a' + r}.
+  const A = [Math.PI, 7 * Math.PI / 4];
+  let r = 0;
+
+  const norm = x => ((x % TAU) + TAU) % TAU;
+  const gap = (x, y) => { const d = norm(y - x); return Math.min(d, TAU - d); };
+
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (w, right, parent = svg) => {
+    const fo = el('foreignObject', { width: w, height: 44 }, parent);
+    const div = document.createElement('div');
+    div.className = right ? 'lbl right' : 'lbl';
+    fo.appendChild(div);
+    return { fo, div, w, key: null };
+  };
+  // Centred on (x, y); a right-aligned label ends at x instead.
+  const setLabel = (l, tex, x, y) => {
+    if (l.key !== tex) { katex.render(tex, l.div); l.key = tex; }
+    l.fo.setAttribute('x', l.div.classList.contains('right') ? x - l.w : x - l.w / 2);
+    l.fo.setAttribute('y', y - 22);
+  };
+  const pos = (x, rad = R) => [C.x + rad * Math.cos(x), C.y - rad * Math.sin(x)];
+  const col = (c, tex) => `\\textcolor{${c}}{${tex}}`;
+
+  // ---------- figure ----------
+  el('circle', { cx: C.x, cy: C.y, r: R, fill: 'none', stroke: COLOR.ink, 'stroke-width': 6 });
+  const arc = el('path', { fill: 'none', stroke: COLOR.arc, 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  const arcLabel = label(60);
+
+  // A in red, its rotation τ_r(A) in blue (drawn on top).
+  function chord(color) {
+    return {
+      line: el('line', { stroke: color, 'stroke-width': 6, 'stroke-linecap': 'round' }),
+      dots: [0, 1].map(() => el('circle', { r: 9.5, fill: color })),
+      name: label(110),
+    };
+  }
+  const orig = chord(COLOR.A), moved = chord(COLOR.moved);
+
+  function place(ch, xs) {
+    const [p, q] = xs.map(x => pos(x));
+    ch.line.setAttribute('x1', p[0]); ch.line.setAttribute('y1', p[1]);
+    ch.line.setAttribute('x2', q[0]); ch.line.setAttribute('y2', q[1]);
+    ch.dots.forEach((d, i) => { d.setAttribute('cx', [p, q][i][0]); d.setAttribute('cy', [p, q][i][1]); });
+  }
+
+  // A spot beside A: `along` of the way from a to a', `off` px towards the centre
+  // (negative: away from it).
+  function besideA(along, off) {
+    const [p, q] = A.map(x => pos(x));
+    const len = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1;
+    const dx = (q[0] - p[0]) / len, dy = (q[1] - p[1]) / len;
+    let nx = -dy, ny = dx;
+    if (nx * (C.x - (p[0] + q[0]) / 2) + ny * (C.y - (p[1] + q[1]) / 2) < 0) { nx = -nx; ny = -ny; }
+    return [p[0] + along * len * dx + off * nx, p[1] + along * len * dy + off * ny];
+  }
+  // A turned by r about the centre of the circle.
+  const turn = ([x, y], t) => [
+    C.x + (x - C.x) * Math.cos(t) + (y - C.y) * Math.sin(t),
+    C.y - (x - C.x) * Math.sin(t) + (y - C.y) * Math.cos(t),
+  ];
+
+  // The amount of rotation: an arc just outside the circle, from a to a + r.
+  function drawArc() {
+    const span = Math.min(r, TAU - 0.002);
+    const visible = span > 0.06;
+    arc.setAttribute('visibility', visible ? 'visible' : 'hidden');
+    arcLabel.fo.setAttribute('visibility', visible ? 'visible' : 'hidden');
+    if (!visible) return;
+    const rad = R + 26, s = A[0], e = A[0] + span;
+    const [sx, sy] = pos(s, rad), [ex, ey] = pos(e, rad);
+    // sweep-flag 0 is counterclockwise on screen, where the y axis points down
+    const tx = -Math.sin(e), ty = -Math.cos(e), nx = Math.cos(e), ny = -Math.sin(e);
+    arc.setAttribute('d', `M${sx},${sy} A${rad},${rad} 0 ${span > Math.PI ? 1 : 0} 0 ${ex},${ey}` +
+      ` M${ex - 11 * tx + 5 * nx},${ey - 11 * ty + 5 * ny} L${ex},${ey} L${ex - 11 * tx - 5 * nx},${ey - 11 * ty - 5 * ny}`);
+    setLabel(arcLabel, col(COLOR.arc, 'r'), ...pos(s + span / 2, R + 50));
+  }
+
+  // The slider for r, kept grey so that the eye stays on the circle. It is hidden
+  // until the chord first starts turning, and fades in then.
+  const slider = el('g', { opacity: 0, style: 'transition: opacity 0.6s ease;' });
+  el('line', { x1: TRACK_X0, y1: Y_S, x2: TRACK_X0 + TRACK, y2: Y_S, stroke: COLOR.slider, 'stroke-width': 2, 'stroke-linecap': 'round' }, slider);
+  for (const x of [TRACK_X0, TRACK_X0 + TRACK]) {
+    el('line', { x1: x, y1: Y_S - 7, x2: x, y2: Y_S + 7, stroke: COLOR.slider, 'stroke-width': 2, 'stroke-linecap': 'round' }, slider);
+  }
+  const knob = el('circle', { cy: Y_S, r: 9, fill: COLOR.slider }, slider);
+  setLabel(label(60, true, slider), col(COLOR.slider, 'r'), TRACK_X0 - 16, Y_S);
+  setLabel(label(60, false, slider), col(COLOR.slider, '0'), TRACK_X0, Y_S + 26);
+  setLabel(label(60, false, slider), col(COLOR.slider, '2\\pi'), TRACK_X0 + TRACK, Y_S + 26);
+  const showSlider = on => slider.setAttribute('opacity', on ? 1 : 0);
+  const knobX = () => TRACK_X0 + TRACK * r / TAU;
+
+  function draw() {
+    place(orig, A);
+    place(moved, A.map(x => x + r));
+    // A's name sits beside A, towards the centre. τ_r(A)'s name is a spot on the
+    // other side of A, turned along with the chord: it moves with τ_r(A), never
+    // on its own, and starts away from A's name.
+    setLabel(orig.name, col(COLOR.A, 'A'), ...besideA(0.3, 30));
+    setLabel(moved.name, col(COLOR.moved, '\\tau_r(A)'), ...turn(besideA(0.7, -44), r));
+    moved.name.fo.setAttribute('visibility', r > 0.06 && r < TAU - 0.06 ? 'visible' : 'hidden');
+    drawArc();
+    knob.setAttribute('cx', knobX());
+  }
+
+  // ---------- motion ----------
+  // Either a tween to a given r (the deck's press forward: 0 → π/2, back: → 0),
+  // or playing: r grows steadily, round and round. Dragging holds it.
+  let mode = null, frame = 0, last = 0, from = 0, to = 0, start = 0, drag = null;
+  const ease = u => u * u * u * (u * (6 * u - 15) + 10);
+
+  function tick(now) {
+    frame = 0;
+    if (!mode) return;
+    if (!drag) {
+      if (mode === 'tween') {
+        const u = Math.min(1, (now - start) / TWEEN);
+        r = from + (to - from) * ease(u);
+        if (u >= 1) mode = null;
+      } else {
+        r = (r + TAU * Math.min(now - last, 100) / PERIOD) % TAU;
+      }
+      draw();
+    }
+    last = now;
+    if (mode) frame = requestAnimationFrame(tick);
+  }
+  function run(m) {
+    mode = m;
+    if (m) showSlider(true);
+    last = start = performance.now();
+    if (m && !frame) frame = requestAnimationFrame(tick);
+  }
+  function tweenTo(target) { from = r; to = target; run('tween'); }
+  const toggle = () => run(mode === 'play' ? null : 'play');
+
+  // {applet: 'set', state} comes from the slide's fragment; {applet: 'toggle'} from m.
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (!m) return;
+    if (m.applet === 'toggle') toggle();
+    if (m.applet === 'set') {
+      if (m.instant) { run(null); r = m.state ? SHOW : 0; showSlider(m.state); draw(); } else tweenTo(m.state ? SHOW : 0);
+    }
+  });
+
+  // ---------- pointer ----------
+  // Draggable: the knob; the endpoints of A (A changes, τ_r(A) follows); the
+  // endpoints of τ_r(A) (r changes, A stays).
+  const toSvg = e => new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+  function hit(e) {
+    const m = toSvg(e);
+    const near = ([x, y]) => Math.hypot(m.x - x, m.y - y) < 24;
+    if (slider.getAttribute('opacity') === '1' && near([knobX(), Y_S])) return { knob: true };
+    for (let i = 0; i < 2; i++) if (near(pos(A[i] + r))) return { moved: i };   // blue is on top
+    for (let i = 0; i < 2; i++) if (near(pos(A[i]))) return { orig: i };
+    return null;
+  }
+
+  svg.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = hit(e);
+    if (drag) svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', e => {
+    if (!drag) {
+      const h = hit(e);
+      svg.setAttribute('class', !h ? '' : h.knob ? 'slide' : 'grab');
+      return;
+    }
+    const m = toSvg(e);
+    if (drag.knob) {
+      r = Math.max(0, Math.min(TAU, TAU * (m.x - TRACK_X0) / TRACK));
+    } else {
+      const x = norm(Math.atan2(C.y - m.y, m.x - C.x));
+      if ('moved' in drag) {
+        r = norm(x - A[drag.moved]);
+      } else {
+        const mate = A[1 - drag.orig];
+        if (gap(x, mate) >= APART) A[drag.orig] = x;
+      }
+    }
+    draw();
+  });
+  const endDrag = () => { drag = null; };
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>
