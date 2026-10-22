@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The shift functor on interval modules</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  #fig {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    touch-action: none;
+  }
+  #fig.grab { cursor: ew-resize; }
+  #fig.pick { cursor: pointer; }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .lbl.right { justify-content: flex-end; }
+
+
+  #play {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.65em;
+    font-size: clamp(12px, 1.6vw, 20px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  #play:hover { border-color: var(--ink); }
+  #play:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #play svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="105 95 900 490" aria-label="Two interval modules and the shift functor; drag the endpoints and the parameter t"></svg>
+
+<button id="play" title="Let t move (M)" aria-pressed="false" hidden></button>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const X0 = 250, UNIT = 50;         // a point x of the real line is drawn at X0 + UNIT·x
+  const X_MIN = 0.4, X_MAX = 11.6;   // how far endpoints can be dragged
+  const MIN_LEN = 0.6;               // an interval keeps at least this length
+  const T_MAX = 6;
+  const SWEEP = 9000;                // ms for t to go from 0 to T_MAX
+  const Y = { I: 150, J: 330 }, Y_T = 545;   // the two real lines, and the slider at the bottom
+  const MID = 555;                  // middle of the real lines (they run from 238 to 873); the
+                                    // view, the Hom condition and the slider are centred on it
+  // The intervals are drawn as on the interval-module slide, square brackets over
+  // a light band, and colour-coded: I in red, J in blue (brackets, band, names).
+  const COLOR = { I: '#e01b24', J: '#0038ff', hom: '#ffd60a', homArrow: '#e0a800', ink: '#1a1a1a', axis: '#1a1a1a', slider: '#a8a8a8' };
+  const TINT = { I: '#ffd5d5', J: '#d6e8ff' };
+
+  // The interval modules k^I (top line) and k^J (bottom line), with I = [a, b]
+  // and J = [c, d]. `shifted` says whether the shift functor T_t is applied.
+  const iv = {
+    I: { lo: 5.5, hi: 8.5, ends: ['a', 'b'], shifted: false },
+    J: { lo: 7, hi: 10.5, ends: ['c', 'd'], shifted: true },
+  };
+  let t = 0;
+
+  // T_t(k^I) = k^I[t] = k^{I - t}: the interval moves t to the left.
+  const shiftOf = k => (iv[k].shifted ? t : 0);
+  const shown = k => ({ lo: iv[k].lo - shiftOf(k), hi: iv[k].hi - shiftOf(k) });
+
+  // Hom(k^[a,b], k^[c,d]) ≅ k exactly when c ≤ a ≤ d ≤ b, and it is 0 otherwise.
+  // A nonzero morphism is a scalar on [a, d] and zero elsewhere. Returns that
+  // interval for the two modules as currently shown, or null.
+  function hom() {
+    const s = shown('I'), g = shown('J');
+    return g.lo <= s.lo && s.lo <= g.hi && g.hi <= s.hi ? [s.lo, g.hi] : null;
+  }
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const px = x => X0 + UNIT * x;
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (w, right) => {
+    const fo = el('foreignObject', { width: w, height: 44 });
+    const div = document.createElement('div');
+    div.className = right ? 'lbl right' : 'lbl';
+    fo.appendChild(div);
+    return { fo, div, w, key: null };
+  };
+  // Centred on (x, y); a right-aligned label ends at x instead.
+  const setLabel = (l, tex, x, y) => {
+    if (l.key !== tex) { katex.render(tex, l.div); l.key = tex; }
+    l.fo.setAttribute('x', l.div.classList.contains('right') ? x - l.w : x - l.w / 2);
+    l.fo.setAttribute('y', y - 22);
+  };
+
+  // Intervals shifted past the left end of the lines are cut off there.
+  el('rect', { x: 238, y: 0, width: 662, height: 520 }, el('clipPath', { id: 'plot' }));
+
+  // Where a morphism k^I → k^J is nonzero: a band between the two lines.
+  const plot = el('g', { 'clip-path': 'url(#plot)' });
+  const band = el('rect', { y: Y.I + 20, height: Y.J - Y.I - 44, fill: COLOR.hom, opacity: 0.35 }, plot);
+  const bandArrow = el('path', { fill: 'none', stroke: COLOR.homArrow, 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, plot);
+
+  // An interval on its line: square brackets over a light band, as tall as the brackets.
+  function interval(k, opacity) {
+    const g = el('g', { opacity }, plot);
+    const bracket = { fill: 'none', stroke: COLOR[k], 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+    return { g, band: el('rect', { height: 44, fill: TINT[k] }, g), lo: el('path', bracket, g), hi: el('path', bracket, g) };
+  }
+  function place(gfx, lo, hi, y) {
+    const x1 = px(lo), x2 = px(hi);
+    gfx.band.setAttribute('x', x1); gfx.band.setAttribute('y', y - 24); gfx.band.setAttribute('width', x2 - x1);
+    gfx.lo.setAttribute('d', `M${x1 + 11},${y - 24}H${x1}V${y + 20}H${x1 + 11}`);
+    gfx.hi.setAttribute('d', `M${x2 - 11},${y - 24}H${x2}V${y + 20}H${x2 - 11}`);
+  }
+
+  const rows = {};
+  for (const k of ['I', 'J']) {
+    const y = Y[k];
+    el('line', { x1: 238, y1: y, x2: 872, y2: y, stroke: COLOR.axis, 'stroke-width': 1.6 });
+    el('path', { d: `M861,${y - 7}L873,${y}L861,${y + 7}`, fill: 'none', stroke: COLOR.axis, 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    rows[k] = {
+      ghost: interval(k, 0.22),   // where the interval was before the shift
+      live: interval(k, 1),
+      name: label(232, true),
+      ends: [label(90), label(90)],
+    };
+  }
+
+  // The Hom condition, under the lines.
+  const legend = [label(760), label(760)];
+  legend.forEach(l => { l.div.style.fontSize = '24px'; });
+
+  // The parameter t, at the bottom: a knob on a track drawn at the scale of the
+  // real lines, kept grey so that the eye stays on the intervals.
+  const TRACK_X0 = MID - T_MAX * UNIT / 2;
+  const knobX = () => TRACK_X0 + UNIT * t;
+  el('line', { x1: TRACK_X0, y1: Y_T, x2: TRACK_X0 + T_MAX * UNIT, y2: Y_T, stroke: COLOR.slider, 'stroke-width': 2, 'stroke-linecap': 'round' });
+  el('line', { x1: TRACK_X0, y1: Y_T - 7, x2: TRACK_X0, y2: Y_T + 7, stroke: COLOR.slider, 'stroke-width': 2, 'stroke-linecap': 'round' });
+  const knob = el('circle', { cy: Y_T, r: 9, fill: COLOR.slider });
+  const tLabel = label(60, true), zeroLabel = label(60);
+
+  const col = (k, tex) => `\\textcolor{${COLOR[k]}}{${tex}}`;
+
+  function draw() {
+    for (const k of ['I', 'J']) {
+      const r = rows[k], y = Y[k], s = shown(k), on = iv[k].shifted;
+      place(r.live, s.lo, s.hi, y);
+      place(r.ghost, iv[k].lo, iv[k].hi, y);
+      r.ghost.g.setAttribute('visibility', on && t > 0 ? 'visible' : 'hidden');
+      setLabel(r.name, col(k, on ? `\\mathbf{k}^{${k}-t}` : `\\mathbf{k}^{${k}}`), 226, y);
+      [s.lo, s.hi].forEach((x, i) => {
+        setLabel(r.ends[i], col(k, on ? `${iv[k].ends[i]}-t` : iv[k].ends[i]), px(x), y + 42);
+        r.ends[i].fo.setAttribute('visibility', px(x) < 250 ? 'hidden' : 'visible');
+      });
+    }
+
+    const h = hom();
+    band.setAttribute('visibility', h ? 'visible' : 'hidden');
+    bandArrow.setAttribute('visibility', h ? 'visible' : 'hidden');
+    if (h) {
+      const x1 = px(h[0]), w = Math.max(px(h[1]) - x1, 3), xm = x1 + w / 2;
+      band.setAttribute('x', x1);
+      band.setAttribute('width', w);
+      bandArrow.setAttribute('d', `M${xm},${Y.I + 31}V${Y.J - 35}M${xm - 7},${Y.J - 46}L${xm},${Y.J - 35}L${xm + 7},${Y.J - 46}`);
+    }
+
+    knob.setAttribute('cx', knobX());
+    setLabel(tLabel, `\\textcolor{${COLOR.slider}}{t}`, TRACK_X0 - 16, Y_T);
+    setLabel(zeroLabel, `\\textcolor{${COLOR.slider}}{0}`, TRACK_X0, Y_T + 26);
+
+    // The Hom condition: the chain of endpoints (when it holds), then Hom
+    const end = (k, i) => col(k, iv[k].shifted ? `${iv[k].ends[i]}-t` : iv[k].ends[i]);
+    const mod = k => col(k, iv[k].shifted ? `\\mathbf{k}^{${k}-t}` : `\\mathbf{k}^{${k}}`);
+    setLabel(legend[0], `${end('J', 0)} \\leqslant ${end('I', 0)} \\leqslant ${end('J', 1)} \\leqslant ${end('I', 1)}`, MID, 440);
+    legend[0].fo.setAttribute('visibility', h ? 'visible' : 'hidden');
+    setLabel(legend[1], `\\operatorname{Hom}\\bigl(${mod('I')},\\, ${mod('J')}\\bigr) ${h ? '\\cong \\mathbf{k}' : '= 0'}`, MID, 482);
+  }
+
+  // ---------- pointer ----------
+  // Draggable: the four endpoints and the knob. Clicking a module's name
+  // applies T_t to it, or stops applying it.
+  function toSvg(e) {
+    return new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  function hit(e) {
+    const m = toSvg(e);
+    const targets = [{ knob: true, x: knobX(), y: Y_T }];
+    for (const k of ['I', 'J']) {
+      const s = shown(k);
+      targets.push({ k, end: 'lo', x: px(s.lo), y: Y[k] }, { k, end: 'hi', x: px(s.hi), y: Y[k] });
+    }
+    let best = null, bestD = 28;
+    for (const g of targets) {
+      const d = Math.hypot(g.x - m.x, g.y - m.y);
+      if (d < bestD) { best = g; bestD = d; }
+    }
+    if (!best && m.x < 236) {
+      for (const k of ['I', 'J']) if (Math.abs(m.y - Y[k]) < 30) best = { name: k };
+    }
+    return best;
+  }
+
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    const h = hit(e);
+    if (!h) return;
+    if (h.name) {
+      iv[h.name].shifted = !iv[h.name].shifted;
+      draw();
+      return;
+    }
+    drag = h;
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', e => {
+    if (!drag) {
+      const h = hit(e);
+      svg.setAttribute('class', !h ? '' : h.name ? 'pick' : 'grab');
+      return;
+    }
+    const x = (toSvg(e).x - X0) / UNIT;
+    if (drag.knob) {
+      t = Math.max(0, Math.min(T_MAX, (toSvg(e).x - TRACK_X0) / UNIT));
+    } else {
+      const v = iv[drag.k], w = x + shiftOf(drag.k);
+      if (drag.end === 'lo') v.lo = Math.max(X_MIN, Math.min(v.hi - MIN_LEN, w));
+      else v.hi = Math.min(X_MAX, Math.max(v.lo + MIN_LEN, w));
+    }
+    draw();
+  });
+
+  const endDrag = () => { drag = null; };
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  // ---------- letting t move ----------
+  // t sweeps from 0 to T_MAX and back, so the morphism appears and disappears.
+  // Holding the knob pauses it.
+  const playBtn = document.getElementById('play');
+  const ICON = {
+    play: '<svg viewBox="0 0 10 10"><path d="M2 1 9 5 2 9z"/></svg>',
+    pause: '<svg viewBox="0 0 10 10"><path d="M1.5 1h2.6v8H1.5zM5.9 1h2.6v8H5.9z"/></svg>',
+  };
+  let moving = false, dir = 1, last = 0, frame = 0;
+
+  function tick(now) {
+    frame = 0;
+    if (!moving) return;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    if (!(drag && drag.knob)) {
+      t += dir * T_MAX * dt / SWEEP;
+      if (t >= T_MAX) { t = T_MAX; dir = -1; }
+      if (t <= 0) { t = 0; dir = 1; }
+      draw();
+    }
+    frame = requestAnimationFrame(tick);
+  }
+
+  function setMoving(on) {
+    moving = on;
+    playBtn.innerHTML = on ? ICON.pause : ICON.play;
+    playBtn.setAttribute('aria-pressed', String(on));
+    if (on && !frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  playBtn.addEventListener('click', () => { setMoving(!moving); playBtn.blur(); });
+  // The deck forwards its M key here, so no click inside the applet is needed.
+  // ({applet: 'set', state: 0 or 1} comes from the slide's fragment: still or moving.)
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') setMoving(!moving);
+    if (m && m.applet === 'set') setMoving(!!m.state);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { setMoving(!moving); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  setMoving(false);
+  draw();
+})();
+</script>
+</body>
+</html>

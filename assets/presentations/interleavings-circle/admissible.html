@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admissible bijections between two chords</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+    --line: #dcdcdc;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  #fig {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    touch-action: none;
+  }
+  #fig.grab { cursor: grab; }
+  #fig.grabbing { cursor: grabbing; }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  /* Legend: stacked under the circle. Each line keeps its place when hidden. */
+  .out {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 0.6em;
+    font-size: clamp(12px, 2.1vw, 26px);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .out div {
+    height: 1.55em;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .out div.off { visibility: hidden; }
+
+  #play {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.65em;
+    font-size: clamp(12px, 1.6vw, 20px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.93);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  #play:hover { border-color: var(--ink); }
+  #play:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #play svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 50 600 500" aria-label="Two chords of the circle; drag their endpoints"></svg>
+
+<div class="out" aria-live="polite">
+  <div id="outChain"></div>
+  <div id="outMap"></div>
+  <div id="outAdm"></div>
+</div>
+
+<button id="play" title="Let a point move (M)" aria-pressed="false" hidden></button>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const TAU = 2 * Math.PI;
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = 300, R = 190;
+  const SNAP = 0.07;      // endpoints of different chords closer than this snap together
+  const APART = 0.14;     // when dragged, the two endpoints of one chord stay this far apart
+  const PERIOD = 16000;   // ms for the moving point to go once round the circle
+  const COLOR = { A: '#e01b24', B: '#0038ff', shared: '#ffd60a', ink: '#1a1a1a' };
+
+  // Points of S^1 = R/2πZ, as angles in [0, 2π). They are drawn with
+  // Φ(x) = (cos x, sin x): 0 sits on the right and angles grow counterclockwise.
+  const pts = [
+    { name: 'a',  chord: 'A', x: Math.PI },
+    { name: "a'", chord: 'A', x: 0 },
+    { name: 'b',  chord: 'B', x: Math.PI / 3 },
+    { name: "b'", chord: 'B', x: 3 * Math.PI / 2 },
+  ];
+
+  const norm = x => ((x % TAU) + TAU) % TAU;
+  const ccw = (x, y) => norm(y - x);                       // travel from x to y, counterclockwise
+  const gap = (x, y) => Math.min(ccw(x, y), ccw(y, x));    // distance along the circle
+
+  // x_1 ≼ … ≼ x_n (winding order): there are lifts with
+  // x̃_1 ≤ … ≤ x̃_n < x̃_1 + 2π. Taking every lift as small as possible decides it.
+  function inWindingOrder(xs) {
+    let prev = xs[0];
+    for (let i = 1; i < xs.length; i++) {
+      let x = xs[i];
+      while (x < prev) x += TAU;
+      prev = x;
+    }
+    return prev < xs[0] + TAU;
+  }
+
+  // A bijection φ: A → B is admissible if a ≼ φ(a) ≼ σ_A(a) ≼ φσ_A(a) for some
+  // a ∈ A. Takes the angles [a, a', b, b'] and returns the admissible bijections,
+  // each as [[s, φ(s)], [s', φ(s')]] in indices, s being the endpoint the chain starts at.
+  function admissible(xs) {
+    const found = [];
+    for (const [fa, fa2] of [[2, 3], [3, 2]]) {
+      for (const [s, fs, t, ft] of [[0, fa, 1, fa2], [1, fa2, 0, fa]]) {
+        if (inWindingOrder([xs[s], xs[fs], xs[t], xs[ft]])) {
+          found.push([[s, fs], [t, ft]]);
+          break;
+        }
+      }
+    }
+    return found;
+  }
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = () => {
+    const fo = el('foreignObject', { width: 130, height: 44 });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    fo.appendChild(div);
+    return { fo, div, key: null };
+  };
+  const setLabel = (l, tex, x, y) => {
+    if (l.key !== tex) { katex.render(tex, l.div); l.key = tex; }
+    l.fo.setAttribute('x', x - 65);
+    l.fo.setAttribute('y', y - 22);
+  };
+
+  el('circle', { cx: C, cy: C, r: R, fill: 'none', stroke: COLOR.ink, 'stroke-width': 6 });
+  const chordEl = {};
+  for (const k of ['A', 'B']) {
+    chordEl[k] = el('line', { stroke: COLOR[k], 'stroke-width': 6, 'stroke-linecap': 'round' });
+  }
+  const ring = el('circle', { r: 15, fill: 'none', stroke: COLOR.ink, 'stroke-width': 1.5, visibility: 'hidden' });
+  pts.forEach(p => { p.dot = el('circle', { r: 9.5 }); });
+  pts.forEach(p => { p.label = label(); });
+  const chordLabel = { A: label(), B: label() };
+
+  const pos = (x, r = R) => [C + r * Math.cos(x), C - r * Math.sin(x)];
+  const tex = p => `\\textcolor{${COLOR[p.chord]}}{${p.name}}`;
+  const texChord = k => `\\textcolor{${COLOR[k]}}{${k}}`;
+  const twin = p => pts.find(q => q.chord !== p.chord && q.x === p.x);   // the other chord's endpoint sitting on p
+
+  let drag = null, hover = null;
+  let down = null;        // where the pointer went down, and whether it has moved since
+  let outKey = null;
+  const out = ['outAdm', 'outMap', 'outChain'].map(id => document.getElementById(id));
+
+  function draw() {
+    const [a, a2, b, b2] = pts;
+
+    // Each chord, with its name beside it a quarter of the way along.
+    for (const [k, p, q, side] of [['A', a, a2, 1], ['B', b2, b, -1]]) {
+      const [x1, y1] = pos(p.x), [x2, y2] = pos(q.x);
+      chordEl[k].setAttribute('x1', x1); chordEl[k].setAttribute('y1', y1);
+      chordEl[k].setAttribute('x2', x2); chordEl[k].setAttribute('y2', y2);
+      const len = Math.hypot(x2 - x1, y2 - y1) || 1;
+      const dx = (x2 - x1) / len, dy = (y2 - y1) / len;
+      setLabel(chordLabel[k], texChord(k), x1 + 0.27 * len * dx - side * 24 * dy, y1 + 0.27 * len * dy + side * 24 * dx);
+    }
+
+    // Endpoints and their names, just outside the circle. A shared endpoint
+    // turns yellow and carries both names.
+    for (const p of pts) {
+      const [x, y] = pos(p.x);
+      const t = twin(p);
+      p.dot.setAttribute('cx', x);
+      p.dot.setAttribute('cy', y);
+      p.dot.setAttribute('fill', t ? COLOR.shared : COLOR[p.chord]);
+      p.label.fo.setAttribute('visibility', t && p.chord === 'B' ? 'hidden' : 'visible');
+      if (t && p.chord === 'B') continue;
+      const w = t ? 84 : 30;
+      const r = R + 16 + Math.abs(Math.cos(p.x)) * w / 2 + Math.abs(Math.sin(p.x)) * 15;
+      setLabel(p.label, t ? `${tex(p)} = ${tex(t)}` : tex(p), ...pos(p.x, r));
+    }
+    const hot = drag || hover;
+    ring.setAttribute('visibility', hot ? 'visible' : 'hidden');
+    if (hot) {
+      const [x, y] = pos(hot.x);
+      ring.setAttribute('cx', x);
+      ring.setAttribute('cy', y);
+    }
+
+    const phi = admissible(pts.map(p => p.x))[0];
+
+
+    // Legend
+    const key = phi ? phi.flat().join('') : 'none';
+    if (key !== outKey) {
+      outKey = key;
+      const adm = `\\operatorname{Adm}(${texChord('A')},${texChord('B')})`;
+      if (!phi) {
+        katex.render(`${adm} = \\varnothing`, out[0]);
+      } else {
+        const image = i => pts[phi.find(pair => pair[0] === i)[1]];
+        const [[s, fs], [t, ft]] = phi.map(pair => pair.map(i => tex(pts[i])));
+        katex.render(`${adm} = \\{\\varphi\\}`, out[0]);
+        katex.render(`\\varphi\\colon\\ ${tex(a)} \\mapsto ${tex(image(0))},\\ \\ ${tex(a2)} \\mapsto ${tex(image(1))}`, out[1]);
+        katex.render(`${s} \\preccurlyeq ${fs} \\preccurlyeq ${t} \\preccurlyeq ${ft}`, out[2]);
+      }
+      out[1].classList.toggle('off', !phi);
+      out[2].classList.toggle('off', !phi);
+    }
+  }
+
+  // ---------- pointer ----------
+  function toSvg(e) {
+    return new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  function hit(e) {
+    const m = toSvg(e);
+    let best = null, bestD = 30;
+    for (const p of pts) {
+      const [x, y] = pos(p.x);
+      const d = Math.hypot(x - m.x, y - m.y);
+      if (d <= bestD) { best = p; bestD = d; }   // on a shared endpoint, the chord drawn on top wins
+    }
+    return best;
+  }
+
+  function moveTo(p, x) {
+    x = norm(x);
+    for (const q of pts) {
+      if (q.chord !== p.chord && gap(x, q.x) < SNAP) x = q.x;
+    }
+    const mate = pts.find(q => q.chord === p.chord && q !== p);
+    if (gap(x, mate.x) < APART) {
+      const before = ccw(x, mate.x) < ccw(mate.x, x) || (x === mate.x && ccw(p.x, mate.x) < Math.PI);
+      x = norm(mate.x + (before ? -APART : APART));
+    }
+    p.x = x;
+  }
+
+  svg.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = hit(e);
+    if (!drag) return;
+    down = { x: e.clientX, y: e.clientY, moved: false };
+    svg.setPointerCapture(e.pointerId);
+    svg.setAttribute('class', 'grabbing');
+    draw();
+  });
+
+  svg.addEventListener('pointermove', e => {
+    if (drag) {
+      if (!down.moved && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 4) return;
+      down.moved = true;
+      const m = toSvg(e);
+      moveTo(drag, Math.atan2(C - m.y, m.x - C));
+      draw();
+      return;
+    }
+    const h = hit(e);
+    if (h !== hover) {
+      hover = h;
+      svg.setAttribute('class', h ? 'grab' : '');
+      draw();
+    }
+  });
+
+  const endDrag = e => {
+    if (!drag) return;
+    const p = drag;
+    drag = null;
+    // A click rather than a drag: this point starts going round, or stops if it
+    // already was. Any number of points can be going round at once.
+    if (e.type === 'pointerup' && !down.moved) {
+      p.moves = !(moving && p.moves);
+      setMoving(pts.some(q => q.moves));
+    }
+    svg.setAttribute('class', hover ? 'grab' : '');
+    draw();
+  };
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+  svg.addEventListener('pointerleave', () => { if (!drag && hover) { hover = null; draw(); } });
+
+  // ---------- letting a point move ----------
+  // The endpoints marked `moves` go round the circle counterclockwise on their
+  // own, so the admissible bijection appears and disappears. Clicking a point
+  // marks or unmarks it; if none is marked, play starts a'. Holding a point
+  // with the pointer pauses that point.
+  const playBtn = document.getElementById('play');
+  const ICON = {
+    play: '<svg viewBox="0 0 10 10"><path d="M2 1 9 5 2 9z"/></svg>',
+    pause: '<svg viewBox="0 0 10 10"><path d="M1.5 1h2.6v8H1.5zM5.9 1h2.6v8H5.9z"/></svg>',
+  };
+  let moving = false, last = 0, frame = 0;
+
+  function tick(now) {
+    frame = 0;
+    if (!moving) return;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    for (const p of pts) {
+      if (p.moves && p !== drag) p.x = norm(p.x + TAU * dt / PERIOD);
+    }
+    draw();
+    frame = requestAnimationFrame(tick);
+  }
+
+  function setMoving(on) {
+    if (on && !pts.some(p => p.moves)) pts[1].moves = true;
+    moving = on;
+    playBtn.innerHTML = on ? ICON.pause : ICON.play;
+    playBtn.setAttribute('aria-pressed', String(on));
+    if (on && !frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  playBtn.addEventListener('click', () => { setMoving(!moving); playBtn.blur(); });
+  // The deck forwards its M key here, so no click inside the applet is needed.
+  window.addEventListener('message', e => { if (e.data && e.data.applet === 'toggle') setMoving(!moving); });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { setMoving(!moving); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // Optional starting position for a, a', b, b', in multiples of π:
+  // admissible.html#1,0,1/3,3/2
+  const start = location.hash.slice(1).split(',').map(s => {
+    const [n, d = '1'] = s.split('/');
+    return Number(n) / Number(d) * Math.PI;
+  });
+  if (start.length === 4 && start.every(Number.isFinite)) start.forEach((x, i) => { pts[i].x = norm(x); });
+
+  setMoving(false);
+  draw();
+
+  // Test hook
+  window.__admissible = {
+    admissible,
+    set: xs => { xs.forEach((x, i) => { pts[i].x = norm(x); }); draw(); },
+    state: () => pts.map(p => p.x),
+  };
+})();
+</script>
+</body>
+</html>

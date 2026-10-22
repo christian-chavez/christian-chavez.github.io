@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+
+		<title>Interleavings and cluster categories arising from the circle</title>
+
+		<link rel="stylesheet" href="dist/reset.css" />
+		<link rel="stylesheet" href="dist/reveal.css" />
+		<link rel="stylesheet" href="dist/theme/computer-modern.css" />
+		<link rel="stylesheet" href="css/theme/fonts/mlmodern/mlmodern.css" />
+		<link rel="stylesheet" href="vendor/katex/katex.min.css" />
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
+
+		<style>
+			/* MLModern throughout; Computer Modern covers any glyph it lacks */
+			:root {
+				--r-main-font: "MLModern Sans", "Computer Modern Sans", helvetica, sans-serif;
+				--r-heading-font: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+
+			/* KaTeX sets math at 1.21em by default, which is too big next to
+			   MLModern text of the same design; keep math at the text size. */
+			.reveal .katex { font-size: 1em; }
+
+			/* Beamer-style blocks: a floating white card with a light blue title bar */
+			.block {
+				width: 800px;
+				margin: 0 auto;
+				text-align: left;
+				font-size: 0.72em;
+				border-radius: 6px;
+				overflow: hidden;
+				background: #fff;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.08);
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+			.block-title {
+				background: #dce8f7;
+				color: var(--r-main-color);
+				padding: 0.3em 0.75em;
+			}
+			.block-body {
+				padding: 0.55em 0.75em 0.65em;
+				line-height: 1.45;
+			}
+			.block-body p { margin: 0 0 0.45em; }
+			.block-body p:last-child { margin-bottom: 0; }
+
+			/* (i), (ii), (iii) lists inside a block */
+			.reveal .block-body ol.roman {
+				display: block;
+				margin: 0.3em 0 0;
+				padding-left: 2.3em;
+				list-style: none;
+				counter-reset: roman;
+			}
+			.reveal .block-body ol.roman > li {
+				position: relative;
+				margin: 0.3em 0;
+				counter-increment: roman;
+			}
+			.reveal .block-body ol.roman > li::before {
+				content: "(" counter(roman, lower-roman) ")";
+				position: absolute;
+				left: -2.3em;
+				width: 1.9em;
+				text-align: right;
+			}
+			.block-body .katex-display { margin: 0.5em 0; }
+
+			/* KaTeX labels inside an SVG figure */
+			.fig-lbl {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 26px;
+				line-height: 1;
+			}
+
+			/* Two columns compared row by row (title, category, indecomposables,
+			   picture): one grid, so every row lines up across the divider */
+			.two-col {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+			}
+			.two-col > div {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				padding: 0.4em 22px;
+				font-size: 0.75em;
+			}
+			.two-col > div:nth-child(even) { border-left: 1.5px solid #c8c8c8; }
+			.reveal .two-col h3 { font-size: 1.2em; margin: 0; }
+			.reveal .two-col p { margin: 0.15em 0; }
+			.two-col .ind { align-self: stretch; text-align: center; font-size: 0.85em; }
+			.two-col .pair { display: flex; align-items: center; gap: 32px; }
+			/* the three-column version: smaller type, a divider before each of the last two columns */
+			.two-col.three { grid-template-columns: repeat(3, 1fr); }
+			.two-col.three > div { padding: 0.4em 14px; font-size: 0.66em; }
+			.two-col.three > div:nth-child(even) { border-left: none; }
+			.two-col.three > div:not(:nth-child(3n + 1)) { border-left: 1.5px solid #c8c8c8; }
+			.reveal .two-col.three h3 { font-size: 1.1em; }
+			.two-col iframe { border: none; }
+
+			/* Papers on a desk: overlapping screenshots with shadows. Each press forward
+			   brings the next one to the centre, enlarged, and dims the others. The
+			   cards are fragments of the "custom" kind, so they are visible throughout;
+			   --fx, --fy move a card's centre to the centre of the slide. */
+			.papers { position: relative; width: 960px; height: 700px; }
+			.reveal .slides section .papers .paper.fragment {
+				position: absolute;
+				width: 560px;
+				background: #fff;
+				box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22), 0 1px 4px rgba(0, 0, 0, 0.12);
+				transition: transform 0.6s ease, opacity 0.6s ease;
+			}
+			.reveal .slides section .papers .paper.fragment.current-fragment {
+				transform: translate(var(--fx), var(--fy)) scale(1.55);
+				z-index: 10;
+			}
+			.reveal .slides section .papers:has(.current-fragment) .paper:not(.current-fragment) { opacity: 0.35; }
+			.reveal .papers .paper img { display: block; width: 100%; max-width: none; max-height: none; margin: 0; }
+			/* a single paper on its own slide, as one of the cards above */
+			.reveal .paper-single {
+				position: relative;
+				width: 780px;
+				margin: 0 auto;
+				background: #fff;
+				box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22), 0 1px 4px rgba(0, 0, 0, 0.12);
+			}
+			.reveal .paper-single img { display: block; width: 100%; max-width: none; max-height: none; margin: 0; }
+			/* the identifier runs up the left margin, like the stamp on an arXiv preprint */
+			.reveal .papers .arxiv, .reveal .paper-single .arxiv {
+				position: absolute;
+				left: 14px;
+				top: 50%;
+				transform: translate(-50%, -50%) rotate(-90deg);
+				white-space: nowrap;
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+				font-size: 17px;
+				color: #8a8a8a;
+			}
+
+			/* A titled slide: the title at the same height on every slide, the rest
+			   spread out in the space below it */
+			.frame {
+				height: 700px;
+				display: flex;
+				flex-direction: column;
+			}
+			.reveal .frame > h3 { font-size: 1.15em; margin: 22px 0 10px; }
+			.frame-body {
+				flex: 1;
+				min-height: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: space-evenly;
+			}
+			.frame iframe { border: none; }
+			.frame-body .katex-display { margin: 0; }
+			.block-body .katex-display { margin: 0.35em 0 0.1em; }
+			/* a remark under a box, in small grey type */
+			.reveal .note { margin: 0.6em 0 0; text-align: left; font-size: 0.55em; color: #777; }
+			/* Two states of a slide in the same place. Going forward, the old one fades
+			   out, then the new one fades in while rising a little; going back, the
+			   same in reverse. */
+			.stack { flex: 1; min-height: 0; display: grid; }
+			.stack > * { grid-area: 1 / 1; }
+			.reveal .slides section .fragment.swap-out {
+				opacity: 1;
+				visibility: visible;
+				transition: opacity 0.3s ease 0.35s, visibility 0s linear 0.35s;
+			}
+			.reveal .slides section .fragment.swap-out.visible {
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+			}
+			.reveal .slides section .fragment.swap-in {
+				opacity: 0;
+				visibility: hidden;
+				transform: translateY(18px);
+				transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+			}
+			.reveal .slides section .fragment.swap-in.visible {
+				opacity: 1;
+				visibility: visible;
+				transform: none;
+				transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s, visibility 0s linear 0.3s;
+			}
+			/* the two notions recalled before a definition box */
+			.reveal ul.pre-def { display: block; width: 900px; margin: 0 auto 0.5em; font-size: 0.56em; line-height: 1.4; }
+			.reveal ul.pre-def li { margin: 0.2em 0; }
+			/* the plan of the talk */
+			.reveal .plan {
+				flex: 1;
+				align-self: flex-start;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-evenly;
+				margin: 0 0 0 100px;
+				padding-bottom: 50px;
+				font-size: 0.8em;
+				list-style-type: disc;
+			}
+
+			/* Applet slides: a standalone interactive page in an iframe */
+			.applet {
+				display: flex;
+				align-items: flex-end;
+				justify-content: center;
+				gap: 14px;
+			}
+			.applet iframe {
+				width: 900px;
+				height: 600px;
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2 style="font-size: 1.6em;">Interleavings and cluster categories<br />arising from the circle</h2>
+					<!-- Official file, untouched. The svgView crop is the logo's protection zone
+					     (a margin of one "D" height all round), so the image box already carries
+					     the required clear space. -->
+					<img
+						src="images/UdeS_logo_h_noir.svg#svgView(viewBox(19.5,160.3,755.97,264.34))"
+						alt="Université de Sherbrooke"
+						style="display: block; width: 270px; margin: 0.4em auto 0;"
+					/>
+					<p style="text-align: left; margin-top: 2em;">
+						Christian Chávez <br />
+						Université de Sherbrooke
+						<span style="float: right;">RTA2026</span>
+					</p>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Plan</h3>
+						<div class="frame-body">
+							<ul class="plan">
+								<li>$\operatorname{Fun}(\R, \operatorname{vect}_{\kk})$ and $\mathcal{C}_{A_n}$</li>
+								<li>Rolling the line onto a circle</li>
+								<li>The category of chords</li>
+								<li>Connection to $\mathcal{C}_{A_n}$</li>
+								<li>The interleaving distance on $S^1$</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<div class="two-col">
+						<div><h3>Persistence modules</h3></div>
+						<div><h3>Cluster categories</h3></div>
+
+						<div><p>$\operatorname{Fun}(\R, \operatorname{vect}_{\kk})$</p></div>
+						<div>
+							<p>$\mathcal{C}_{A_n}$</p>
+							<p>$A_n\colon\ \circ \to \circ \to \cdots \to \circ$</p>
+						</div>
+
+						<div><div class="ind">ind: interval modules $\kk^{[a,b]}$</div></div>
+						<div><div class="ind">ind: diagonals in the $(n+3)$-gon</div></div>
+
+						<div>
+							<iframe data-src="interval.html#short+shade+nolabel" title="An interval module applied to an arrow sliding along the real line" style="width: 436px; height: 128px;"></iframe>
+						</div>
+						<div>
+							<div class="pair">
+								<p>$A_2\colon\ \circ \to \circ$</p>
+								<!-- The regular pentagon on V_5 = {2πi/5}, 0 on the right, and its five diagonals -->
+								<svg viewBox="0 0 340 340" style="width: 180px; height: 180px; display: block;">
+									<g stroke="#e01b24" stroke-width="5" stroke-linecap="round">
+										<line x1="310" y1="170" x2="56.74" y2="87.71" />
+										<line x1="310" y1="170" x2="56.74" y2="252.29" />
+										<line x1="213.26" y1="36.85" x2="56.74" y2="252.29" />
+										<line x1="213.26" y1="36.85" x2="213.26" y2="303.15" />
+										<line x1="56.74" y1="87.71" x2="213.26" y2="303.15" />
+									</g>
+									<polygon points="310,170 213.26,36.85 56.74,87.71 56.74,252.29 213.26,303.15" fill="none" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" />
+									<g fill="#1a1a1a">
+										<circle cx="310" cy="170" r="7.5" />
+										<circle cx="213.26" cy="36.85" r="7.5" />
+										<circle cx="56.74" cy="87.71" r="7.5" />
+										<circle cx="56.74" cy="252.29" r="7.5" />
+										<circle cx="213.26" cy="303.15" r="7.5" />
+									</g>
+								</svg>
+							</div>
+						</div>
+					</div>
+					<!-- the arrow waits: the first press forward (or m) sets it moving -->
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Interleavings</h3>
+						<div class="stack">
+							<!-- one press forward: the formal definition fades out, then the
+							     picture of it fades in in the same place -->
+							<div class="frame-body fragment swap-out" data-fragment-index="0">
+								<!-- the box and its note stay together -->
+								<div>
+									<div class="block" style="width: 880px; font-size: 0.64em;">
+										<div class="block-title">Definition</div>
+										<div class="block-body">
+											<p>A <strong>$t$-interleaving</strong> of $\kk^I$ and $\kk^J$ is a pair of morphisms ${\phi\colon \kk^I \to \kk^J[t],\ \psi\colon \kk^J \to \kk^I[t]}$ that make the following diagrams commute.</p>
+											<svg viewBox="0 -8 620 178" style="width: 600px; display: block; overflow: visible; margin: 0.5em auto;">
+												<defs>
+													<marker id="ahShift" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+														<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+													</marker>
+												</defs>
+												<g stroke="#1a1a1a" stroke-width="1.5">
+													<line x1="70" y1="32" x2="166" y2="32" marker-end="url(#ahShift)" />
+													<line x1="52" y1="50" x2="112" y2="124" marker-end="url(#ahShift)" />
+													<line x1="150" y1="124" x2="205" y2="50" marker-end="url(#ahShift)" />
+													<foreignObject x="-5" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I$</div></foreignObject>
+													<foreignObject x="157" y="14" width="130" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I[2t]$</div></foreignObject>
+													<foreignObject x="70" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J[t]$</div></foreignObject>
+													<foreignObject x="43" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\kk^I[0\to 2t]$</div></foreignObject>
+													<foreignObject x="46" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\phi$</div></foreignObject>
+													<foreignObject x="175" y="84" width="50" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi[t]$</div></foreignObject>
+													<line x1="400" y1="32" x2="496" y2="32" marker-end="url(#ahShift)" />
+													<line x1="382" y1="50" x2="442" y2="124" marker-end="url(#ahShift)" />
+													<line x1="480" y1="124" x2="535" y2="50" marker-end="url(#ahShift)" />
+													<foreignObject x="325" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J$</div></foreignObject>
+													<foreignObject x="487" y="14" width="130" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J[2t]$</div></foreignObject>
+													<foreignObject x="400" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I[t]$</div></foreignObject>
+													<foreignObject x="373" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\kk^J[0\to 2t]$</div></foreignObject>
+													<foreignObject x="376" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi$</div></foreignObject>
+													<foreignObject x="505" y="84" width="50" height="36"><div class="fig-lbl" style="font-size: 17px;">$\phi[t]$</div></foreignObject>
+												</g>
+											</svg>
+											<p>The <strong>interleaving distance</strong> is $$d(\kk^I, \kk^J) = \inf\{\, t \geqslant 0 \mid \kk^I \text{ and } \kk^J \text{ are } t\text{-interleaved} \,\}.$$</p>
+										</div>
+									</div>
+									<p class="note">Here $\kk^I[t] = \kk^{I-t}$.</p>
+								</div>
+							</div>
+							<div class="frame-body fragment swap-in" data-fragment-index="0">
+								<div class="block" style="width: 880px; font-size: 0.64em;">
+									<div class="block-title">Definition</div>
+									<div class="block-body">
+										<p>The <strong>interleaving distance</strong> is $d(\kk^I, \kk^J) =$ “the <em>least</em> energy needed to align $I$ and $J$ to each other”.</p>
+									</div>
+								</div>
+								<p style="font-size: 0.75em; margin: 0; white-space: nowrap;">$[c,d]$ is aligned to $[a,b]$ $\iff c \leqslant a \leqslant d \leqslant b \iff \Hom\bigl(\kk^{[a,b]}, \kk^{[c,d]}\bigr) \neq 0$</p>
+								<iframe data-src="shift.html" title="The shift functor acting on interval modules, interactive" style="width: 900px; height: 410px;"></iframe>
+							</div>
+						</div>
+					</div>
+					<!-- after the swap, the next press forward sets t moving (m or pause start and stop it too) -->
+					<span class="fragment" data-roll data-fragment-index="1"></span>
+				</section>
+
+				<!-- auto-animate between the two rolling slides: no slide transition, the title stays put -->
+				<section data-auto-animate data-auto-animate-id="rolling" data-auto-animate-unmatched="false">
+					<div class="frame">
+						<h3>Rolling the line onto a circle</h3>
+						<div class="frame-body">
+							<iframe data-src="wrap.html" title="The line bends into a circle and the interval becomes a chord" style="width: 960px; height: 610px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<!-- auto-animate between the two rolling slides: no slide transition, the title stays put -->
+				<section data-auto-animate data-auto-animate-id="rolling" data-auto-animate-unmatched="false">
+					<div class="frame">
+						<h3>Rolling the line onto a circle</h3>
+						<div class="frame-body">
+							<iframe data-src="wrap.html#two" title="The line bends into a circle and two overlapping intervals become crossing chords" style="width: 960px; height: 610px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Admissible bijections</h3>
+						<div class="frame-body">
+							<iframe data-src="admissible.html" title="Admissible bijections between two chords, interactive" style="width: 900px; height: 600px;"></iframe>
+						</div>
+					</div>
+				</section>
+
+				<!-- data-skip: passed over when presenting, see step() below -->
+				<section data-skip>
+					<div class="block">
+						<div class="block-title">Definition</div>
+						<div class="block-body">
+							The category $\X$ consists of the following data:
+							<ol class="roman">
+								<li>Objects: two-element subsets of $S^1$, called chords.</li>
+								<li>
+									Morphisms: for two chords $A$ and $B$, we define $\Hom(A,B)$ as the free
+									$\kk$-vector space with basis $\operatorname{Adm}(A,B)$. The identity morphism
+									of $A$ is the admissible bijection $\operatorname{Id}_A$.
+								</li>
+								<li>
+									Composition: for two basis morphisms $f \in \operatorname{Adm}(A,B)$ and
+									$g \in \operatorname{Adm}(B,C)$ we define
+									$$g \circ f = \begin{cases} gf &amp; \text{if } gf \in \operatorname{Adm}(A,C), \\ 0 &amp; \text{else.} \end{cases}$$
+									We extend $\circ$ bilinearly.
+								</li>
+							</ol>
+						</div>
+					</div>
+				</section>
+
+
+				<section>
+					<div class="frame">
+						<h3>The Auslander–Reiten quiver of $\X_5$</h3>
+						<div class="frame-body">
+							<div>
+								<svg viewBox="0 0 720 460" style="width: 700px; display: block; margin: 0 auto;">
+									<defs>
+										<marker id="ahQuiver" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+											<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+										</marker>
+									</defs>
+									<!-- arrows -->
+									<g stroke="#1a1a1a" stroke-width="1.5" marker-end="url(#ahQuiver)">
+										<line x1="216.8" y1="86.8" x2="263.2" y2="133.2" />
+										<line x1="456.8" y1="86.8" x2="503.2" y2="133.2" />
+										<line x1="96.8" y1="206.8" x2="143.2" y2="253.2" />
+										<line x1="96.8" y1="133.2" x2="143.2" y2="86.8" />
+										<line x1="336.8" y1="206.8" x2="383.2" y2="253.2" />
+										<line x1="336.8" y1="133.2" x2="383.2" y2="86.8" />
+										<line x1="576.8" y1="206.8" x2="623.2" y2="253.2" />
+										<line x1="576.8" y1="133.2" x2="623.2" y2="86.8" />
+										<line x1="216.8" y1="326.8" x2="263.2" y2="373.2" />
+										<line x1="216.8" y1="253.2" x2="263.2" y2="206.8" />
+										<line x1="456.8" y1="326.8" x2="503.2" y2="373.2" />
+										<line x1="456.8" y1="253.2" x2="503.2" y2="206.8" />
+										<line x1="96.8" y1="373.2" x2="143.2" y2="326.8" />
+										<line x1="336.8" y1="373.2" x2="383.2" y2="326.8" />
+										<line x1="576.8" y1="373.2" x2="623.2" y2="326.8" />
+									</g>
+									<!-- {0, 1} -->
+									<g>
+										<polygon points="218.0,50.0 191.7,13.9 149.3,27.7 149.3,72.3 191.7,86.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="218.0" y1="50.0" x2="191.7" y2="13.9" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="218.0" cy="50.0" r="6" fill="#f2b705" />
+										<circle cx="191.7" cy="13.9" r="6" fill="#e01b24" />
+									</g>
+									<!-- {1, 2} -->
+									<g>
+										<polygon points="458.0,50.0 431.7,13.9 389.3,27.7 389.3,72.3 431.7,86.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="431.7" y1="13.9" x2="389.3" y2="27.7" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="431.7" cy="13.9" r="6" fill="#f2b705" />
+										<circle cx="389.3" cy="27.7" r="6" fill="#e01b24" />
+									</g>
+									<!-- {2, 3} -->
+									<g>
+										<polygon points="698.0,50.0 671.7,13.9 629.3,27.7 629.3,72.3 671.7,86.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="629.3" y1="27.7" x2="629.3" y2="72.3" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="629.3" cy="27.7" r="6" fill="#f2b705" />
+										<circle cx="629.3" cy="72.3" r="6" fill="#e01b24" />
+									</g>
+									<!-- {4, 1} -->
+									<g>
+										<polygon points="98.0,170.0 71.7,133.9 29.3,147.7 29.3,192.3 71.7,206.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="71.7" y1="206.1" x2="71.7" y2="133.9" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="71.7" cy="206.1" r="6" fill="#f2b705" />
+										<circle cx="71.7" cy="133.9" r="6" fill="#e01b24" />
+									</g>
+									<!-- {0, 2} -->
+									<g>
+										<polygon points="338.0,170.0 311.7,133.9 269.3,147.7 269.3,192.3 311.7,206.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="338.0" y1="170.0" x2="269.3" y2="147.7" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="338.0" cy="170.0" r="6" fill="#f2b705" />
+										<circle cx="269.3" cy="147.7" r="6" fill="#e01b24" />
+									</g>
+									<!-- {1, 3} -->
+									<g>
+										<polygon points="578.0,170.0 551.7,133.9 509.3,147.7 509.3,192.3 551.7,206.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="551.7" y1="133.9" x2="509.3" y2="192.3" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="551.7" cy="133.9" r="6" fill="#f2b705" />
+										<circle cx="509.3" cy="192.3" r="6" fill="#e01b24" />
+									</g>
+									<!-- {4, 2} -->
+									<g>
+										<polygon points="218.0,290.0 191.7,253.9 149.3,267.7 149.3,312.3 191.7,326.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="191.7" y1="326.1" x2="149.3" y2="267.7" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="191.7" cy="326.1" r="6" fill="#f2b705" />
+										<circle cx="149.3" cy="267.7" r="6" fill="#e01b24" />
+									</g>
+									<!-- {0, 3} -->
+									<g>
+										<polygon points="458.0,290.0 431.7,253.9 389.3,267.7 389.3,312.3 431.7,326.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="458.0" y1="290.0" x2="389.3" y2="312.3" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="458.0" cy="290.0" r="6" fill="#f2b705" />
+										<circle cx="389.3" cy="312.3" r="6" fill="#e01b24" />
+									</g>
+									<!-- {1, 4} -->
+									<g>
+										<polygon points="698.0,290.0 671.7,253.9 629.3,267.7 629.3,312.3 671.7,326.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="671.7" y1="253.9" x2="671.7" y2="326.1" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="671.7" cy="253.9" r="6" fill="#f2b705" />
+										<circle cx="671.7" cy="326.1" r="6" fill="#e01b24" />
+									</g>
+									<!-- {3, 2} -->
+									<g>
+										<polygon points="98.0,410.0 71.7,373.9 29.3,387.7 29.3,432.3 71.7,446.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="29.3" y1="432.3" x2="29.3" y2="387.7" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="29.3" cy="432.3" r="6" fill="#f2b705" />
+										<circle cx="29.3" cy="387.7" r="6" fill="#e01b24" />
+									</g>
+									<!-- {4, 3} -->
+									<g>
+										<polygon points="338.0,410.0 311.7,373.9 269.3,387.7 269.3,432.3 311.7,446.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="311.7" y1="446.1" x2="269.3" y2="432.3" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="311.7" cy="446.1" r="6" fill="#f2b705" />
+										<circle cx="269.3" cy="432.3" r="6" fill="#e01b24" />
+									</g>
+									<!-- {0, 4} -->
+									<g>
+										<polygon points="578.0,410.0 551.7,373.9 509.3,387.7 509.3,432.3 551.7,446.1" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round" />
+										<line x1="578.0" y1="410.0" x2="551.7" y2="446.1" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+										<circle cx="578.0" cy="410.0" r="6" fill="#f2b705" />
+										<circle cx="551.7" cy="446.1" r="6" fill="#e01b24" />
+									</g>
+								</svg>
+								<p class="note" style="width: 700px; margin: 0.8em auto 0; text-align: center;">Irreducible morphisms move one endpoint of a chord to the next vertex counterclockwise, keeping the other fixed. Identical chords are identified.</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<div class="paper-single">
+						<img src="images/ref-mcfaddin-needham.png" alt="McFaddin, Needham: Interleaving distances, monoidal actions and 2-categories" />
+						<span class="arxiv">arXiv:2311.11936</span>
+					</div>
+				</section>
+				<section>
+					<!-- the G-interleaving distance of McFaddin and Needham, as on the poster -->
+					<div class="frame">
+						<h3>The interleaving distance in general</h3>
+						<div class="frame-body">
+							<div>
+								<ul class="pre-def">
+									<li>Let $(G, \otimes, e)$ be a monoidal category. A <em>$G$-actegory</em> is a pair $(\mathbf{A}, T)$ where $\mathbf{A}$ is a category and $T$ is a monoidal functor $G \to \operatorname{End}(\mathbf{A})$.</li>
+									<li>A <em>monoidal weight</em> on $G$ is a function $w\colon G_0 \to [0, \infty]$ such that $w(e) = 0$ and ${w(g \otimes h) \leqslant w(g) + w(h)}$ for all $g, h \in G_0$.</li>
+								</ul>
+								<div class="block" style="width: 900px; font-size: 0.56em;">
+									<div class="block-title">Definition</div>
+									<div class="block-body">
+										Let $T\colon G \to \operatorname{End}(\mathbf{A})$ be a monoidal functor and $w$ a monoidal weight on $G$.
+										<ol class="roman">
+											<li>
+												Two objects $A, B \in \mathbf{A}$ are <em>$(g, h)$-interleaved</em> for $g, h \in G_0$, if there exist ${\phi\colon A \to T_g(B),\ \psi\colon B \to T_h(A)}$ in $\mathbf{A}$ and ${\alpha\colon e \to g \otimes h,\ \beta\colon e \to h \otimes g}$ in $G$ such that the diagrams
+													<svg viewBox="0 -8 650 172" style="width: 520px; display: block; overflow: visible; margin: 0.3em auto;">
+														<defs>
+															<marker id="ahG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+																<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+															</marker>
+														</defs>
+														<g stroke="#1a1a1a" stroke-width="1.5">
+														<line x1="78" y1="32" x2="186" y2="32" marker-end="url(#ahG)" />
+														<line x1="58" y1="50" x2="120" y2="124" marker-end="url(#ahG)" />
+														<line x1="160" y1="124" x2="222" y2="50" marker-end="url(#ahG)" />
+														<foreignObject x="10" y="14" width="60" height="36"><div class="fig-lbl" style="font-size: 21px;">$A$</div></foreignObject>
+														<foreignObject x="187" y="14" width="110" height="36"><div class="fig-lbl" style="font-size: 21px;">$T_{g\otimes h}(A)$</div></foreignObject>
+														<foreignObject x="95" y="127" width="90" height="36"><div class="fig-lbl" style="font-size: 21px;">$T_g(B)$</div></foreignObject>
+														<foreignObject x="87" y="-8" width="90" height="36"><div class="fig-lbl" style="font-size: 15px;">$T(\alpha)_A$</div></foreignObject>
+														<foreignObject x="56" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\phi$</div></foreignObject>
+														<foreignObject x="187" y="84" width="70" height="36"><div class="fig-lbl" style="font-size: 15px;">$T_g(\psi)$</div></foreignObject>
+														<line x1="428" y1="32" x2="536" y2="32" marker-end="url(#ahG)" />
+														<line x1="408" y1="50" x2="470" y2="124" marker-end="url(#ahG)" />
+														<line x1="510" y1="124" x2="572" y2="50" marker-end="url(#ahG)" />
+														<foreignObject x="360" y="14" width="60" height="36"><div class="fig-lbl" style="font-size: 21px;">$B$</div></foreignObject>
+														<foreignObject x="537" y="14" width="110" height="36"><div class="fig-lbl" style="font-size: 21px;">$T_{h\otimes g}(B)$</div></foreignObject>
+														<foreignObject x="445" y="127" width="90" height="36"><div class="fig-lbl" style="font-size: 21px;">$T_h(A)$</div></foreignObject>
+														<foreignObject x="437" y="-8" width="90" height="36"><div class="fig-lbl" style="font-size: 15px;">$T(\beta)_B$</div></foreignObject>
+														<foreignObject x="406" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi$</div></foreignObject>
+														<foreignObject x="537" y="84" width="70" height="36"><div class="fig-lbl" style="font-size: 15px;">$T_h(\phi)$</div></foreignObject>
+														</g>
+													</svg>
+												commute.
+											</li>
+											<li>
+												The associated <em>$G$-interleaving distance</em> is the function $d\colon \mathbf{A}_0 \times \mathbf{A}_0 \to [0, \infty]$ given by
+												$$d(A, B) = \inf\{\, \max\{w(g), w(h)\} \mid A \text{ and } B \text{ are } (g, h)\text{-interleaved} \,\}.$$
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Rotation of a chord</h3>
+						<div class="frame-body">
+							<iframe data-src="rotate.html" title="A chord and its rotation by r, interactive" style="width: 900px; height: 600px;"></iframe>
+						</div>
+					</div>
+					<!-- one press forward rotates the chord by π/2, as on the rolling slides -->
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<section>
+					<div class="papers">
+						<div class="paper fragment custom" style="left: 20px; top: 25px; --fx: 180px; --fy: 183px;"><img src="images/ref-caldero-chapoton-schiffler.png" alt="Caldero, Chapoton, Schiffler: Quivers with relations arising from clusters (A_n case)" /><span class="arxiv">arXiv:math/0401316</span></div>
+						<div class="paper fragment custom" style="left: 200px; top: 215px; --fx: 0px; --fy: -2px;"><img src="images/ref-igusa-todorov.png" alt="Igusa, Todorov: Continuous Frobenius categories" /><span class="arxiv">arXiv:1209.0038</span></div>
+						<div class="paper fragment custom" style="left: 380px; top: 425px; --fx: -180px; --fy: -200px;"><img src="images/ref-garcia-igusa.png" alt="Garcia, Igusa: Continuously triangulating the continuous cluster category" /><span class="arxiv">arXiv:1907.11365</span></div>
+					</div>
+				</section>
+
+				<!-- slide 3 again, with the category of chords in the middle; here everything moves from the start -->
+				<section>
+					<div class="two-col three">
+						<div><h3>Persistence modules</h3></div>
+						<div><h3>The category of chords</h3></div>
+						<div><h3>Cluster categories</h3></div>
+
+						<div><p>$\operatorname{Fun}(\R, \operatorname{vect}_{\kk})$</p></div>
+						<div><p>$\X$</p></div>
+						<div>
+							<p>$\mathcal{C}_{A_n}$</p>
+							<p>$A_n\colon\ \circ \to \circ \to \cdots \to \circ$</p>
+						</div>
+
+						<div><div class="ind">ind: interval modules $\kk^{[a,b]}$</div></div>
+						<div><div class="ind">ind: chords</div></div>
+						<div><div class="ind">ind: diagonals in the $(n+3)$-gon</div></div>
+
+						<div>
+							<iframe data-src="interval.html#short+shade+nolabel+play" title="An interval module applied to an arrow sliding along the real line" style="width: 290px; height: 85px;"></iframe>
+						</div>
+						<div>
+							<!-- two crossing chords: [π, 7π/4] in red and [π/2, 5π/4] in blue, as on the rolling slides -->
+							<svg viewBox="0 0 180 180" style="width: 150px; height: 150px; display: block;">
+								<circle cx="90" cy="90" r="70" fill="none" stroke="#1a1a1a" stroke-width="5" />
+								<!-- both chords turn together, counterclockwise (negative angles on screen), once every 16 s -->
+								<g>
+									<animateTransform attributeName="transform" type="rotate" from="0 90 90" to="-360 90 90" dur="16s" repeatCount="indefinite" />
+									<line x1="20" y1="90" x2="139.5" y2="139.5" stroke="#e01b24" stroke-width="5" stroke-linecap="round" />
+									<line x1="90" y1="20" x2="40.5" y2="139.5" stroke="#0038ff" stroke-width="5" stroke-linecap="round" />
+									<circle cx="20" cy="90" r="7" fill="#e01b24" />
+									<circle cx="139.5" cy="139.5" r="7" fill="#e01b24" />
+									<circle cx="90" cy="20" r="7" fill="#0038ff" />
+									<circle cx="40.5" cy="139.5" r="7" fill="#0038ff" />
+								</g>
+							</svg>
+						</div>
+						<div>
+							<div class="pair" style="gap: 18px;">
+								<p>$A_2\colon\ \circ \to \circ$</p>
+								<!-- The regular pentagon on V_5 = {2πi/5}, 0 on the right, and its five diagonals -->
+								<svg viewBox="0 0 340 340" style="width: 150px; height: 150px; display: block;">
+									<g stroke="#e01b24" stroke-width="5" stroke-linecap="round">
+										<line x1="310" y1="170" x2="56.74" y2="87.71" />
+										<line x1="310" y1="170" x2="56.74" y2="252.29" />
+										<line x1="213.26" y1="36.85" x2="56.74" y2="252.29" />
+										<line x1="213.26" y1="36.85" x2="213.26" y2="303.15" />
+										<line x1="56.74" y1="87.71" x2="213.26" y2="303.15" />
+									</g>
+									<polygon points="310,170 213.26,36.85 56.74,87.71 56.74,252.29 213.26,303.15" fill="none" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round" />
+									<g fill="#1a1a1a">
+										<circle cx="310" cy="170" r="7.5" />
+										<circle cx="213.26" cy="36.85" r="7.5" />
+										<circle cx="56.74" cy="87.71" r="7.5" />
+										<circle cx="56.74" cy="252.29" r="7.5" />
+										<circle cx="213.26" cy="303.15" r="7.5" />
+									</g>
+								</svg>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<!-- the blog post on the interleaving distance between interval modules -->
+					<div class="block" style="width: 720px; font-size: 0.64em;">
+						<div class="block-title">If you want to learn more...</div>
+						<div class="block-body">
+							<a href="https://christian-chavez.github.io/2025/10/29/interleaving-distance-between-interval-modules.html" target="_blank">
+								<img src="images/qr-blog.svg" alt="QR code to the blog post on the interleaving distance between interval modules" style="display: block; width: 280px; height: 280px; margin: 0.4em auto;" />
+							</a>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="images/end.webp" data-background-size="cover"></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="dist/plugin/notes.js"></script>
+		<script src="dist/plugin/markdown.js"></script>
+		<script src="dist/plugin/highlight.js"></script>
+		<script src="vendor/katex/katex.min.js"></script>
+		<script src="vendor/katex/contrib/auto-render.min.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			// Slides marked data-skip are passed over when going forwards or backwards
+			// with the keyboard, a clicker, or the arrow keys inside an applet. They are
+			// still there: Esc (the overview) or G followed by the slide's number shows them.
+			function step(dir) {
+				const frag = Reveal.availableFragments();
+				if (dir > 0 ? frag.next : frag.prev) return dir > 0 ? Reveal.nextFragment() : Reveal.prevFragment();
+				const slides = Reveal.getHorizontalSlides();
+				let i = Reveal.getIndices().h;
+				do i += dir; while (slides[i] && slides[i].hasAttribute('data-skip'));
+				if (slides[i]) Reveal.slide(i);
+			}
+			const forward = () => step(1), backward = () => step(-1);
+
+			// Play or pause the applet on the current slide.
+			const toggleApplet = () => {
+				const frame = Reveal.getCurrentSlide().querySelector('iframe');
+				if (frame && frame.contentWindow) frame.contentWindow.postMessage({ applet: 'toggle' }, '*');
+			};
+			// Reveal's own pause keys (b, v, period: also what a clicker's "blank screen"
+			// button sends) start and stop the animation on a slide that has one, and
+			// black out the screen as usual on any other slide.
+			const pauseKey = () => (Reveal.getCurrentSlide().querySelector('iframe') ? toggleApplet() : Reveal.togglePause());
+
+			// The applets send their arrow keys up to the deck as {method: 'next'} and
+			// so on. Reveal's own handling of such messages is off (postMessage: false)
+			// so that these go through step() as well.
+			window.addEventListener('message', e => {
+				let m;
+				try { m = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (err) { return; }
+				if (!m || typeof m.method !== 'string') return;
+				if (m.method === 'next') forward();
+				else if (m.method === 'prev') backward();
+				else if (m.method === 'up' || m.method === 'down') Reveal[m.method]();
+			});
+
+			Reveal.initialize({
+				hash: true,
+				controls: false,   // no navigation arrows in the corner
+				postMessage: false,
+				// right/left arrows, space (shift+space goes back), page down/up (what a clicker sends), n/p;
+				// b, v, period: pause (see pauseKey); enter: forward
+				keyboard: { 39: forward, 37: backward, 32: e => (e && e.shiftKey ? backward() : forward()), 34: forward, 33: backward, 78: forward, 80: backward,
+				            66: pauseKey, 86: pauseKey, 190: pauseKey, 13: () => (Reveal.isOverview() ? Reveal.toggleOverview(false) : forward()) },
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+			}).then(() => {
+				renderMathInElement(document.body, {
+					delimiters: [
+						{ left: '$$', right: '$$', display: true },
+						{ left: '$', right: '$', display: false },
+						{ left: '\\[', right: '\\]', display: true },
+						{ left: '\\(', right: '\\)', display: false },
+					],
+					// Macros from ../abstract/summary-RTA2026.tex, plus \wo for the winding order
+					macros: {
+						'\\R': '\\mathbb{R}',
+						'\\C': '\\mathbb{C}',
+						'\\Q': '\\mathbb{Q}',
+						'\\X': '\\mathbb{X}',
+						'\\kk': '\\mathbf{k}',
+						'\\Hom': '\\operatorname{Hom}',
+						'\\wo': '\\preccurlyeq',
+					},
+				});
+
+				// Leaving a slide unloads its applet (the iframe goes blank). If the keyboard
+				// focus was inside it, Space and the arrows would be lost there, so hand the
+				// focus back to the deck on every slide change.
+				Reveal.on('slidechanged', () => {
+					const a = document.activeElement;
+					if (a && a.tagName === 'IFRAME') {
+						a.blur();
+						window.focus();
+					}
+				});
+
+				// m, the Pause key and the play/pause media key also play or pause the applet.
+				Reveal.addKeyBinding({ keyCode: 77, key: 'm', description: 'Play or pause the applet' }, toggleApplet);
+				Reveal.addKeyBinding({ keyCode: 19, key: 'Pause', description: 'Play or pause the applet' }, toggleApplet);
+				Reveal.addKeyBinding({ keyCode: 179, key: '⏯', description: 'Play or pause the applet' }, toggleApplet);   // the play/pause media key
+
+				// The rolling slides each have one empty fragment (data-roll): going forward,
+				// the first press rolls the line up and only the next one leaves the
+				// slide; going back, the line unrolls first. Arriving on the slide, the
+				// line is flat (from before) or already rolled (from after).
+				document.querySelectorAll('.fragment[data-roll]').forEach(frag => {
+					const slide = frag.closest('section'), frame = slide.querySelector('iframe');
+					const send = instant => {
+						const state = frag.classList.contains('visible') ? 1 : 0;
+						if (frame.contentWindow) frame.contentWindow.postMessage({ applet: 'set', state, instant }, '*');
+					};
+					frame.addEventListener('load', () => send(true));
+					Reveal.on('slidechanged', e => { if (e.currentSlide === slide) send(true); });
+					Reveal.on('fragmentshown', e => { if (e.fragment === frag) send(false); });
+					Reveal.on('fragmenthidden', e => { if (e.fragment === frag) send(false); });
+				});
+			});
+		</script>
+	</body>
+</html>

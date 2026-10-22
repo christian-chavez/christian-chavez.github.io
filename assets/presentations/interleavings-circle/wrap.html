@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The line bends into a circle</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 650" aria-label="A segment of the real line with an interval on it bends into a circle, and the interval becomes a chord"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const TAU = 2 * Math.PI;
+  const NS = 'http://www.w3.org/2000/svg';
+  const CX = 480, CY = 325;       // centre of the circle (and of the frame), which stays put throughout
+  const R = 145;                   // the circle's radius in px; the scale never changes, and the
+                                   // straight line (2πR long) just fits across the frame
+  const DURATION = 4000;           // ms from line to circle
+  const COLOR = { A: '#e01b24', B: '#0038ff', ink: '#1a1a1a' };
+
+  // The intervals inside [0, 2π]: [a, b] in red and, with wrap.html#two, also
+  // [c, d] in blue, with c < a < d < b so that the two chords end up crossing.
+  // `lift`: px above the line at the start, shrinking to 0 as the line closes,
+  // so that overlapping intervals don't cover each other on the line.
+  const intervals = [{ lo: Math.PI, hi: 7 * Math.PI / 4, names: ['a', 'b'], color: COLOR.A, lift: 0 }];
+  if (location.hash === '#two') {
+    intervals.push({ lo: Math.PI / 2, hi: 5 * Math.PI / 4, names: ['c', 'd'], color: COLOR.B, lift: 16 });
+  }
+
+  // The segment [0, 2π] bends with the same curvature s everywhere: s = 0 is
+  // the straight line, s = 1 the circle x ↦ (cos x, sin x), with 0 on the right
+  // and angles growing counterclockwise. The midpoint π stays one radius away
+  // from the circle's centre, on the line through the centre perpendicular to
+  // the segment there: below the centre at the start (so the line starts out
+  // centred), turning a quarter turn to end on its left, at angle π. The quarter
+  // turn happens mostly late in the bend, so the open arc never stands too tall.
+  function frameAt(x, s) {
+    const phi = Math.PI / 2 * s * s;
+    const nx = Math.sin(phi), ny = Math.cos(phi);   // from the midpoint towards the centre
+    const tx = ny, ty = -nx;                        // direction of travel at the midpoint
+    const u = x - Math.PI, su = s * u;
+    const along = s < 1e-6 ? u : Math.sin(su) / s;
+    const across = s < 1e-6 ? 0 : (1 - Math.cos(su)) / s;
+    const px = -nx + tx * along + nx * across, py = -ny + ty * along + ny * across;
+    const dx = tx * Math.cos(su) + nx * Math.sin(su), dy = ty * Math.cos(su) + ny * Math.sin(su);
+    return {
+      x: CX + R * px, y: CY - R * py,
+      tx: dx, ty: -dy,   // direction of travel, on screen
+      nx: dy, ny: dx,    // outward side, on screen: below the line, outside the circle
+    };
+  }
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    svg.appendChild(e);
+    return e;
+  };
+  const label = (tex, color) => {
+    const fo = el('foreignObject', { width: 80, height: 44 });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    katex.render(tex, div);
+    fo.appendChild(div);
+    return fo;
+  };
+  const put = (fo, x, y) => { fo.setAttribute('x', x - 40); fo.setAttribute('y', y - 22); };
+
+  const round = { 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+  const curve = el('path', { fill: 'none', stroke: COLOR.ink, 'stroke-width': 6, ...round });
+  const ticks = [0, TAU].map(() => el('line', { stroke: COLOR.ink, 'stroke-width': 4, ...round }));
+  for (const iv of intervals) {
+    iv.chord = el('line', { stroke: iv.color, 'stroke-width': 6, ...round });
+    iv.dots = [0, 1].map(() => el('circle', { r: 9.5, fill: iv.color }));
+    iv.labels = iv.names.map(n => label(n, iv.color));
+  }
+  const ends = [label('0', COLOR.ink), label('2\\pi', COLOR.ink)];
+
+  function draw(s) {
+    let d = '';
+    for (let i = 0; i <= 240; i++) {
+      const p = frameAt(TAU * i / 240, s);
+      d += (i ? 'L' : 'M') + p.x.toFixed(2) + ',' + p.y.toFixed(2);
+    }
+    curve.setAttribute('d', d);
+
+    // the two ends of the segment, which meet on the right of the circle
+    [0, TAU].forEach((x, i) => {
+      const p = frameAt(x, s), away = i ? 1 : -1;
+      ticks[i].setAttribute('x1', p.x - 11 * p.nx); ticks[i].setAttribute('y1', p.y - 11 * p.ny);
+      ticks[i].setAttribute('x2', p.x + 11 * p.nx); ticks[i].setAttribute('y2', p.y + 11 * p.ny);
+      // straight under the end at first; moved apart along the curve as the ends meet
+      put(ends[i], p.x + 34 * p.nx + 22 * s * away * p.tx, p.y + 34 * p.ny + 22 * s * away * p.ty);
+    });
+
+    // each interval: the straight segment between its endpoints. On the line it
+    // lies on the line; on the circle it is a chord.
+    for (const iv of intervals) {
+      const lift = iv.lift * (1 - s) * (1 - s);
+      const ps = [iv.lo, iv.hi].map(x => frameAt(x, s));
+      const at = ps.map(p => [p.x - lift * p.nx, p.y - lift * p.ny]);
+      iv.chord.setAttribute('x1', at[0][0]); iv.chord.setAttribute('y1', at[0][1]);
+      iv.chord.setAttribute('x2', at[1][0]); iv.chord.setAttribute('y2', at[1][1]);
+      ps.forEach((p, i) => {
+        iv.dots[i].setAttribute('cx', at[i][0]);
+        iv.dots[i].setAttribute('cy', at[i][1]);
+        put(iv.labels[i], p.x + 30 * p.nx, p.y + 30 * p.ny);
+      });
+    }
+  }
+
+  // ---------- animation ----------
+  // m, or a click on the figure, bends the line into the circle; once more
+  // unbends it.
+  let progress = 0, target = 0, last = 0, frame = 0;
+  const ease = u => u * u * u * (u * (6 * u - 15) + 10);   // starts and stops without a jolt
+
+  function tick(now) {
+    frame = 0;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    const step = dt / DURATION;
+    progress = target > progress ? Math.min(target, progress + step) : Math.max(target, progress - step);
+    draw(ease(progress));
+    if (progress !== target) frame = requestAnimationFrame(tick);
+  }
+
+  function toggle() {
+    target = target ? 0 : 1;
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  svg.addEventListener('click', toggle);
+  // The deck forwards its m key here, so no click inside the applet is needed.
+  // ({applet: 'set', state: 0 or 1} comes from the slide's fragment: flat or rolled,
+  // animated or, with instant, at once.)
+  function set(state, instant) {
+    target = state;
+    if (instant) {
+      progress = state;
+      draw(ease(progress));
+    } else if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  draw(0);
+})();
+</script>
+</body>
+</html>
