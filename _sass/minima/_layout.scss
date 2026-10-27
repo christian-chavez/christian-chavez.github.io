@@ -11,7 +11,9 @@
 
   // Positioning context for the mobile navigation icon
   position: relative;
+  z-index: 1; // keeps the shadow above the page content
   background-color: #eceff4; // Nord snow-storm, same as the table backgrounds
+  box-shadow: 0 1.5px 6.5px rgba(46, 52, 64, 0.15); // soft shadow, Nord polar night (#2e3440)
 }
 
 .site-title {
@@ -134,9 +136,12 @@
  * Site footer
  */
 .site-footer {
-  border-top: 1px solid $border-color-01;
+  border-top: 1px solid #c4ccd8; // same as the header's bottom line
   padding: $spacing-unit 0;
   background-color: $code-background-color;
+  position: relative;
+  z-index: 1; // keeps the shadow above the page content
+  box-shadow: 0 -1.5px 6.5px rgba(46, 52, 64, 0.15); // same as the header's, cast upwards
 }
 
 .footer-heading {

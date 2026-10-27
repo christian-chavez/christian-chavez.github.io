@@ -9,7 +9,11 @@ $content-width: 830px;
 // the accent colour below.
 $site-title-color: #1a1a1a;
 
-// Single accent colour, used only on the masthead title and the current
-// nav item. Nord "frost" blue (nord10) nudged a bit bluer; still sits
+// Single accent colour, used on the masthead title, the current nav item
+// and links. Nord "frost" blue (nord10) nudged a bit bluer; still sits
 // with the Nord snow-storm grey (#ECEFF4) the tables/code blocks use.
 $accent-color: #3f6cc0;
+
+// Links in the accent colour instead of Minima's brighter #2a7ae2.
+$link-base-color: $accent-color;
+$link-visited-color: darken($accent-color, 15%);
