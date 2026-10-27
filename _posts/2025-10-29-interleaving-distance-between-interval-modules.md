@@ -860,7 +860,7 @@ We obtain our desired conclusion:
 > d_T(\mathbf{k}^{I}, \mathbf{k}^{J}) = \min\left\{ \frac{1}{2}\max\left\{ b-a,d-c \right\},\max\left\{ |c-a|,|d-b|\right\}\right\}.
 > $$
 
-Here is an applet you play with.
+Here is an applet you can play with.
 
 <iframe src="/assets/applets/interleaving-distance.html"
         title="Interleaving distance between two interval modules: drag the endpoints or type them"
