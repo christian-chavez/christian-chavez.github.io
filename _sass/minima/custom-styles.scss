@@ -40,6 +40,13 @@
   font-size: .85em;
 }
 
+// On phones the name gets its own line and the links go below it,
+// so no wrapped line starts with a dot.
+@include media-query($on-palm) {
+  .footer-line .footer-name { flex-basis: 100%; }
+  .footer-line .footer-name + .footer-link::before { content: none; }
+}
+
 // Data tables across the navbar pages (teaching, presentations, notes):
 // run them a touch smaller and tighter than body prose so entries fit on
 // one line more often. Everything else comes from the base `table` rules.
