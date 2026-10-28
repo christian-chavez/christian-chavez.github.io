@@ -20,7 +20,7 @@ I'm an MSc student in mathematics at [Université de Sherbrooke](https://www.ush
 I obtained my BSc in mathematics from [Yachay Tech University](https://yachaytech.edu.ec/) (Ecuador) at the [School of Mathematics and Computer Science](https://yachaytech.edu.ec/escuela-de-ciencias-matematicas-y-computacionales/) in April 2025.
 
 **Full name**: Kevin Christian Chávez Cadena  
-**Curriculum vitæ**: [English](/assets/docs/CV-en-kcc.pdf) • [French](/assets/docs/CV-fr-kcc.pdf) • [Spanish](/assets/docs/CV-es-kcc.pdf)  
+**Curriculum vitæ**: [English](/assets/docs/Christian-Chavez-CV-en.pdf) • [French](/assets/docs/Christian-Chavez-CV-fr.pdf) • [Spanish](/assets/docs/Christian-Chavez-CV-es.pdf)  
 **Email**: `christian.chavez@usherbrooke.ca`  
 **Location**: office D4-1026  
 **Profiles**: [ORCID](https://orcid.org/0009-0005-1941-4873) • [Google Scholar](https://scholar.google.com/citations?user=z2cKwrQAAAAJ&hl=en)
