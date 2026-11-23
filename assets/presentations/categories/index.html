@@ -53,7 +53,7 @@
             <section data-transition="zoom-in fade-out">
                 <h3>Un poco de historia</h3>
                 <p style="font-size: 30px;">
-                    Samuel Eilenberg (izquierda) y Saunders Mac Lane introducieron la teoría de la categoría a mediados
+                    Samuel Eilenberg (izquierda) y Saunders Mac Lane introdujeron la teoría de categorías a mediados
                     del siglo XX, como parte de su trabajo en topología algebraica.
                 </p>
                 <img src="imgs/samuel.jpeg" alt="Samuel the Dog" height="400" style="float: center;">
@@ -78,7 +78,7 @@
             </section>
 
             <section>
-                <h3>A breves rasgos, la teoría de categorías es...</h3>
+                <h3>A grandes rasgos, la teoría de categorías es...</h3>
                 <ul>
                     <li>una teoría matemática sobre estructura</li>
                     <li>un lenguaje para estudiar diferentes áreas de las matemáticas</li>
@@ -241,7 +241,7 @@
             </section>
 
             <section data-auto-animate>
-                Ahora sí!
+                ¡Ahora sí!
 
                 <h2 data-id="text">Categorías</h2>
             </section>
@@ -398,7 +398,7 @@
                     <li><strong>Objetos:</strong> grupos</li>
                     <li><strong>Morfismos:</strong> homomorfismos de grupos</li>
                     <li><strong>Composición:</strong> usual, $(f \circ g) (x) = f(g(x))$</li>
-                    <li><strong>Identidades:</strong> $1_A(x) = x$, por cada conjunto $A$</li>
+                    <li><strong>Identidades:</strong> $1_G(x) = x$, por cada grupo $G$</li>
                 </ul>
             </section>
 
@@ -410,14 +410,14 @@
                 <h1>$\mathbf{Top}$</h1>
 
                 <p>
-                    La categoría de todos los espacios topologicos $(X, \mathcal{T})$
+                    La categoría de todos los espacios topológicos $(X, \mathcal{T})$
                 </p>
 
                 <ul>
-                    <li><strong>Objetos:</strong> espacios topologicos</li>
+                    <li><strong>Objetos:</strong> espacios topológicos</li>
                     <li><strong>Morfismos:</strong> funciones continuas</li>
                     <li><strong>Composición:</strong> usual, $(f \circ g) (x) = f(g(x))$</li>
-                    <li><strong>Identidades:</strong> $1_A(x) = x$, por cada conjunto $A$</li>
+                    <li><strong>Identidades:</strong> $1_X(x) = x$, por cada espacio $X$</li>
                 </ul>
             </section>
 
@@ -434,9 +434,9 @@
                 <ul>
                     <li><strong>Objetos:</strong> números reales</li>
                     <li><strong>Morfismos:</strong> un único $\varphi : x\to y$ t.q. $x\leq y$</li>
-                    <li><strong>Composición:</strong> $x\rightarrow{} y \rightarrow{} z$ da lugar $x\rightarrow{} z$
+                    <li><strong>Composición:</strong> $x\rightarrow{} y \rightarrow{} z$ da lugar a $x\rightarrow{} z$
                         t.q. $x\leq z$</li>
-                    <li><strong>Identidades:</strong> $1_x = x$ para todo $x\in \mathbb{R}$. Claramente $x\leq x$</li>
+                    <li><strong>Identidades:</strong> $1_x : x \to x$ para todo $x\in \mathbb{R}$. Claramente $x\leq x$</li>
                     <li>Las reglas de composición e identidades son inmediatas</li>
                 </ul>
             </section>
@@ -483,7 +483,7 @@
                 <h2>Funtor</h2>
                 <p class="r-frame" style="text-align: left; padding: 10px; font-size: 33px;">
                     <strong>Definición.</strong> Sean $\mathscr{A}$ y $\mathscr{B}$ categorías. Un
-                    <strong>funtor</strong> $F : \mathscr{A} \to \mathscr{B}$ consiste de dos objetos que satisfacen
+                    <strong>funtor</strong> $F : \mathscr{A} \to \mathscr{B}$ consiste de dos funciones que satisfacen
                     dos condiciones:
                 <ul style="font-size: 30px;">
                     <li>una función de objetos $\mathbf{ob}(\mathscr{A}) \to \mathbf{ob}(\mathscr{B})$, tal que
@@ -608,14 +608,14 @@
             <section data-auto-animate="">
                 <h2>Transformaciones Naturales</h2>
                 <p class="r-frame" style="text-align: left; padding: 10px; font-size: 33px">
-                    <strong>Definición.</strong> Sean $\mathscr{A}, \mathscr{B}$ categorías y $F, G$ funtores de $\mathscr{A}$ a $\mathscr{B}$. Una transformación natural $\alpha$ de $\mathscr{A}$ a $\mathscr{B}$ es una familia de morfismos $$\left(
+                    <strong>Definición.</strong> Sean $\mathscr{A}, \mathscr{B}$ categorías y $F, G$ funtores de $\mathscr{A}$ a $\mathscr{B}$. Una transformación natural $\alpha$ de $F$ a $G$ es una familia de morfismos $$\left(
                     F(A)\xrightarrow{\alpha_A} G(A)\right)_{A\in \mathscr{A}}$$ en $\mathscr{B}$ tal que si $f: A \to A'$
                     es un morfismo en $\mathscr{A}$, entonces el siguiente diagrama conmuta:
                 </p>
 
                 <aside class="notes">
-                    Así como los funtores son transformaciones entre categorías, las transformaciones Naturales son
-                    tralaciones entre funtores. 📝
+                    Así como los funtores son transformaciones entre categorías, las transformaciones naturales son
+                    traslaciones entre funtores. 📝
                 </aside>
 
             </section>   
@@ -633,7 +633,7 @@
                     Observaciones
                 </h3>
                 <ul>
-                    <li>Esta definición se dió de tal manera que por cada $A\xrightarrow{f} A'$ en $\mathscr{A}$ se pueda contruir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
+                    <li>Esta definición se dio de tal manera que por cada $A\xrightarrow{f} A'$ en $\mathscr{A}$ se pueda construir exactamente un morfismo $F(A) \to G(A')$ en $\mathscr{B}$.
                     </li>
                     <!-- <li>Cuando $f = 1_A$, tal morfismo es justamente $\alpha_A$</li> -->
                     <li>Dicho morfismo es la diagonal del diagrama anterior</li>
@@ -651,7 +651,7 @@
                 
                 <ul>
                     <li>para cualquier par de categorías $\mathscr{C}$ y $\mathscr{D}$</li>
-                    <li>y cualquier functor $F$ de $\mathscr{C}$ a $\mathscr{D}$</li>
+                    <li>y cualquier funtor $F$ de $\mathscr{C}$ a $\mathscr{D}$</li>
                 </ul>          
             </section>
 
@@ -701,7 +701,7 @@
                 
                 <ul>
                     <li>Sea \(\mathcal{G}\) el funtor de $\mathrm{CRing}$ a $\mathrm{Grp}$ que mapea cada anillo \(R\) a su grupo de unidades \(R^{\times}\), y cada homomorfismo de anillos \(f\) a su restricción a los grupos de unidades (también denotado por \(f\)).</li>
-                    <li>La determinante es una transformación natural de \(\mathcal{G} \mathcal{L}_n\) a \(\mathcal{G}\) porque la determinante está definida por el mismo polinomio para todos los anillos, de modo que el siguiente diagrama es conmutativo:</li>
+                    <li>El determinante es una transformación natural de \(\mathcal{G} \mathcal{L}_n\) a \(\mathcal{G}\) porque el determinante está definida por el mismo polinomio para todos los anillos, de modo que el siguiente diagrama es conmutativo:</li>
                 </ul>
             </section>            
 
@@ -733,7 +733,7 @@
                     <li>Álgebra homológica</li>
                     <li>Ciencias de la computación</li>
                     <ul style="list-style-type: none;">
-                        <li>Programación fucional, e.g., Haskell </li>
+                        <li>Programación funcional, e.g., Haskell </li>
                     </ul>
                     <li>Teoría de cARTEgorías</li>
                     <ul style="list-style-type: none;">
