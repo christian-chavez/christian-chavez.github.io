@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2πℤ agit sur ℝ</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 420" aria-label="Un point x de la droite réelle et son orbite x + 2πℤ ; la droite, coupée en morceaux de longueur 2π empilés, montre qu'une orbite devient un seul point du cercle"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const PI = Math.PI, TAU = 2 * PI;
+  const COLOR = { ink: '#1a1a1a', pt: '#0038ff', grey: '#8a8a8a' };
+
+  // Steps (one press forward each):
+  //   0  the line and a point x
+  //   1  x hops by +2π, twice: its orbit x + 2πℤ
+  //   2  the line is cut at 0, 2π, 4π, 6π and the pieces stacked: the orbit
+  //      lines up into a single point of ℝ/2πℤ = S¹
+  const STEPS = 2;
+  const DUR = [2600, 2600];   // ms for each step
+
+  // ---------- layout ----------
+  const Y = 190;                         // the line
+  const UNIT = 260;                      // px per 2π
+  const V0 = 90;                         // where 0 is
+  const px = v => V0 + v / TAU * UNIT;
+  const X_VAL = PI / 2;                  // the point x
+  const ROW = 85;                        // between the stacked pieces
+  const STACK_X = V0 + UNIT;             // the stacked pieces start where 2π was
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (tex, color, parent = svg, w = 120, h = 40, size) => {
+    const fo = el('foreignObject', { width: w, height: h }, parent);
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    katex.render(tex, div);
+    fo.appendChild(div);
+    fo.put = (x, y) => { fo.setAttribute('x', x - w / 2); fo.setAttribute('y', y - h / 2); };
+    return fo;
+  };
+
+  const defs = el('defs');
+  const marker = (id, color) => {
+    const m = el('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto' }, defs);
+    el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: color, 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, m);
+  };
+  marker('ah', COLOR.ink);
+  marker('ahPt', COLOR.pt);
+
+  // the rest of the line, beyond [0, 6π]: it fades out when the pieces are stacked
+  const beyond = el('g', { stroke: COLOR.ink, 'stroke-width': 3, 'stroke-linecap': 'round' });
+  el('line', { x1: 30, y1: Y, x2: px(0), y2: Y, 'stroke-dasharray': '1 7' }, beyond);
+  el('line', { x1: px(3 * TAU), y1: Y, x2: 935, y2: Y, 'stroke-dasharray': '1 7' }, beyond);
+
+  // the three pieces [2πk, 2π(k+1)], each with its ticks, its labels and the
+  // point of the orbit on it
+  const ends = ['0', '2\\pi', '4\\pi', '6\\pi'];
+  const pieces = [0, 1, 2].map(k => {
+    const g = el('g');
+    el('line', { x1: 0, y1: 0, x2: UNIT, y2: 0, stroke: COLOR.ink, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    [0, UNIT].forEach(x => el('line', { x1: x, y1: -10, x2: x, y2: 10, stroke: COLOR.ink, 'stroke-width': 3, 'stroke-linecap': 'round' }, g));
+    label(ends[k], COLOR.ink, g, 60, 36, 22).put(0, 32);
+    label(ends[k + 1], COLOR.ink, g, 60, 36, 22).put(UNIT, 32);
+    const dot = el('circle', { cx: X_VAL / TAU * UNIT, cy: 0, r: 8, fill: COLOR.pt, opacity: k ? 0 : 1 }, g);
+    const name = label(['x', 'x + 2\\pi', 'x + 4\\pi'][k], COLOR.pt, g, 120, 36, 22);
+    name.put(X_VAL / TAU * UNIT, 32);   // below the line, between the ticks' labels
+    name.setAttribute('opacity', k ? 0 : 1);
+    return { g, dot, name, x0: V0 + k * UNIT };
+  });
+
+  // the hops of the action: a copy of the point leaves x along an arc and lands
+  // on x + 2π (then x + 4π), drawing the arc behind it as a trail; its arrowhead
+  // rides just behind the moving point, so it is in place when the point lands
+  const LAG = 10;                                  // px between the moving point and the trail's end
+  const hops = [0, 1].map(k => {
+    const a = px(X_VAL + k * TAU), b = px(X_VAL + (k + 1) * TAU);
+    const d = `M${a},${Y} C${a + 40},${Y - 120} ${b - 40},${Y - 120} ${b},${Y}`;
+    const path = el('path', { d, fill: 'none', stroke: COLOR.pt, 'stroke-width': 2.2, 'stroke-linecap': 'round' });
+    const len = path.getTotalLength();
+    const head = el('path', { d: 'M-9,-5.5 L0,0 L-9,5.5', fill: 'none', stroke: COLOR.pt, 'stroke-width': 2.2,
+                              'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0 });
+    const tag = label('+2\\pi', COLOR.pt, svg, 80, 36, 20);
+    tag.put((a + b) / 2, Y - 112);
+    return { path, len, head, tag };
+  });
+  const hopper = el('circle', { r: 8, fill: COLOR.pt, opacity: 0 });
+
+  // captions
+  const orbit = label('\\text{orbite de } x : \\ x + 2\\pi\\mathbb{Z}', COLOR.ink, svg, 360, 44, 24);
+  orbit.put(480, 365);
+  const column = el('rect', { x: STACK_X + X_VAL / TAU * UNIT - 22, y: Y - ROW - 24, width: 44, height: 2 * ROW + 48, rx: 22,
+                              fill: 'none', stroke: COLOR.pt, 'stroke-width': 2, 'stroke-dasharray': '6 6', opacity: 0 });
+  const quotient = label('\\mathbb{R}/2\\pi\\mathbb{Z} = S^1', COLOR.ink, svg, 260, 50, 32);
+  quotient.put(790, Y - 18);
+  const onePoint = label('\\text{une orbite} = \\text{un point}', COLOR.pt, svg, 300, 40, 22);
+  onePoint.put(790, Y + 30);
+
+  const clamp = u => Math.max(0, Math.min(1, u));
+  const ease = u => u * u * (3 - 2 * u);
+  const ramp = (u, a, b) => clamp((u - a) / (b - a));
+
+  function draw(pos) {
+    const u1 = clamp(pos), u2 = clamp(pos - 1);
+
+    // step 1: two hops, one after the other
+    hops.forEach((h, k) => {
+      const t = ease(ramp(u1, k * 0.5, k * 0.5 + 0.42));
+      const fade = 1 - ease(ramp(u2, 0, 0.25));
+      // the trail: from x up to just behind the moving point
+      const tail = Math.max(0, h.len * t - LAG);
+      h.path.setAttribute('stroke-dasharray', `${tail} ${h.len}`);
+      h.path.setAttribute('opacity', (tail > 0 ? 1 : 0) * fade);
+      // its arrowhead, at the trail's end, along the arc
+      if (tail > 0) {
+        const p = h.path.getPointAtLength(tail), q = h.path.getPointAtLength(Math.max(0, tail - 2));
+        const ang = Math.atan2(p.y - q.y, p.x - q.x) * 180 / Math.PI;
+        h.head.setAttribute('transform', `translate(${p.x},${p.y}) rotate(${ang})`);
+      }
+      h.head.setAttribute('opacity', Math.min(1, tail / 12) * fade);
+      h.tag.setAttribute('opacity', ease(ramp(u1, k * 0.5 + 0.15, k * 0.5 + 0.42)) * fade);
+      if (t > 0 && t < 1) {
+        const p = h.path.getPointAtLength(h.len * t);
+        hopper.setAttribute('cx', p.x); hopper.setAttribute('cy', p.y);
+      }
+      // the moving point ends exactly where the landed one is: no jump
+      pieces[k + 1].dot.setAttribute('opacity', t >= 1 ? 1 : 0);
+    });
+    // the names x, x + 2π, x + 4π: each appears as its point lands, and all
+    // fade out before the pieces are stacked
+    const names = 1 - ease(ramp(u2, 0, 0.2));
+    pieces.forEach((p, k) => {
+      // each name fades in just as its point lands
+      const landed = k === 0 ? 1 : ease(ramp(u1, (k - 1) * 0.5 + 0.4, (k - 1) * 0.5 + 0.47));
+      p.name.setAttribute('opacity', landed * names);
+    });
+    const hopping = hops.some((_, k) => { const t = ramp(u1, k * 0.5, k * 0.5 + 0.42); return t > 0 && t < 1; });
+    hopper.setAttribute('opacity', hopping ? 1 : 0);
+    orbit.setAttribute('opacity', ease(ramp(u1, 0.85, 1)) * (1 - ease(ramp(u2, 0, 0.25))));
+
+    // step 2: the pieces move into a stack, the middle one staying put
+    const s = ease(ramp(u2, 0.2, 0.85));
+    beyond.setAttribute('opacity', 1 - ease(ramp(u2, 0, 0.3)));
+    pieces.forEach((p, k) => {
+      const x = p.x0 + (STACK_X - p.x0) * s, y = Y + (k - 1) * ROW * s;
+      p.g.setAttribute('transform', `translate(${x},${y})`);
+    });
+    const end = ease(ramp(u2, 0.85, 1));
+    column.setAttribute('opacity', end);
+    quotient.setAttribute('opacity', end);
+    onePoint.setAttribute('opacity', end);
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: k} goes to step k (instant: at once), passing
+  // through the steps in between. m, or a click on the figure, goes to the
+  // next step, and from the last one back to the start.
+  let pos = 0, target = 0, last = 0, frame = 0;
+
+  function tick(now) {
+    frame = 0;
+    // the first frame's timestamp can be a little before `last`: never step backwards
+    const dt = Math.max(0, Math.min(now - last, 100));
+    last = now;
+    if (target === pos) return draw(pos);   // already there (a step has no "before")
+    if (target > pos) {
+      const i = Math.floor(pos);
+      pos = Math.min(target, i + 1, pos + dt / DUR[i]);
+    } else {
+      const i = Math.ceil(pos) - 1;
+      pos = Math.max(target, i, pos - 2 * dt / DUR[i]);   // backwards at double speed
+    }
+    draw(pos);
+    if (pos !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  function set(state, instant) {
+    target = Math.max(0, Math.min(STEPS, state));
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      pos = target;
+      draw(pos);
+    } else run();
+  }
+  const toggle = () => set(target >= STEPS ? 0 : target + 1, false);
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // action-line.html#s=1.5 shows the still picture halfway through step 2
+  const still = location.hash.match(/s=([\d.]+)/);
+  pos = target = still ? Math.min(+still[1], STEPS) : 0;
+  draw(pos);
+})();
+</script>
+</body>
+</html>

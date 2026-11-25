@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'action d'une flèche de WS¹</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 406" aria-label="Une flèche r → s de WS¹ et son image par τ : le glissement de la corde A + r vers A + s, nul dès qu'elles ne se croisent plus"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const PI = Math.PI;
+  const DURATION = 5500;   // ms for s to go from r to r + π
+  const COLOR = { from: '#0038ff', to: '#1a9e4b', ink: '#1a1a1a', grey: '#7a7a7a', arrow: '#8f8f8f', orig: '#c2c2c2' };
+
+  // The arrow r → s of WS¹ and, through τ, its component at the chord A: the
+  // slide A + r → A + s, each endpoint moving counterclockwise by δ = s − r.
+  //   A = {π, 7π/4}: its arcs are 3π/4 and 5π/4 (not a diameter)
+  //   r = π/4, s going from π/4 to 5π/4 (δ from 0 to π)
+  // The slide is nonzero iff δ ≤ 3π/4, the shorter arc of A (equality allowed:
+  // then A + r and A + s share an endpoint), i.e. three quarters of the way.
+  // (For a diameter the condition would be δ < π, strictly.)
+  const A = [PI, 7 * PI / 4];
+  const SHORT = 3 * PI / 4;
+  const R0 = PI / 4;
+  const Sat = t => R0 + PI * t;
+
+  // ---------- layout ----------
+  //   [WS¹: r → s]   ⟼τ   [𝕏: A + r → A + s], the two circles placed evenly
+  //   about the middle; "= 0" comes under the circle of 𝕏
+  const R = 128, CY = 180;   // room above the circles for the names that go round
+  const CX = { ws: 250, x: 710 };
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (color, w = 100, h = 40, size) => {
+    const fo = el('foreignObject', { width: w, height: h });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    fo.appendChild(div);
+    fo.key = null;
+    fo.set = (tex, x, y) => {
+      if (fo.key !== tex) { katex.render(tex, div); fo.key = tex; }
+      fo.setAttribute('x', x - w / 2); fo.setAttribute('y', y - h / 2);
+    };
+    return fo;
+  };
+
+  const defs = el('defs');
+  const m = el('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+  el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: COLOR.ink, 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, m);
+  const mg = el('marker', { id: 'ahg', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+  el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: COLOR.arrow, 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, mg);
+
+  const at = (cx, a, r = R) => [cx + r * Math.cos(a), CY - r * Math.sin(a)];
+  // an arc just inside the circle, counterclockwise from a to b ≥ a, with an arrowhead
+  function arc(path, cx, a, b, inset = 17) {
+    const gap = 0.06;
+    if (b - a < 2 * gap + 0.04) { path.setAttribute('d', ''); return; }
+    const r = R - inset, [x1, y1] = at(cx, a + gap, r), [x2, y2] = at(cx, b - gap, r);
+    path.setAttribute('d', `M${x1},${y1} A${r},${r} 0 ${b - a - 2 * gap > PI ? 1 : 0} 0 ${x2},${y2}`);
+  }
+
+  for (const cx of Object.values(CX)) el('circle', { cx, cy: CY, r: R, fill: 'none', stroke: COLOR.ink, 'stroke-width': 4 });
+  // the name of each circle, small, just under it
+  label(COLOR.grey, 70, 30, 20).set('WS^1', CX.ws, CY + R + 42);
+  label(COLOR.grey, 70, 30, 20).set('\\mathbb{X}', CX.x, CY + R + 42);
+
+  // τ in the middle: an arrow ⟼ with τ over it
+  {
+    const x1 = CX.ws + R + 42, x2 = CX.x - R - 42;
+    el('line', { x1, y1: CY - 9, x2: x1, y2: CY + 9, stroke: COLOR.ink, 'stroke-width': 2, 'stroke-linecap': 'round' });
+    el('line', { x1, y1: CY, x2, y2: CY, stroke: COLOR.ink, 'stroke-width': 2, 'marker-end': 'url(#ah)' });
+    label(COLOR.ink, 60, 40, 28).set('\\tau', (x1 + x2) / 2, CY - 26);
+  }
+
+  // left: the arrow r → s of WS¹
+  const wsArc = el('path', { fill: 'none', stroke: COLOR.ink, 'stroke-width': 3.5, 'stroke-linecap': 'round', 'marker-end': 'url(#ah)' });
+  const dotR = el('circle', { r: 7, fill: COLOR.ink }), dotS = el('circle', { r: 7, fill: COLOR.ink });
+  const nameR = label(COLOR.ink, 50, 32, 22), nameS = label(COLOR.ink, 50, 32, 22);
+
+  // right: the chords A + r and A + s, and the slide between them
+  // the slide of each endpoint: grey, just outside the circle, clear of the chords
+  const slides = el('g', { fill: 'none', stroke: COLOR.arrow, 'stroke-width': 1.8, 'stroke-linecap': 'round' });
+  const slideArcs = [0, 1].map(() => el('path', { 'marker-end': 'url(#ahg)' }, slides));
+  const chord = (color, width = 5) => ({
+    line: el('line', { stroke: color, 'stroke-width': width, 'stroke-linecap': 'round' }),
+    dots: [0, 1].map(() => el('circle', { r: width + 1.5, fill: color })),
+    name: label(color, 90, 32, 21),
+  });
+  // A itself, greyed, under the two chords it becomes
+  const cOrig = chord(COLOR.orig, 3.5), cFrom = chord(COLOR.from), cTo = chord(COLOR.to);
+  // a chord, named by its midpoint, on the side away from the centre
+  function drawChord(c, ends, tex, nameAt) {
+    const [p, q] = ends.map(a => at(CX.x, a));
+    c.line.setAttribute('x1', p[0]); c.line.setAttribute('y1', p[1]);
+    c.line.setAttribute('x2', q[0]); c.line.setAttribute('y2', q[1]);
+    [p, q].forEach((pt, i) => { c.dots[i].setAttribute('cx', pt[0]); c.dots[i].setAttribute('cy', pt[1]); });
+    const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+    let nx = -(q[1] - p[1]), ny = q[0] - p[0];
+    const len = Math.hypot(nx, ny);
+    nx /= len; ny /= len;
+    if (nx * (mx - CX.x) + ny * (my - CY) < 0) { nx = -nx; ny = -ny; }
+    if (nameAt) c.name.set(tex, ...nameAt); else c.name.set(tex, mx + 20 * nx, my + 20 * ny);
+  }
+
+  // under the figure, what τ(r → s)_A is: while A + r and A + s cross, the one
+  // admissible bijection between them (Fait I: the Hom is k); once they don't, 0.
+  // The two lines take the same place and fade one into the other.
+  const zero = el('g'), one = el('g');
+  zero.style.opacity = 0; one.style.opacity = 0;
+  zero.style.transition = one.style.transition = 'opacity 0.6s ease';
+  const z1 = label(COLOR.ink, 460, 40, 24);
+  z1.set('\\tau(r \\to s)_A = 0 \\;:\\; \\text{pas de croisement}', (CX.ws + CX.x) / 2, CY + R + 78);
+  zero.appendChild(z1);
+  const o1 = label(COLOR.ink, 900, 40, 24);
+  o1.set("\\tau(r \\to s)_A = \\text{l'unique bijection admissible } A + r \\to A + s", (CX.ws + CX.x) / 2, CY + R + 78);
+  one.appendChild(o1);
+
+  function draw(t) {
+    const s = Sat(t), d = s - R0;
+    // left
+    arc(wsArc, CX.ws, R0, s, 14);
+    wsArc.setAttribute('opacity', d > 0.2 ? 1 : 0);
+    const [rx, ry] = at(CX.ws, R0), [sx, sy] = at(CX.ws, s);
+    dotR.setAttribute('cx', rx); dotR.setAttribute('cy', ry);
+    dotS.setAttribute('cx', sx); dotS.setAttribute('cy', sy);
+    nameR.set('r', ...at(CX.ws, R0, R + 26));
+    nameS.set('s', ...at(CX.ws, s, R + 26));
+    dotS.setAttribute('opacity', d > 0.05 ? 1 : 0);
+    nameS.setAttribute('opacity', d > 0.25 ? 1 : 0);
+
+    // right
+    const from = A.map(a => a + R0), to = A.map(a => a + s);
+    // A: a quarter of the way along its chord from the left end, then a fixed
+    // distance straight off the chord, on its lower side (the blue chord is far below)
+    {
+      const [p, q] = A.map(x => at(CX.x, x));
+      const dx = q[0] - p[0], dy = q[1] - p[1], len = Math.hypot(dx, dy);
+      let nx = -dy / len, ny = dx / len;
+      if (ny < 0) { nx = -nx; ny = -ny; }
+      drawChord(cOrig, A, 'A', [p[0] + 0.25 * dx + 24 * nx, p[1] + 0.25 * dy + 24 * ny]);
+    }
+    // outside, by its lower left end: its slide moves away from there
+    drawChord(cFrom, from, 'A + r', at(CX.x, from[0] - 0.12, R + 50));
+    // outside, a little ahead of its upper end: it goes round with the chord,
+    // clear of the other chords and of the slide arcs behind it
+    drawChord(cTo, to, 'A + s', at(CX.x, to[1] + 0.22, R + 46));
+    const shown = d > 0.05 ? 1 : 0;
+    [cTo.line, ...cTo.dots, cTo.name].forEach(e => e.setAttribute('opacity', shown));
+    const ok = d <= SHORT + 1e-9;
+    slideArcs.forEach((p, i) => arc(p, CX.x, from[i], to[i], -13));
+    slides.setAttribute('opacity', ok && d > 0.2 ? 1 : 0);
+    zero.style.opacity = ok ? 0 : 1;
+    one.style.opacity = ok && d > 0.2 ? 1 : 0;
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: 1} moves s from r to r + π, state 0 back (instant:
+  // at once). m, or a click on the figure, toggles.
+  let progress = 0, target = 0, last = 0, frame = 0;
+  // constant speed with a soft start and stop, so that the moment the slide
+  // dies comes at an even pace
+  const A_ = 0.08;
+  const ease = u => (u < A_ ? u * u / (2 * A_) : u > 1 - A_ ? 1 - A_ - (1 - u) * (1 - u) / (2 * A_) : u - A_ / 2) / (1 - A_);
+
+  function tick(now) {
+    frame = 0;
+    const dt = Math.max(0, Math.min(now - last, 100));
+    last = now;
+    const step = dt / DURATION;
+    progress = target > progress ? Math.min(target, progress + step) : Math.max(target, progress - 2 * step);
+    draw(ease(progress));
+    if (progress !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  function toggle() { target = target ? 0 : 1; run(); }
+  function set(state, instant) {
+    target = state ? 1 : 0;
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      progress = target;
+      draw(ease(progress));
+    } else run();
+  }
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // tau.html#t=0.5 shows the still picture halfway
+  const still = location.hash.match(/t=([\d.]+)/);
+  draw(still ? Math.min(+still[1], 1) : 0);
+})();
+</script>
+</body>
+</html>

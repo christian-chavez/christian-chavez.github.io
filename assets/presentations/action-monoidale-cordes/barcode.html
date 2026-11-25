@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le code-barres d'un nuage de points</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 600" aria-label="Des boules grandissent autour d'un nuage de points, et le code-barres de persistance se construit à côté"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const DURATION = 15000;   // ms for r to go from 0 to R_MAX
+  const BACK = 2000;        // ms to shrink back, going backwards through the deck
+
+  // ---------- colours ----------
+  // black points, warm balls, and the deck's own red and blue for the bars:
+  // red for the components, blue for the loops
+  const COLOR = { pt: '#1a1a1a', bar0: '#e01b24', loop: '#0038ff', ball: '#f3cfa6', ink: '#1a1a1a', cursor: '#b8b8b8' };
+
+  // The point cloud, in its own units (r is measured in the same units). Three
+  // loops: a big one, a small one, and the region the two enclose with the
+  // points below them. Chosen so that the Čech barcode has exactly three bars
+  // in degree 1, born at different radii: [45.0, 56.8), [58.9, 90.8) and
+  // [76.1, 100.2).
+  const P = [
+    [287, 141], [182, 97], [117, 187], [188, 281], [278, 243],   // the big loop
+    [418, 346], [340, 346], [340, 436], [421, 424],              // the small loop
+    [144, 371], [255, 475],                                      // below
+  ];
+  const R_MAX = 106;   // the animation stops here, once every loop has filled in
+
+  // ---- core ----
+  // The Čech barcode of a planar point cloud, in degrees 0 and 1. A simplex
+  // enters when the balls of radius r around its vertices have a common point,
+  // that is at the radius of its smallest enclosing ball. H₁ only depends on the
+  // 2-skeleton, so vertices, edges and triangles are enough.
+  function cechBarcode(P) {
+    const n = P.length;
+    const dist = (i, j) => Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]);
+    const simplices = [];
+    for (let i = 0; i < n; i++) simplices.push({ v: [i], r: 0 });
+    for (let i = 0; i < n; i++)
+      for (let j = i + 1; j < n; j++) simplices.push({ v: [i, j], r: dist(i, j) / 2 });
+    for (let i = 0; i < n; i++)
+      for (let j = i + 1; j < n; j++)
+        for (let k = j + 1; k < n; k++) {
+          const a = dist(j, k), b = dist(i, k), c = dist(i, j);
+          const [x, y, z] = [a, b, c].sort((p, q) => p - q);
+          // obtuse or right: the longest side is a diameter; acute: the circumcircle
+          const r = x * x + y * y <= z * z
+            ? z / 2
+            : (a * b * c) / Math.sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
+          simplices.push({ v: [i, j, k], r });
+        }
+    // faces before cofaces at equal radius
+    simplices.sort((s, t) => s.r - t.r || s.v.length - t.v.length);
+    const index = new Map(simplices.map((s, i) => [s.v.join(','), i]));
+    const boundary = s => s.v.length === 1 ? [] :
+      s.v.map((_, i) => index.get(s.v.filter((_, j) => j !== i).join(','))).sort((p, q) => p - q);
+
+    // the standard column reduction over Z/2
+    const pivotOf = new Map();   // low row -> column
+    const cols = [];
+    const add = (a, b) => {      // symmetric difference of two sorted lists
+      const out = [];
+      let i = 0, j = 0;
+      while (i < a.length || j < b.length) {
+        if (j >= b.length || (i < a.length && a[i] < b[j])) out.push(a[i++]);
+        else if (i >= a.length || b[j] < a[i]) out.push(b[j++]);
+        else { i++; j++; }
+      }
+      return out;
+    };
+    const killed = new Set(), paired = new Map();
+    simplices.forEach((s, j) => {
+      let col = boundary(s);
+      while (col.length && pivotOf.has(col[col.length - 1])) col = add(col, cols[pivotOf.get(col[col.length - 1])]);
+      cols[j] = col;
+      if (col.length) {
+        const low = col[col.length - 1];
+        pivotOf.set(low, j);
+        paired.set(low, j);
+        killed.add(j);
+      }
+    });
+
+    // a loop born at the edge {u, v}: that edge, closed up by the shortest path
+    // from v back to u through the edges that came before it
+    const loopAt = e => {
+      const [u, v] = simplices[e].v;
+      const d = new Array(n).fill(Infinity), prev = new Array(n).fill(-1), done = new Array(n).fill(false);
+      d[v] = 0;
+      for (;;) {
+        let x = -1;
+        for (let i = 0; i < n; i++) if (!done[i] && d[i] < Infinity && (x < 0 || d[i] < d[x])) x = i;
+        if (x < 0 || x === u) break;
+        done[x] = true;
+        for (let y = 0; y < n; y++) {
+          if (y === x) continue;
+          const k = index.get(x < y ? x + ',' + y : y + ',' + x);
+          if (k < e && d[x] + dist(x, y) < d[y]) { d[y] = d[x] + dist(x, y); prev[y] = x; }
+        }
+      }
+      const path = [];
+      for (let x = u; x >= 0; x = prev[x]) path.push(x);
+      return path;   // u, …, v; the edge {v, u} closes it
+    };
+
+    const h0 = [], h1 = [];
+    simplices.forEach((s, j) => {
+      if (killed.has(j)) return;   // negative: it kills a class, it doesn't start one
+      const death = paired.has(j) ? simplices[paired.get(j)].r : Infinity;
+      if (death - s.r < 1e-9) return;
+      if (s.v.length === 1) h0.push({ birth: 0, death });
+      else if (s.v.length === 2) h1.push({ birth: s.r, death, cycle: loopAt(j) });
+    });
+    h0.sort((a, b) => a.death - b.death);
+    h1.sort((a, b) => (a.death - a.birth) - (b.death - b.birth));
+    return { h0, h1 };
+  }
+  // ---- end core ----
+
+  const { h0, h1 } = cechBarcode(P);
+
+  // ---------- layout ----------
+  // The cloud on the left, with room for the balls at R_MAX; the barcode on
+  // the right, r running along its horizontal axis.
+  const S = 0.88;                      // px per unit of the cloud
+  // the points are small: a ball only shows once it is wider than its point,
+  // and the bars start growing at r = 0, so a big point would hide the first
+  // stretch of the balls' growth while the bars are already visible
+  const DOT = 3.5;
+  const cx = (Math.min(...P.map(p => p[0])) + Math.max(...P.map(p => p[0]))) / 2;
+  const cy = (Math.min(...P.map(p => p[1])) + Math.max(...P.map(p => p[1]))) / 2;
+  const sx = x => 255 + S * (x - cx), sy = y => 300 + S * (y - cy);
+
+  const X0 = 578, X1 = 905;            // r = 0 and r = R_MAX on the barcode's axis
+  const X = r => X0 + (X1 - X0) * Math.min(r, R_MAX) / R_MAX;
+  const ROW = 15, GAP = 28;            // spacing between bars, and between the two groups
+  const top = 290 - (h0.length * ROW + GAP + h1.length * ROW) / 2;
+  const top1 = top + h0.length * ROW + GAP;
+  const AXIS_Y = top1 + h1.length * ROW + 14;
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (tex, color, x, y, size) => {
+    const fo = el('foreignObject', { x: x - 40, y: y - 22, width: 80, height: 44 });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    katex.render(tex, div);
+    fo.appendChild(div);
+    return fo;
+  };
+
+  // the union of the balls
+  const fills = el('g', { fill: COLOR.ball });
+  const balls = P.map(p => el('circle', { cx: sx(p[0]), cy: sy(p[1]), r: 0 }, fills));
+
+  // each loop of the barcode, drawn in the cloud while its bar is alive
+  const loops = h1.map(b => el('polygon', {
+    points: b.cycle.map(i => sx(P[i][0]) + ',' + sy(P[i][1])).join(' '),
+    fill: 'none', stroke: COLOR.loop, 'stroke-width': 4, 'stroke-linejoin': 'round', opacity: 0,
+  }));
+
+  for (const p of P) el('circle', { cx: sx(p[0]), cy: sy(p[1]), r: DOT, fill: COLOR.pt });
+
+  // the barcode: the axis, and the line at the current r
+  const defs = el('defs');
+  const marker = el('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 8, markerHeight: 8, orient: 'auto' }, defs);
+  el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: COLOR.ink, 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, marker);
+  el('line', { x1: X0 - 12, y1: AXIS_Y, x2: X1 + 30, y2: AXIS_Y, stroke: COLOR.ink, 'stroke-width': 1.5, 'marker-end': 'url(#ah)' });
+  label('r', COLOR.ink, X1 + 32, AXIS_Y + 24);
+  label('0', COLOR.ink, X0, AXIS_Y + 24, 20);
+  const cursor = el('line', { x1: X0, y1: top - 14, x2: X0, y2: AXIS_Y, stroke: COLOR.cursor, 'stroke-width': 1.5 });
+
+  const bar = (y, color) => el('line', { x1: X0, y1: y, x2: X0, y2: y, stroke: color, 'stroke-width': 7, opacity: 0 });
+  const bars0 = h0.map((b, k) => bar(top + k * ROW, COLOR.bar0));
+  const bars1 = h1.map((b, k) => bar(top1 + k * ROW, COLOR.loop));
+  label('H_0', COLOR.bar0, X0 - 38, top + (h0.length - 1) * ROW / 2);
+  label('H_1', COLOR.loop, X0 - 38, top1 + (h1.length - 1) * ROW / 2);
+
+  function draw(r) {
+    balls.forEach(c => c.setAttribute('r', S * r));
+    // a loop fades out over the last 3 units of its life
+    loops.forEach((poly, k) => {
+      const b = h1[k];
+      poly.setAttribute('opacity', r < b.birth || r >= b.death ? 0 : Math.min(1, (b.death - r) / 3));
+    });
+    cursor.setAttribute('x1', X(r)); cursor.setAttribute('x2', X(r));
+    const grow = (line, b) => {
+      line.setAttribute('opacity', r > b.birth ? 1 : 0);
+      line.setAttribute('x1', X(b.birth));
+      line.setAttribute('x2', X(Math.max(b.birth, Math.min(r, b.death))));
+    };
+    h0.forEach((b, k) => grow(bars0[k], b));
+    h1.forEach((b, k) => grow(bars1[k], b));
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: 1} grows the balls to R_MAX, state 0 shrinks them back
+  // (instant: at once). m, or a click on the figure, pauses and resumes; when
+  // nothing is moving, it starts the animation towards the other end.
+  let progress = 0, target = 0, paused = false, last = 0, frame = 0;
+  // r grows at a constant speed, except for a soft start and stop (the first and
+  // last 6% of the time), so that the bars are easy to compare as they grow
+  const A = 0.06;
+  const easeNorm = u => (u < A ? u * u / (2 * A) : u > 1 - A ? 1 - A - (1 - u) * (1 - u) / (2 * A) : u - A / 2) / (1 - A);
+
+  function tick(now) {
+    frame = 0;
+    if (paused) return;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    progress = target > progress ? Math.min(target, progress + dt / DURATION) : Math.max(target, progress - dt / BACK);
+    draw(R_MAX * easeNorm(progress));
+    if (progress !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+
+  function toggle() {
+    if (progress !== target) {
+      paused = !paused;
+      if (!paused) run();
+      else if (frame) { cancelAnimationFrame(frame); frame = 0; }
+    } else {
+      target = target ? 0 : 1;
+      paused = false;
+      run();
+    }
+  }
+  function set(state, instant) {
+    target = state;
+    paused = false;
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      progress = state;
+      draw(R_MAX * easeNorm(progress));
+    } else run();
+  }
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // barcode.html#r=50 shows the still picture at r = 50 (for a handout, say)
+  const still = location.hash.match(/r=([\d.]+)/);
+  draw(still ? Math.min(+still[1], R_MAX) : 0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+/**
+ * A light theme using the Computer Modern Unicode fonts (LaTeX look),
+ * modeled after Christian Chávez's "Teoría de Categorías" presentation.
+ */
+
+// Load utils
+@use 'sass:color';
+@use 'template/mixins' as mixins;
+
+$link-color: #0f766e;
+
+// Inject theme variables (with some overrides)
+@use 'template/settings' with (
+	$background-color: #ffffff,
+
+	$main-color: #2e2d2d,
+	$main-font: "'Computer Modern Sans', helvetica, sans-serif",
+	$main-font-size: 35px,
+
+	$heading-color: #000000,
+	$heading-font: "'Computer Modern Serif', serif",
+	$heading-font-weight: normal,
+	$heading-text-transform: none,
+
+	$heading1-size: 3.77em,
+	$heading2-size: 2.11em,
+	$heading3-size: 1.55em,
+	$heading4-size: 1em,
+
+	$code-font: "Fira Code, Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace",
+
+	$link-color: $link-color,
+	$link-color-hover: color.scale($link-color, $lightness: 25%),
+
+	$selection-color: #fff,
+	$selection-background-color: $link-color,
+
+	$overlay-element-bg-color: '0 0 0',
+	$overlay-element-fg-color: '240 240 240'
+);
+
+// Inject the theme template
+@use 'template/theme';
+
+// Include theme-specific fonts
+@import url('./fonts/computer-modern/computer-modern.css');
+
+// Change text when the background is inverted
+@include mixins.dark-bg-text-color(#fff);

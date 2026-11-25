@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le produit de deux flèches de WS¹</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 380" aria-label="Le produit de deux flèches de WS¹ : les deux glissements mis bout à bout ; il est nul dès qu'ils font ensemble un tour complet"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const PI = Math.PI, TAU = 2 * PI;
+  const DURATION = 5500;   // ms for the second arrow to grow
+  const COLOR = { one: '#0038ff', two: '#1a9e4b', ink: '#1a1a1a', grey: '#7a7a7a' };
+
+  // An arrow x → y of WS¹ is the slide from x to y, counterclockwise: its
+  // length is y − x, taken in [0, 2π). Here
+  //   x → y    from π to 11π/6           (length 5π/6, blue)
+  //   x' → y'  from 3π/2 to y'           (green), y' going from π/6 to 5π/6
+  // Their product is x + x' → y + y', nonzero when x + x' ≼ x + y' ≼ y + y':
+  // the green slide then the blue one, end to end from x + x' = π/2, as long as
+  // together they make less than a full turn (here: until y' = 2π/3, three
+  // quarters of the way). The angles keep every name clear of ⊗ and =.
+  const X = PI, Y = PI + 5 * PI / 6, X2 = 3 * PI / 2;
+  const Y2 = t => X2 + 2 * PI / 3 + 2 * PI / 3 * t;
+  const S1 = Y - X;
+
+  // ---------- layout ----------
+  //   [x → y]  ⊗  [x' → y']  =  [x + x' → y + y']   (= 0)
+  const R = 98, CY = 180;
+  const CX = { one: 152, two: 422, prod: 692 };
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (color, w = 90, h = 40, size) => {
+    const fo = el('foreignObject', { width: w, height: h });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    fo.appendChild(div);
+    fo.key = null;
+    fo.set = (tex, x, y) => {
+      if (fo.key !== tex) { katex.render(tex, div); fo.key = tex; }
+      fo.setAttribute('x', x - w / 2); fo.setAttribute('y', y - h / 2);
+    };
+    return fo;
+  };
+
+  const defs = el('defs');
+  for (const k of ['one', 'two']) {
+    const m = el('marker', { id: 'ah-' + k, viewBox: '0 0 10 10', refX: 6, refY: 5, markerWidth: 4, markerHeight: 4, orient: 'auto' }, defs);
+    el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: COLOR[k], 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, m);
+  }
+
+  const at = (cx, a, r = R) => [cx + r * Math.cos(a), CY - r * Math.sin(a)];
+  // an arc just inside the circle, counterclockwise from angle a to angle b > a
+  function arc(path, cx, a, b, head) {
+    const r = R - 14;
+    if (b - a < 0.02) { path.setAttribute('d', ''); return; }
+    const [x1, y1] = at(cx, a, r), [x2, y2] = at(cx, b, r);
+    path.setAttribute('d', `M${x1},${y1} A${r},${r} 0 ${b - a > PI ? 1 : 0} 0 ${x2},${y2}`);
+    path.setAttribute('marker-end', head ? `url(#ah-${head})` : 'none');
+  }
+
+  for (const cx of Object.values(CX)) el('circle', { cx, cy: CY, r: R, fill: 'none', stroke: COLOR.ink, 'stroke-width': 4 });
+  const arcStyle = color => ({ fill: 'none', stroke: color, 'stroke-width': 5, 'stroke-linecap': 'round' });
+  const arc1 = el('path', arcStyle(COLOR.one));
+  const arc2 = el('path', arcStyle(COLOR.two));
+  const prodG = el('g');
+  const prodA = el('path', arcStyle(COLOR.two), prodG), prodB = el('path', arcStyle(COLOR.one), prodG);
+
+  // the points, and their names outside the circle
+  const point = (color, r = 6.5) => ({ dot: el('circle', { r, fill: color }), name: label(color, 110, 40, 22) });
+  const put = (p, cx, a, tex, out = 30) => {
+    const [x, y] = at(cx, a);
+    p.dot.setAttribute('cx', x); p.dot.setAttribute('cy', y);
+    p.name.set(tex, ...at(cx, a, R + out));
+  };
+  const pX = point(COLOR.ink), pY = point(COLOR.ink), pX2 = point(COLOR.ink), pY2 = point(COLOR.ink);
+  const pS = point(COLOR.ink), pMid = point(COLOR.grey), pE = point(COLOR.ink);   // x + y' in grey, the same size as the others
+  pMid.name.firstChild.style.fontSize = '18px';
+
+  label(COLOR.ink, 60, 60, 34).set('\\otimes', (CX.one + CX.two) / 2, CY);
+  label(COLOR.ink, 60, 60, 34).set('=', (CX.two + CX.prod) / 2, CY);
+  const zero = el('g', { opacity: 0 });
+  const z1 = label(COLOR.ink, 120, 60, 40); z1.set('= 0', CX.prod + R + 80, CY); zero.appendChild(z1);
+  const z2 = label(COLOR.ink, 360, 44, 24); z2.set('\\text{un tour complet}', CX.prod + 40, CY + R + 58); zero.appendChild(z2);
+
+  // the parts that don't move
+  arc(arc1, CX.one, X, Y, 'one');
+  put(pX, CX.one, X, 'x');
+  put(pY, CX.one, Y, 'y');
+  put(pX2, CX.two, X2, "x'");
+  put(pS, CX.prod, X + X2, "x + x'", -44);   // inside the circle: y + y' comes by on the outside
+
+  function draw(t) {
+    const y2 = Y2(t), s2 = y2 - X2;
+    arc(arc2, CX.two, X2, y2, 'two');
+    put(pY2, CX.two, y2, "y'");
+
+    // the product: the green slide, then the blue one, from x + x'
+    const a = X + X2, m = a + s2, b = m + S1;
+    const ok = b - a < TAU;
+    arc(prodA, CX.prod, a, m, null);
+    arc(prodB, CX.prod, m, b, 'one');
+    prodG.setAttribute('opacity', ok ? 1 : 0);
+    put(pMid, CX.prod, m, "x + y'", 30);
+    pMid.dot.setAttribute('opacity', ok ? 1 : 0);
+    pMid.name.setAttribute('opacity', ok ? 1 : 0);
+    put(pE, CX.prod, b, "y + y'", 34);
+    zero.setAttribute('opacity', ok ? 0 : 1);
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: 1} grows the second arrow, state 0 back (instant: at
+  // once). m, or a click on the figure, toggles.
+  let progress = 0, target = 0, last = 0, frame = 0;
+  const ease = u => u * u * (3 - 2 * u);
+
+  function tick(now) {
+    frame = 0;
+    const dt = Math.max(0, Math.min(now - last, 100));
+    last = now;
+    const step = dt / DURATION;
+    progress = target > progress ? Math.min(target, progress + step) : Math.max(target, progress - step);
+    draw(ease(progress));
+    if (progress !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  function toggle() { target = target ? 0 : 1; run(); }
+  function set(state, instant) {
+    target = state ? 1 : 0;
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      progress = target;
+      draw(ease(progress));
+    } else run();
+  }
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // tensor.html#t=0.5 shows the still picture halfway
+  const still = location.hash.match(/t=([\d.]+)/);
+  draw(still ? Math.min(+still[1], 1) : 0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ℤ/8ℤ agit sur un octogone</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 560" aria-label="Un octogone posé sur une molette qui porte les éléments de ℤ/8ℤ ; tourner la molette fait tourner l'octogone : de 3, puis de 5, ce qui ramène au départ"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const PI = Math.PI;
+  const COLOR = { ink: '#1a1a1a', chord: '#e01b24', grey: '#6a6a6a' };
+
+  // A toy: the octagon sits on a thumb wheel that carries the elements of ℤ/8ℤ,
+  // seen edge on, with a needle over it. The octagon is turned by the element
+  // under the needle: k̄ turns it by kπ/4, counterclockwise. Steps (one press
+  // forward each):
+  //   0  the wheel on 0̄
+  //   1  the wheel turns 3 slots: 3̄, a rotation by 3π/4
+  //   2  5 more: 3̄ + 5̄ = 0̄, a full turn, back to the start
+  // Two turns of the wheel make one rotation of the octagon: the action is a
+  // homomorphism ℤ/8ℤ → Bij(octogone).
+  const MOVES = [3, 5];
+  const STEPS = MOVES.length;
+  const SLOT = 650;                      // ms per slot
+
+  // ---------- layout ----------
+  const OX = 480, OY = 180, R = 140;     // the octagon
+  const WX = 480, WY = 408, WR = 200;    // the wheel: centre, and radius of the drum (half its width)
+  const WH = 58;                         // the height of its side
+  const at = (a, r = R) => [OX + r * Math.cos(a), OY - r * Math.sin(a)];
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (color, w, h, size) => {
+    const fo = el('foreignObject', { width: w, height: h });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    fo.appendChild(div);
+    fo.key = null;
+    fo.set = (tex, x, y) => {
+      if (fo.key !== tex) { katex.render(tex, div); fo.key = tex; }
+      fo.setAttribute('x', x - w / 2); fo.setAttribute('y', y - h / 2);
+    };
+    return fo;
+  };
+
+  const octagon = el('polygon', { fill: 'none', stroke: COLOR.ink, 'stroke-width': 5, 'stroke-linejoin': 'round' });
+  const chord = el('line', { stroke: COLOR.chord, 'stroke-width': 5, 'stroke-linecap': 'round' });
+  const dots = [...Array(8)].map(() => el('circle', { r: 7, fill: COLOR.ink }));
+
+  // the wheel: a drum seen a little from above, its top face a flat ellipse and
+  // its side a band whose edges curve the same way; the elements k̄ on the side
+  const E = 15;                                   // half-height of the ellipses: how much we see from above
+  const TOP = WY - WH / 2;                        // the top face's centre line
+  const side = `M${WX - WR},${TOP} A${WR},${E} 0 0 0 ${WX + WR},${TOP} L${WX + WR},${TOP + WH} A${WR},${E} 0 0 1 ${WX - WR},${TOP + WH} Z`;
+  const defs = el('defs');
+  const shade = el('linearGradient', { id: 'side', x1: 0, x2: 1, y1: 0, y2: 0 }, defs);
+  [[0, '#e4e4e4'], [0.25, '#fafafa'], [0.75, '#fafafa'], [1, '#e4e4e4']]
+    .forEach(([o, c]) => el('stop', { offset: o, 'stop-color': c }, shade));
+  const clip = el('clipPath', { id: 'band' }, defs);
+  el('path', { d: side }, clip);
+  el('path', { d: side, fill: 'url(#side)' });
+  const band = el('g', { 'clip-path': 'url(#band)' });
+  // the slots: a separator and an element k̄ each
+  const seps = [...Array(8)].map(() => el('line', { stroke: '#9a9a9a', 'stroke-width': 1.2 }, band));
+  const digits = [...Array(8)].map((_, k) => {
+    const g = el('g', {}, band);
+    const t = el('text', { x: 0, y: 11, 'text-anchor': 'middle', 'font-size': 30, fill: COLOR.ink,
+                           'font-family': 'KaTeX_Main, "Latin Modern Roman", "Times New Roman", serif' }, g);
+    t.textContent = String(k);
+    el('line', { x1: -7, x2: 7, y1: -19, y2: -19, stroke: COLOR.ink, 'stroke-width': 1.8 }, g);   // the bar of k̄
+    return g;
+  });
+  el('path', { d: side, fill: 'none', stroke: COLOR.ink, 'stroke-width': 1.8, 'stroke-linejoin': 'round' });
+  el('ellipse', { cx: WX, cy: TOP, rx: WR, ry: E, fill: '#ffffff', stroke: COLOR.ink, 'stroke-width': 1.8 });
+  // the needle, under the drum, pointing up at the slot in front
+  const NY = TOP + WH + E;
+  el('polygon', { points: `${WX - 9},${NY + 21} ${WX + 9},${NY + 21} ${WX},${NY + 5}`, fill: COLOR.ink });
+  // the name of the wheel
+  label(COLOR.ink, 120, 44, 30).set('\\mathbb{Z}/8\\mathbb{Z}', WX - WR - 72, TOP + WH / 2 + 6);
+
+  const caption = label(COLOR.ink, 560, 44, 26);
+
+  const clamp = u => Math.max(0, Math.min(1, u));
+  const ease = u => u * u * (3 - 2 * u);
+  // n slots one after another, with a short stop at each
+  const slots = (u, n) => { const k = Math.min(n - 1, Math.floor(u * n)); return k + ease(clamp(u * n - k)); };
+
+  function draw(pos) {
+    // v: how far the wheel has turned, in slots
+    let v = 0;
+    MOVES.forEach((m, i) => { v += slots(clamp(pos - i), m); });
+
+    const th = v * PI / 4;
+    const p = [...Array(8)].map((_, k) => at(k * PI / 4 + th));
+    octagon.setAttribute('points', p.map(q => q.join(',')).join(' '));
+    p.forEach((q, k) => { dots[k].setAttribute('cx', q[0]); dots[k].setAttribute('cy', q[1]); });
+    chord.setAttribute('x1', p[0][0]); chord.setAttribute('y1', p[0][1]);
+    chord.setAttribute('x2', p[3][0]); chord.setAttribute('y2', p[3][1]);
+
+    // slot k sits at the angle (k − v)·π/4 on the cylinder: under the needle when
+    // that is 0; the next one comes in from the right
+    for (let k = 0; k < 8; k++) {
+      let a = ((k - v) % 8 + 8) % 8; if (a > 4) a -= 8;
+      const ang = a * PI / 4, c = Math.cos(ang);
+      // on the side of the drum: squeezed towards its edges, and lower in front,
+      // following the curve of the band
+      const x = WX + WR * Math.sin(ang), y = TOP + WH / 2 + E * c;
+      digits[k].setAttribute('transform', `translate(${x},${y}) scale(${Math.max(0.001, c)},1)`);
+      digits[k].setAttribute('opacity', c > 0.05 ? Math.min(1, c * 1.4) : 0);
+      let b = ((k + 0.5 - v) % 8 + 8) % 8; if (b > 4) b -= 8;
+      const sAng = b * PI / 4, sc = Math.cos(sAng);
+      const sx = WX + WR * Math.sin(sAng);
+      seps[k].setAttribute('x1', sx); seps[k].setAttribute('x2', sx);
+      seps[k].setAttribute('y1', TOP + E * sc); seps[k].setAttribute('y2', TOP + WH + E * sc);
+      seps[k].setAttribute('opacity', sc > 0.05 ? sc : 0);
+    }
+
+    // what the wheel says, once it has stopped
+    const rest = Math.abs(pos - Math.round(pos)) < 1e-6;
+    caption.setAttribute('opacity', rest && pos >= 1 ? 1 : 0);
+    if (rest && pos === 1) caption.set('\\bar 3 \\;:\\; \\text{rotation de } 3\\pi/4', WX, NY + 64);
+    if (rest && pos === 2) caption.set('\\bar 3 + \\bar 5 = \\bar 0 \\;:\\; \\text{un tour complet}', WX, NY + 64);
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: k} goes to step k (instant: at once), passing
+  // through the steps in between. m, or a click on the figure, goes to the
+  // next step, and from the last one back to the start.
+  const DUR = MOVES.map(m => m * SLOT);
+  let pos = 0, target = 0, last = 0, frame = 0;
+
+  function tick(now) {
+    frame = 0;
+    // the first frame's timestamp can be a little before `last`: never step backwards
+    const dt = Math.max(0, Math.min(now - last, 100));
+    last = now;
+    if (target === pos) return draw(pos);
+    if (target > pos) {
+      const i = Math.floor(pos);
+      pos = Math.min(target, i + 1, pos + dt / DUR[i]);
+    } else {
+      const i = Math.ceil(pos) - 1;
+      pos = Math.max(target, i, pos - 3 * dt / DUR[i]);   // backwards at triple speed
+    }
+    draw(pos);
+    if (pos !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  function set(state, instant) {
+    target = Math.max(0, Math.min(STEPS, state));
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      pos = target;
+      draw(pos);
+    } else run();
+  }
+  const toggle = () => set(target >= STEPS ? 0 : target + 1, false);
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // action-octagon.html#s=1.5 shows the still picture halfway through step 2
+  const still = location.hash.match(/s=([\d.]+)/);
+  pos = target = still ? Math.min(+still[1], STEPS) : 0;
+  draw(pos);
+})();
+</script>
+</body>
+</html>

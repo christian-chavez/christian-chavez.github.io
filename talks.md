@@ -12,6 +12,7 @@ permalink: /presentations/
 
 | Date | Title | At |
 |---|---|---|
+| 2026-11-25 | [Une action monoïdale sur la catégorie des cordes](/assets/presentations/action-monoidale-cordes/index.html) | [Séminaire de maîtrise](https://sag.recherche.usherbrooke.ca/activites#acc-3082-2325), Université de Sherbrooke, Canada |
 | 2026-10-17 | [Interleavings and cluster categories arising from the circle](/assets/presentations/interleavings-circle/index.html) | [36th Meeting on the Representation Theory of Algebras](https://cliff.recherche.usherbrooke.ca/rta2026-home/), Université de Sherbrooke, Canada |
 | 2026-09-29 | [Le théorème de Sylvester–Gallai](/assets/presentations/sylvester-gallai/index.html) | Université de Sherbrooke, Canada |
 | 2026-07-06 | Poster: [The category of chords, cluster categories and interleavings](/assets/docs/final-draft-poster.pdf) | [Workshop: Computable Invariants of Quiver Representations](https://www.lorentzcenter.nl/computable-invariants-of-quiver-representations.html), Lorentz Center, Leiden, The Netherlands |

@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+
+		<title>Une action monoïdale sur la catégorie des cordes</title>
+
+		<link rel="stylesheet" href="dist/reset.css" />
+		<link rel="stylesheet" href="dist/reveal.css" />
+		<link rel="stylesheet" href="dist/theme/computer-modern.css" />
+		<link rel="stylesheet" href="css/theme/fonts/mlmodern/mlmodern.css" />
+		<link rel="stylesheet" href="vendor/katex/katex.min.css" />
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
+
+		<style>
+			/* MLModern throughout; Computer Modern covers any glyph it lacks */
+			:root {
+				--r-main-font: "MLModern Sans", "Computer Modern Sans", helvetica, sans-serif;
+				--r-heading-font: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+
+			/* KaTeX sets math at 1.21em by default, which is too big next to
+			   MLModern text of the same design; keep math at the text size. */
+			.reveal .katex { font-size: 1em; }
+
+			/* Beamer-style blocks: a floating white card with a light blue title bar */
+			.block {
+				width: 800px;
+				margin: 0 auto;
+				text-align: left;
+				font-size: 0.72em;
+				border-radius: 6px;
+				overflow: hidden;
+				background: #fff;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.08);
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+			}
+			.block-title {
+				background: #dce8f7;
+				color: var(--r-main-color);
+				padding: 0.3em 0.75em;
+			}
+			.block-body {
+				padding: 0.55em 0.75em 0.65em;
+				line-height: 1.45;
+			}
+			.block-body p { margin: 0 0 0.45em; }
+			.block-body p:last-child { margin-bottom: 0; }
+
+			/* (i), (ii), (iii) lists inside a block */
+			.reveal .block-body ol.roman {
+				display: block;
+				margin: 0.3em 0 0;
+				padding-left: 2.3em;
+				list-style: none;
+				counter-reset: roman;
+			}
+			.reveal .block-body ol.roman > li {
+				position: relative;
+				margin: 0.3em 0;
+				counter-increment: roman;
+			}
+			.reveal .block-body ol.roman > li::before {
+				content: "(" counter(roman, lower-roman) ")";
+				position: absolute;
+				left: -2.3em;
+				width: 1.9em;
+				text-align: right;
+			}
+			.block-body .katex-display { margin: 0.5em 0; }
+
+			/* A formal definition next to the same one in words. Each press lights up
+			   a part of each in the same colour (fragments of the "custom" kind, so
+			   the text is there from the start; only the background comes in). The
+			   two boxes have the same type size and the same height. The columns have
+			   fixed widths (--w1, --w2) so that, while the box in words is still
+			   hidden, the formal one can sit in the middle of the slide: it is moved
+			   right by half the room the other takes, and slides back into place
+			   when the other appears. */
+			.defpair {
+				--w1: 547px;
+				--w2: 365px;
+				--gap: 28px;
+				display: grid;
+				grid-template-columns: var(--w1) var(--w2);
+				gap: var(--gap);
+				align-items: stretch;
+			}
+			.reveal .defpair > .block:first-child {
+				transform: translateX(calc((var(--w2) + var(--gap)) / 2));
+				transition: transform 0.6s ease 0.25s;   /* going back: after the other box has faded out */
+			}
+			.reveal .defpair:has(> .words.visible) > .block:first-child {
+				transform: none;
+				transition: transform 0.6s ease;
+			}
+			.reveal .slides section .defpair > .block.words.fragment.visible {
+				transition: opacity 0.5s ease 0.4s, visibility 0s;   /* once the formal box has moved */
+			}
+			.reveal .defpair .block { width: auto; margin: 0; font-size: 0.62em; display: flex; flex-direction: column; }
+			.reveal .defpair .block-body { flex: 1; line-height: 1.5; }
+			.reveal .defpair .block-body p { margin: 0 0 0.45em; }
+			.reveal .defpair .block.words .block-body { display: flex; align-items: center; }
+			/* a long formal definition: more room for it, and slightly smaller type */
+			.defpair.long { --w1: 605px; --w2: 327px; }
+			.reveal .defpair.long .block { font-size: 0.55em; }
+			.reveal .defpair ul.lettered.wide > li { padding-left: 2.9em; }
+			.reveal .defpair .block.words .block-body p { margin: 0; line-height: 1.75; }
+			.reveal .defpair ul.lettered { display: block; list-style: none; margin: 0; padding: 0; }
+			.reveal .defpair ul.lettered > li { position: relative; margin: 0.2em 0; padding: 0.15em 0.35em 0.15em 2.5em; }
+			.reveal .defpair ul.lettered > li.sub { margin-left: 2.1em; padding-left: 2.7em; }
+			.reveal .defpair ul.lettered .tag { position: absolute; left: 0.4em; }
+			/* two boxes of the same width, each a formula over a line of text */
+			.defpair.actions { --w1: 440px; --w2: 440px; --gap: 40px; }
+			.reveal .defpair.actions .block { font-size: 0.84em; }
+			.reveal .defpair.actions .block-body { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 1.2em 0.8em; }   /* from the top: the lines of the two boxes face each other */
+			.reveal .defpair.actions .block-body p { margin: 0.3em 0; white-space: nowrap; }
+			.reveal .defpair.actions .formula { font-size: 1.35em; }
+			.reveal .defpair.actions .rule { font-size: 0.85em; color: #444; }
+			/* every line a fixed height, so that the rows of the two boxes match exactly */
+			.reveal .defpair.actions .block .block-body > p { height: 1.55em; margin: 0.3em 0; line-height: 1.3; display: flex; align-items: center; justify-content: center; }
+			.reveal .defpair.actions .block .block-body > p.formula { height: 1.8em; }
+			/* the examples of categories: a name, a line, and the four parts of the
+			   definition, labelled in the colours of the definition slide */
+			.reveal .example { width: 900px; text-align: left; }
+			.reveal .example .ex-name { font-size: 3.4em; line-height: 1.1; text-align: center; margin: 0; color: #000; }
+			.reveal .example .ex-caption { font-size: 0.7em; text-align: center; color: #555; margin: 0.2em 0 0.9em; }
+			.reveal .example .ex-row { display: flex; align-items: center; justify-content: center; gap: 30px; }
+			.reveal .example ul.ex-list { display: block; list-style: none; margin: 0; padding: 0; font-size: 0.8em; width: 880px; }
+			.reveal .example ul.ex-list.narrow { width: 620px; }
+			.reveal .example ul.ex-list > li { margin: 0.55em 0; padding-left: 8.2em; text-indent: -8.2em; line-height: 1.45; }
+			.reveal .example .chip { display: inline-block; width: 7.4em; margin-right: 0.8em; padding: 0.05em 0; text-indent: 0; text-align: center; border-radius: 5px; font-size: 0.9em; }
+			.reveal .chip.hl1 { background: #fbe3c4; }
+			.reveal .chip.hl2 { background: #d5ecd9; }
+			.reveal .chip.hl3 { background: #e4ddf5; }
+			.reveal .chip.hl4 { background: #f8d6da; }
+			/* three categories side by side: a column of labels, then one per category;
+			   the rows that are the same for all three span the three columns. The rows
+			   are set apart by hairlines, unbroken: no gap between the columns, the room
+			   is inside the cells */
+			.reveal .example .ex3 {
+				display: grid;
+				grid-template-columns: 170px repeat(3, 250px);
+				align-items: stretch;
+				font-size: 0.74em;
+				text-align: center;
+			}
+			.reveal .example .ex3 > * { margin: 0; line-height: 1.35; display: flex; align-items: center; justify-content: center; }
+			.reveal .example .ex3 .row { padding: 13px 12px; border-top: 1px solid #d4d4d4; }
+			.reveal .example .ex3 .ex3-name { font-size: 2.2em; color: #000; padding-bottom: 12px; }
+			.reveal .example .ex3 .ex3-all { grid-column: 2 / 5; }
+			.reveal .example .ex3 .chip { width: 7.4em; margin: 0; }
+			/* a line of formulas under an applet */
+			.reveal .formula-line { margin: 0; font-size: 0.8em; }
+			/* why not the group S¹: the two chords, then the two answers side by side */
+			.reveal .why-head { display: flex; align-items: center; gap: 22px; font-size: 0.66em; }
+			.reveal .why-head p { margin: 0; }
+			.reveal .why { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; width: 940px; align-items: stretch; }
+			.reveal .why .block { width: auto; margin: 0; font-size: 0.54em; display: flex; flex-direction: column; }
+			.reveal .why .block-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+			.reveal .why ul { display: block; margin: 0 0 0.4em 1.1em; padding: 0; }
+			.reveal .why li { margin: 0.3em 0; line-height: 1.4; }
+			.reveal .why .why-end { margin: 0.3em 0 0; padding-top: 0.45em; border-top: 1px solid #dddddd; text-align: center; font-weight: bold; }
+			.reveal .why-msg { margin: 0; font-size: 0.72em; color: #0766b3; }
+			/* two small boxes side by side, under a definition */
+			.reveal .pair-small { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 24px; width: 840px; }
+			.reveal .pair-small .block { width: auto; margin: 0; font-size: 0.6em; }
+			.reveal .pair-small .block-body { text-align: center; }
+			.reveal .pair-small .block-body p { margin: 0.2em 0; }
+			.reveal .why .block-body > p:first-child { margin: 0.2em 0 0.5em; line-height: 1.45; }
+			/* the recap: the sentence in a box, then known and new in two columns */
+			.reveal .takeaway { width: 820px; font-size: 0.72em; }
+			.reveal .takeaway .block-body p { margin: 0.2em 0; line-height: 1.5; }
+			.reveal .recap { display: grid; grid-template-columns: 170px 260px 260px; font-size: 0.66em; }
+			.reveal .recap > * { margin: 0; padding: 9px 12px; border-top: 1px solid #dddddd; text-align: center; }
+			.reveal .recap > :nth-child(-n + 3) { border-top: none; }
+			.reveal .recap .recap-head { font-weight: bold; }
+			.reveal .recap .recap-row { color: #777; text-align: left; }
+			/* the interval module, formally, under its applet */
+			.reveal .ivdef { width: 860px; margin: 0 auto; font-size: 0.6em; }
+			.reveal .ivdef .block-body { display: flex; justify-content: space-around; align-items: center; }
+			.reveal .ivdef .katex-display { margin: 0.2em 0; }
+			/* a long definition with fewer lines: the same layout, bigger type */
+			.reveal .defpair.long.roomy .block { font-size: 0.66em; }
+			/* the title page, as Beamer lays it out */
+			.reveal .beamer-title {
+				width: 820px;
+				margin: 0 auto 1.1em;
+				padding: 0.55em 0.8em 0.6em;
+				border-radius: 10px;
+				background: #dce8f7;
+				box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16), 0 1px 4px rgba(0, 0, 0, 0.1);
+			}
+			.reveal .beamer-title h2 { font-size: 1.5em; line-height: 1.25; margin: 0; }
+			.reveal .beamer-author { font-size: 0.85em; margin: 0 0 0.35em; text-align: center; }
+			.reveal .beamer-event { font-size: 0.68em; margin: 0 0 0.35em; text-align: center; }
+			.reveal .beamer-date { font-size: 0.68em; margin: 0 0 0.5em; text-align: center; }
+			/* the meme: the picture whole, our words over its two white panels on the
+			   right (from 326 of its 727 px across; the rows split at 278 of 544 px down),
+			   in a plain sans like the meme's */
+			.reveal .pooh { position: relative; width: 800px; margin: 0 auto; }
+			.reveal .pooh img { display: block; width: 100%; max-width: none; max-height: none; margin: 0; }
+			.reveal .pooh-text {
+				position: absolute;
+				right: 0;
+				left: 44.8%;
+				display: flex; flex-direction: column; align-items: center; justify-content: center;
+				font-family: Arial, Helvetica, sans-serif;
+				color: #000;
+			}
+			.reveal .pooh-upper { top: 0; bottom: 48.9%; }
+			.reveal .pooh-lower { top: 51.1%; bottom: 0; }
+			.reveal .pooh-text p { margin: 0.1em 0; font-size: 1.25em; }
+			.reveal .pooh-text p.pooh-formula { font-size: 1em; }
+			/* the picture under a pair, lit up with the part it illustrates */
+			.reveal .defpic { padding: 6px 18px; }
+			.reveal .defpic svg { display: block; }
+			.reveal .slides section .fragment.hl {
+				border-radius: 5px;
+				box-decoration-break: clone;
+				-webkit-box-decoration-break: clone;
+				transition: background-color 0.45s ease;
+			}
+			.reveal .slides section span.fragment.hl { padding: 0.05em 0.08em; }
+			.reveal .slides section .fragment.hl1.visible { background-color: #fbe3c4; }
+			.reveal .slides section .fragment.hl2.visible { background-color: #d5ecd9; }
+			.reveal .slides section .fragment.hl3.visible { background-color: #e4ddf5; }
+			.reveal .slides section .fragment.hl4.visible { background-color: #f8d6da; }
+
+			/* a bulleted list inside a block */
+			.reveal .block-body ul.items { display: block; margin: 0; padding-left: 1.3em; }
+			.reveal .block-body ul.items > li { margin: 0.35em 0; }
+
+			/* KaTeX labels inside an SVG figure */
+			.fig-lbl {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 26px;
+				line-height: 1;
+			}
+
+			/* Two columns compared row by row (title, category, indecomposables,
+			   picture): one grid, so every row lines up across the divider */
+			.two-col {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+			}
+			.two-col > div {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				padding: 0.4em 22px;
+				font-size: 0.75em;
+			}
+			.two-col > div:nth-child(even) { border-left: 1.5px solid #c8c8c8; }
+			.reveal .two-col h3 { font-size: 1.2em; margin: 0; }
+			.reveal .two-col p { margin: 0.15em 0; }
+			.two-col .ind { align-self: stretch; text-align: center; font-size: 0.85em; }
+			.two-col .pair { display: flex; align-items: center; gap: 32px; }
+			/* the three-column version: smaller type, a divider before each of the last two columns */
+			.two-col.three { grid-template-columns: repeat(3, 1fr); }
+			.two-col.three > div { padding: 0.4em 14px; font-size: 0.66em; }
+			.two-col.three > div:nth-child(even) { border-left: none; }
+			.two-col.three > div:not(:nth-child(3n + 1)) { border-left: 1.5px solid #c8c8c8; }
+			.reveal .two-col.three h3 { font-size: 1.1em; }
+			.two-col iframe { border: none; }
+
+			/* Papers on a desk: overlapping screenshots with shadows. Each press forward
+			   brings the next one to the centre, enlarged, and dims the others. The
+			   cards are fragments of the "custom" kind, so they are visible throughout;
+			   --fx, --fy move a card's centre to the centre of the slide. */
+			.papers { position: relative; width: 960px; height: 700px; }
+			.reveal .slides section .papers .paper.fragment {
+				position: absolute;
+				width: 560px;
+				background: #fff;
+				box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22), 0 1px 4px rgba(0, 0, 0, 0.12);
+				transition: transform 0.6s ease, opacity 0.6s ease;
+			}
+			.reveal .slides section .papers .paper.fragment.current-fragment {
+				transform: translate(var(--fx), var(--fy)) scale(1.55);
+				z-index: 10;
+			}
+			.reveal .slides section .papers:has(.current-fragment) .paper:not(.current-fragment) { opacity: 0.35; }
+			.reveal .papers .paper img { display: block; width: 100%; max-width: none; max-height: none; margin: 0; }
+			/* a single paper on its own slide, as one of the cards above */
+			.reveal .paper-single {
+				position: relative;
+				width: 780px;
+				margin: 0 auto;
+				background: #fff;
+				box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22), 0 1px 4px rgba(0, 0, 0, 0.12);
+			}
+			.reveal .paper-single img { display: block; width: 100%; max-width: none; max-height: none; margin: 0; }
+			/* the identifier runs up the left margin, like the stamp on an arXiv preprint */
+			.reveal .papers .arxiv, .reveal .paper-single .arxiv {
+				position: absolute;
+				left: 14px;
+				top: 50%;
+				transform: translate(-50%, -50%) rotate(-90deg);
+				white-space: nowrap;
+				font-family: "MLModern Serif", "Computer Modern Serif", serif;
+				font-size: 17px;
+				color: #8a8a8a;
+			}
+
+			/* A titled slide: the title at the same height on every slide, the rest
+			   spread out in the space below it */
+			.frame {
+				height: 700px;
+				display: flex;
+				flex-direction: column;
+			}
+			.reveal .frame > h3 { font-size: 1.15em; margin: 26px 0 0; }
+			/* the content under the title: centred a little above the middle of the
+			   room left (the optical centre), its parts a steady gap apart */
+			.frame-body {
+				flex: 1;
+				min-height: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 30px;
+				padding: 8px 0 44px;
+			}
+			.frame iframe { border: none; }
+			.frame-body .katex-display { margin: 0; }
+			.block-body .katex-display { margin: 0.35em 0 0.1em; }
+			/* a remark under a box, in small grey type */
+			.reveal .note { margin: 0.6em 0 0; text-align: left; font-size: 0.55em; color: #777; }
+			/* Two states of a slide in the same place. Going forward, the old one fades
+			   out, then the new one fades in while rising a little; going back, the
+			   same in reverse. */
+			.stack { flex: 1; min-height: 0; display: grid; }
+			.stack > * { grid-area: 1 / 1; }
+			.reveal .slides section .fragment.swap-out {
+				opacity: 1;
+				visibility: visible;
+				transition: opacity 0.3s ease 0.35s, visibility 0s linear 0.35s;
+			}
+			.reveal .slides section .fragment.swap-out.visible {
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+			}
+			.reveal .slides section .fragment.swap-in {
+				opacity: 0;
+				visibility: hidden;
+				transform: translateY(18px);
+				transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+			}
+			.reveal .slides section .fragment.swap-in.visible {
+				opacity: 1;
+				visibility: visible;
+				transform: none;
+				transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s, visibility 0s linear 0.3s;
+			}
+			/* the two notions recalled before a definition box */
+			.reveal ul.pre-def { display: block; width: 900px; margin: 0 auto 0.5em; font-size: 0.56em; line-height: 1.4; }
+			.reveal ul.pre-def li { margin: 0.2em 0; }
+			/* three fields side by side, each with its picture (the motivation for categories) */
+			.reveal .domains {
+				align-self: stretch;
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				align-items: end;
+			}
+			.reveal .domains > div { display: flex; flex-direction: column; align-items: center; }
+			.reveal .domains h4 { font-size: 0.8em; margin: 0 0 0.8em; }
+			.reveal .domains svg { display: block; }
+			.reveal .lead { margin: 0 0 10px; font-size: 0.85em; color: #0766b3; }
+			/* the plan of the talk */
+			.reveal ol.plan {
+				display: table;
+				margin: 0 auto;
+				padding: 0;
+				list-style: none;
+				counter-reset: section;
+				font-size: 0.95em;
+				text-align: left;
+			}
+			/* each line plain text, its number in a small round badge in the margin */
+			.reveal ol.plan > li {
+				counter-increment: section;
+				position: relative;
+				margin: 0.7em 0;
+				padding-left: 2.35em;
+			}
+			.reveal ol.plan > li::before {
+				content: counter(section);
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 1.55em;
+				height: 1.55em;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 50%;
+				background: #dce8f7;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+				font-size: 0.78em;
+			}
+			/* a section already given: greyed, number and all */
+			.reveal ol.plan > li.done { color: #a6a6a6; }
+			.reveal ol.plan > li.done::before { background: #eeeeee; box-shadow: none; }
+
+			/* Applet slides: a standalone interactive page in an iframe */
+			.applet {
+				display: flex;
+				align-items: flex-end;
+				justify-content: center;
+				gap: 14px;
+			}
+			.applet iframe {
+				width: 900px;
+				height: 600px;
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<!-- a Beamer title page: the title in a rounded box, then author, event, date -->
+					<div class="beamer-title">
+						<h2>Une action monoïdale sur<br /> la catégorie des cordes</h2>
+					</div>
+					<p class="beamer-author">Christian Chávez</p>
+					<p class="beamer-event">Séminaire de maîtrise</p>
+					<p class="beamer-date">25 novembre 2026</p>
+					<!-- Official file, untouched. The svgView crop is the logo's protection zone
+					     (a margin of one "D" height all round), so the image box already carries
+					     the required clear space. -->
+					<img
+						src="images/UdeS_logo_h_noir.svg#svgView(viewBox(19.5,160.3,755.97,264.34))"
+						alt="Université de Sherbrooke"
+						style="display: block; width: 370px; margin: 0.4em auto 0;"
+					/>
+				</section>
+
+				<!-- ============ 1. Motivation ============ -->
+
+				<section>
+					<div class="frame">
+						<h3>D'où vient un code-barres ?</h3>
+						<div class="frame-body">
+							<iframe data-src="barcode.html" title="Des boules grandissent autour d'un nuage de points et le code-barres se construit" style="width: 960px; height: 600px;"></iframe>
+						</div>
+					</div>
+					<!-- the balls wait: the first press forward grows them and builds the barcode; m pauses -->
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Plan</h3>
+						<div class="frame-body">
+							<ol class="plan">
+								<li class="done">Motivation</li>
+								<li>Préliminaires&#8239;: actions de groupe, catégories, foncteurs</li>
+								<li>Entrelacements et actions monoïdales</li>
+								<li>L'ordre d'enroulement</li>
+								<li>La catégorie des cordes $\X$</li>
+								<li>Une action par rotation sur $\X$</li>
+							</ol>
+						</div>
+					</div>
+				</section>
+
+				<!-- ============ 2. Préliminaires ============ -->
+
+				<!-- group actions, the two examples on the board: two presses forward each -->
+				<section>
+					<div class="frame">
+						<h3>Exemple : $2\pi\mathbb{Z}$ agit sur $\R$</h3>
+						<div class="frame-body">
+							<iframe data-src="action-line.html" title="Un point x et son orbite x + 2πℤ ; la droite coupée en morceaux empilés montre qu'une orbite devient un point du cercle" style="width: 960px; height: 420px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-step></span>
+					<span class="fragment" data-step></span>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Exemple : $\mathbb{Z}/8\mathbb{Z}$ agit sur un octogone</h3>
+						<div class="frame-body">
+							<iframe data-src="action-octagon.html" title="Un octogone aux sommets numérotés tourne d'un huitième de tour, puis de huit, ce qui ramène au départ" style="width: 960px; height: 560px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-step></span>
+					<span class="fragment" data-step></span>
+				</section>
+
+				<!-- motivation for the definition of a category (from the categories talk, slide 5) -->
+				<section>
+					<div class="frame">
+						<h3>Pourquoi des catégories&#8239;?</h3>
+						<div class="frame-body">
+							<p class="lead">Différents domaines ont des similitudes fondamentales</p>
+							<div class="domains">
+								<div>
+									<h4>Théorie des groupes</h4>
+									<svg viewBox="0 0 200 300" style="width: 236px; height: 354px; overflow: visible;" role="img" aria-label="La droite des entiers enroulée sur une horloge : le morphisme de groupes de Z vers Z/12, modulo 12">
+										<defs>
+											<marker id="ahM1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+												<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											</marker>
+										</defs>
+										<line x1="18" y1="62" x2="200" y2="62" stroke="#1a1a1a" stroke-width="2" /><line x1="22" y1="57" x2="22" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="34" y1="57" x2="34" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="46" y1="57" x2="46" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="58" y1="57" x2="58" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="70" y1="57" x2="70" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="82" y1="57" x2="82" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="94" y1="57" x2="94" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="106" y1="57" x2="106" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="118" y1="57" x2="118" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="130" y1="57" x2="130" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="142" y1="57" x2="142" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="154" y1="57" x2="154" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="166" y1="57" x2="166" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="178" y1="57" x2="178" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><line x1="190" y1="57" x2="190" y2="67" stroke="#1a1a1a" stroke-width="1.5" /><circle cx="34" cy="62" r="4.5" fill="#e01b24" /><circle cx="178" cy="62" r="4.5" fill="#e01b24" /><circle cx="46" cy="62" r="4.5" fill="#0038ff" /><circle cx="190" cy="62" r="4.5" fill="#0038ff" /><foreignObject x="19.0" y="70.0" width="30" height="24"><div class="fig-lbl" style="font-size: 15px; color: #e01b24;">$0$</div></foreignObject><foreignObject x="163.0" y="70.0" width="30" height="24"><div class="fig-lbl" style="font-size: 15px; color: #e01b24;">$12$</div></foreignObject><foreignObject x="197.0" y="49.0" width="30" height="24"><div class="fig-lbl" style="font-size: 17px; color: #1a1a1a;">$\mathbb{Z}$</div></foreignObject>
+										<!-- the map and its result: on the press -->
+										<g class="fragment fade-in" data-fragment-index="0">
+										<line x1="100" y1="124" x2="100" y2="174" stroke="#1a1a1a" stroke-width="2" marker-end="url(#ahM1)" />
+										<foreignObject x="110" y="132" width="110" height="34"><div class="fig-lbl" style="font-size: 20px; justify-content: flex-start;">$\text{mod } 12$</div></foreignObject>
+										<circle cx="100" cy="238" r="50" fill="none" stroke="#1a1a1a" stroke-width="3" /><line x1="100.0" y1="195.0" x2="100.0" y2="188.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="121.5" y1="200.8" x2="125.0" y2="194.7" stroke="#1a1a1a" stroke-width="1.5" /><line x1="137.2" y1="216.5" x2="143.3" y2="213.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="143.0" y1="238.0" x2="150.0" y2="238.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="137.2" y1="259.5" x2="143.3" y2="263.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="121.5" y1="275.2" x2="125.0" y2="281.3" stroke="#1a1a1a" stroke-width="1.5" /><line x1="100.0" y1="281.0" x2="100.0" y2="288.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="78.5" y1="275.2" x2="75.0" y2="281.3" stroke="#1a1a1a" stroke-width="1.5" /><line x1="62.8" y1="259.5" x2="56.7" y2="263.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="57.0" y1="238.0" x2="50.0" y2="238.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="62.8" y1="216.5" x2="56.7" y2="213.0" stroke="#1a1a1a" stroke-width="1.5" /><line x1="78.5" y1="200.8" x2="75.0" y2="194.7" stroke="#1a1a1a" stroke-width="1.5" /><circle cx="100.0" cy="188.0" r="5.5" fill="#e01b24" /><circle cx="125.0" cy="194.7" r="5.5" fill="#0038ff" /><foreignObject x="85.0" y="196.0" width="30" height="24"><div class="fig-lbl" style="font-size: 15px; color: #e01b24;">$0$</div></foreignObject><foreignObject x="155.0" y="228.0" width="50" height="24"><div class="fig-lbl" style="font-size: 15px; color: #1a1a1a;">$\mathbb{Z}/12$</div></foreignObject>
+										</g>
+									</svg>
+								</div>
+								<div>
+									<h4>Topologie</h4>
+									<svg viewBox="0 0 200 300" style="width: 236px; height: 354px; overflow: visible;" role="img" aria-label="Un cercle déformé continûment en une boucle quelconque">
+										<defs>
+											<marker id="ahM2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+												<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											</marker>
+										</defs>
+										<path d="M146.0,62.0 L145.9,59.6 L145.7,57.2 L145.4,54.8 L145.0,52.4 L144.4,50.1 L143.7,47.8 L142.9,45.5 L142.0,43.3 L141.0,41.1 L139.8,39.0 L138.6,36.9 L137.2,35.0 L135.7,33.1 L134.2,31.2 L132.5,29.5 L130.8,27.8 L128.9,26.3 L127.0,24.8 L125.1,23.4 L123.0,22.2 L120.9,21.0 L118.7,20.0 L116.5,19.1 L114.2,18.3 L111.9,17.6 L109.6,17.0 L107.2,16.6 L104.8,16.3 L102.4,16.1 L100.0,16.0 L97.6,16.1 L95.2,16.3 L92.8,16.6 L90.4,17.0 L88.1,17.6 L85.8,18.3 L83.5,19.1 L81.3,20.0 L79.1,21.0 L77.0,22.2 L74.9,23.4 L73.0,24.8 L71.1,26.3 L69.2,27.8 L67.5,29.5 L65.8,31.2 L64.3,33.1 L62.8,35.0 L61.4,36.9 L60.2,39.0 L59.0,41.1 L58.0,43.3 L57.1,45.5 L56.3,47.8 L55.6,50.1 L55.0,52.4 L54.6,54.8 L54.3,57.2 L54.1,59.6 L54.0,62.0 L54.1,64.4 L54.3,66.8 L54.6,69.2 L55.0,71.6 L55.6,73.9 L56.3,76.2 L57.1,78.5 L58.0,80.7 L59.0,82.9 L60.2,85.0 L61.4,87.1 L62.8,89.0 L64.3,90.9 L65.8,92.8 L67.5,94.5 L69.2,96.2 L71.1,97.7 L73.0,99.2 L74.9,100.6 L77.0,101.8 L79.1,103.0 L81.3,104.0 L83.5,104.9 L85.8,105.7 L88.1,106.4 L90.4,107.0 L92.8,107.4 L95.2,107.7 L97.6,107.9 L100.0,108.0 L102.4,107.9 L104.8,107.7 L107.2,107.4 L109.6,107.0 L111.9,106.4 L114.2,105.7 L116.5,104.9 L118.7,104.0 L120.9,103.0 L123.0,101.8 L125.1,100.6 L127.0,99.2 L128.9,97.7 L130.8,96.2 L132.5,94.5 L134.2,92.8 L135.7,90.9 L137.2,89.0 L138.6,87.1 L139.8,85.0 L141.0,82.9 L142.0,80.7 L142.9,78.5 L143.7,76.2 L144.4,73.9 L145.0,71.6 L145.4,69.2 L145.7,66.8 L145.9,64.4 L146.0,62.0 Z" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round" />
+										<!-- the map and its result: on the press -->
+										<g class="fragment fade-in" data-fragment-index="0">
+										<line x1="100" y1="124" x2="100" y2="174" stroke="#1a1a1a" stroke-width="2" marker-end="url(#ahM2)" />
+										<foreignObject x="110" y="132" width="60" height="34"><div class="fig-lbl" style="font-size: 22px; justify-content: flex-start;">$f$</div></foreignObject>
+										<path d="M164.2,238.0 L163.6,235.0 L162.5,232.1 L160.9,229.3 L158.9,226.7 L156.5,224.3 L153.9,222.0 L151.2,220.0 L148.4,218.2 L145.6,216.6 L142.8,215.1 L140.2,213.7 L137.7,212.3 L135.3,211.0 L133.1,209.7 L131.0,208.3 L129.0,206.9 L127.0,205.5 L125.1,204.0 L123.2,202.5 L121.2,201.1 L119.1,199.6 L116.9,198.3 L114.6,197.0 L112.2,195.8 L109.6,194.9 L107.0,194.0 L104.3,193.3 L101.6,192.8 L98.8,192.5 L96.0,192.3 L93.2,192.1 L90.3,192.1 L87.4,192.2 L84.6,192.4 L81.7,192.6 L78.7,193.0 L75.8,193.4 L72.9,193.9 L69.9,194.6 L67.0,195.5 L64.2,196.5 L61.5,197.8 L58.9,199.2 L56.6,200.9 L54.5,202.9 L52.7,205.0 L51.3,207.3 L50.2,209.8 L49.4,212.4 L49.0,215.0 L48.9,217.7 L49.1,220.3 L49.6,222.9 L50.2,225.4 L50.9,227.8 L51.6,230.0 L52.3,232.1 L53.0,234.2 L53.5,236.1 L54.0,238.0 L54.2,239.9 L54.4,241.7 L54.5,243.6 L54.6,245.5 L54.6,247.4 L54.7,249.4 L55.0,251.3 L55.4,253.3 L56.1,255.2 L57.0,257.1 L58.2,258.8 L59.7,260.4 L61.4,261.7 L63.4,262.9 L65.5,263.8 L67.8,264.6 L70.1,265.1 L72.5,265.4 L74.9,265.6 L77.2,265.6 L79.4,265.6 L81.6,265.5 L83.6,265.4 L85.5,265.4 L87.3,265.4 L89.1,265.6 L90.8,265.8 L92.5,266.1 L94.2,266.4 L96.0,266.8 L97.8,267.2 L99.7,267.7 L101.6,268.0 L103.6,268.3 L105.7,268.6 L107.8,268.7 L109.9,268.7 L112.1,268.7 L114.3,268.5 L116.6,268.3 L119.0,268.0 L121.4,267.6 L123.9,267.2 L126.5,266.7 L129.2,266.1 L132.1,265.5 L135.1,264.8 L138.2,264.0 L141.3,262.9 L144.6,261.8 L147.8,260.4 L150.9,258.7 L153.9,256.8 L156.6,254.7 L159.1,252.3 L161.1,249.7 L162.7,246.9 L163.7,244.0 L164.2,241.0 L164.2,238.0 Z" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round" />
+										</g>
+									</svg>
+								</div>
+								<div>
+									<h4>Algèbre linéaire</h4>
+									<svg viewBox="0 0 200 300" style="width: 236px; height: 354px; overflow: visible;" role="img" aria-label="Une grille carrée envoyée sur une grille inclinée par une application linéaire">
+										<defs>
+											<marker id="ahM3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+												<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											</marker>
+										</defs>
+										<line x1="58.0" y1="104.0" x2="58.0" y2="20.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="58.0" y1="104.0" x2="142.0" y2="104.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="86.0" y1="104.0" x2="86.0" y2="20.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="58.0" y1="76.0" x2="142.0" y2="76.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="114.0" y1="104.0" x2="114.0" y2="20.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="58.0" y1="48.0" x2="142.0" y2="48.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="142.0" y1="104.0" x2="142.0" y2="20.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="58.0" y1="20.0" x2="142.0" y2="20.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="86.0" y1="76.0" x2="114.0" y2="76.0" stroke="#e01b24" stroke-width="4" stroke-linecap="round" /><circle cx="114.0" cy="76.0" r="4.5" fill="#e01b24" /><line x1="86.0" y1="76.0" x2="86.0" y2="48.0" stroke="#0038ff" stroke-width="4" stroke-linecap="round" /><circle cx="86.0" cy="48.0" r="4.5" fill="#0038ff" /><circle cx="86.0" cy="76.0" r="4" fill="#1a1a1a" />
+										<!-- the map and its result: on the press -->
+										<g class="fragment fade-in" data-fragment-index="0">
+										<line x1="100" y1="124" x2="100" y2="174" stroke="#1a1a1a" stroke-width="2" marker-end="url(#ahM3)" />
+										<foreignObject x="110" y="132" width="60" height="34"><div class="fig-lbl" style="font-size: 22px; justify-content: flex-start;">$A$</div></foreignObject>
+										<line x1="32.8" y1="280.0" x2="83.2" y2="196.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="32.8" y1="280.0" x2="116.8" y2="280.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="60.8" y1="280.0" x2="111.2" y2="196.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="49.6" y1="252.0" x2="133.6" y2="252.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="88.8" y1="280.0" x2="139.2" y2="196.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="66.4" y1="224.0" x2="150.4" y2="224.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="116.8" y1="280.0" x2="167.2" y2="196.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="83.2" y1="196.0" x2="167.2" y2="196.0" stroke="#9a9a9a" stroke-width="1.5" /><line x1="77.6" y1="252.0" x2="105.6" y2="252.0" stroke="#e01b24" stroke-width="4" stroke-linecap="round" /><circle cx="105.6" cy="252.0" r="4.5" fill="#e01b24" /><line x1="77.6" y1="252.0" x2="94.4" y2="224.0" stroke="#0038ff" stroke-width="4" stroke-linecap="round" /><circle cx="94.4" cy="224.0" r="4.5" fill="#0038ff" /><circle cx="77.6" cy="252.0" r="4" fill="#1a1a1a" />
+										</g>
+									</svg>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- the definition of a category, formal on the left and in words on the right:
+				     the first press brings in the box in words ("I won't read the textbook word for
+				     word, here is what it says"), then each press lights up one part of each, in the
+				     same colour (apricot: objects, sage: morphisms, lavender: composition, rose:
+				     identities) -->
+				<section>
+					<div class="frame">
+						<h3>Qu'est-ce qu'une catégorie&#8239;?</h3>
+						<div class="frame-body">
+							<div class="defpair long">
+								<div class="block">
+									<div class="block-title">Définition</div>
+									<div class="block-body">
+										<p>Une <strong>catégorie</strong> $\mathcal{C}$ est la donnée de&#8239;:</p>
+										<ul class="lettered">
+											<li class="fragment custom hl hl1" data-fragment-index="2"><span class="tag">(a)</span> une classe $\operatorname{Ob}\mathcal{C}$, dont les éléments sont les <em>objets</em> de $\mathcal{C},$</li>
+											<li class="fragment custom hl hl2" data-fragment-index="3"><span class="tag">(b)</span> pour chaque paire $(X, Y)$ d'objets, un ensemble $\Hom_{\mathcal{C}}(X, Y)$, dont les éléments sont les <em>morphismes</em> de $X$ vers $Y,$</li>
+											<li class="fragment custom hl hl3" data-fragment-index="4"><span class="tag">(c)</span> pour chaque triplet $(X, Y, Z)$ d'objets, une application $\Hom_{\mathcal{C}}(X, Y) \times \Hom_{\mathcal{C}}(Y, Z) \to \Hom_{\mathcal{C}}(X, Z)$, ${(f, g) \mapsto g \circ f}$, la <em>composition</em>, telle que&#8239;:</li>
+											<li class="sub fragment custom hl hl3" data-fragment-index="4"><span class="tag">(c1)</span> ${h \circ (g \circ f) = (h \circ g) \circ f}$ pour ${f \in \Hom_{\mathcal{C}}(X, Y)}$, ${g \in \Hom_{\mathcal{C}}(Y, Z)}$, ${h \in \Hom_{\mathcal{C}}(Z, W)}$</li>
+											<li class="sub fragment custom hl hl4" data-fragment-index="5"><span class="tag">(c2)</span> chaque objet $X$ a un morphisme ${\mathrm{Id}_X \in \Hom_{\mathcal{C}}(X, X)}$, l'<em>identité</em> de $X$, tel que ${f \circ \mathrm{Id}_X = f}$ et ${\mathrm{Id}_X \circ g = g}$ pour ${f \in \Hom_{\mathcal{C}}(X, Y)}$, ${g \in \Hom_{\mathcal{C}}(Z, X)}$</li>
+										</ul>
+									</div>
+								</div>
+								<div class="block words fragment fade-in" data-fragment-index="1">
+									<div class="block-title">En mots</div>
+									<div class="block-body">
+										<p>Une <strong>catégorie</strong> est <span class="fragment custom hl hl1" data-fragment-index="2">une collection d'objets</span> <span class="fragment custom hl hl2" data-fragment-index="3">et de morphismes</span>, où <span class="fragment custom hl hl3" data-fragment-index="4">les morphismes se composent de façon associative</span> et où <span class="fragment custom hl hl4" data-fragment-index="5">chaque objet possède un morphisme identité</span>.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- examples of categories: Grp, Top and vect_k together, then (R, ≤); the labels
+				     in the colours of the definition: apricot objects, sage morphisms, lavender
+				     composition, rose identities -->
+				<section data-auto-animate data-auto-animate-id="exemples" data-auto-animate-unmatched="fade">
+					<div class="frame">
+						<h3>Exemples de catégories</h3>
+						<div class="frame-body">
+							<!-- three categories side by side, in the order of the motivation slide;
+							     composition and identities are the same for all three: one line each -->
+							<div class="example">
+								<div class="ex3">
+									<span></span>
+									<p class="ex3-name"><span>$\mathbf{Grp}$</span></p>
+									<p class="ex3-name"><span>$\mathbf{Top}$</span></p>
+									<p class="ex3-name"><span>$\mathbf{Vect}_{\kk}$</span></p>
+
+									<span class="row"><span class="chip hl1">Objets</span></span>
+									<p class="row"><span>groupes</span></p>
+									<p class="row"><span>espaces topologiques</span></p>
+									<p class="row"><span>$\kk$-espaces vectoriels</span></p>
+
+									<span class="row"><span class="chip hl2">Morphismes</span></span>
+									<p class="row"><span>homomorphismes</span></p>
+									<p class="row"><span>fonctions continues</span></p>
+									<p class="row"><span>applications linéaires</span></p>
+
+									<span class="row"><span class="chip hl3">Composition</span></span>
+									<p class="row ex3-all"><span>usuelle&#8239;: $(g \circ f)(x) = g(f(x))$</span></p>
+
+									<span class="row"><span class="chip hl4">Identités</span></span>
+									<p class="row ex3-all"><span>$\mathrm{Id}_A(x) = x$, pour chaque objet $A$</span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+
+
+				<section data-auto-animate data-auto-animate-id="exemples" data-auto-animate-unmatched="fade">
+					<div class="frame">
+						<h3>Exemples de catégories</h3>
+						<div class="frame-body">
+							<div class="example">
+								<p class="ex-name" data-id="ex-name">$(\R, \leqslant)$</p>
+								<p class="ex-caption">Une catégorie « de l'ordre »</p>
+								<div class="ex-row">
+									<ul class="ex-list">
+										<li><span class="chip hl1">Objets</span> les nombres réels</li>
+										<li><span class="chip hl2">Morphismes</span> une unique flèche $x \to y$ lorsque $x \leqslant y$, aucune sinon</li>
+										<li><span class="chip hl3">Composition</span> $x \to y \to z$ donne $x \to z$, car $x \leqslant z$</li>
+										<li><span class="chip hl4">Identités</span> $\mathrm{Id}_x\colon x \to x$, car $x \leqslant x$</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+
+				<!-- the definition of a functor, the same way and in the same colours; the
+				     picture of (F1) appears with it -->
+				<section>
+					<div class="frame">
+						<h3>Qu'est-ce qu'un foncteur&#8239;?</h3>
+						<div class="frame-body">
+							<div class="defpair">
+								<div class="block">
+									<div class="block-title">Définition</div>
+									<div class="block-body">
+										<p>Soient $\mathcal{C}$ et $\mathcal{D}$ des catégories. Un <strong>foncteur</strong> $F\colon \mathcal{C} \to \mathcal{D}$ associe <span class="fragment custom hl hl1" data-fragment-index="2">à chaque objet $X$ de $\mathcal{C}$ un objet $FX$ de $\mathcal{D}$</span>, <span class="fragment custom hl hl2" data-fragment-index="3">et à chaque morphisme $f\colon X \to Y$ de $\mathcal{C}$ un morphisme $Ff\colon FX \to FY$ de $\mathcal{D}$</span>, tels que&#8239;:</p>
+										<ul class="lettered wide">
+											<li class="fragment custom hl hl3" data-fragment-index="4"><span class="tag">(F1)</span> si $g, f$ sont composables dans $\mathcal{C}$, alors $Fg, Ff$ le sont dans $\mathcal{D}$ et $F(gf) = (Fg)(Ff)$</li>
+											<li class="fragment custom hl hl4" data-fragment-index="5"><span class="tag">(F2)</span> pour tout objet $X$ de $\mathcal{C}$, ${F(\mathrm{Id}_X) = \mathrm{Id}_{FX}}$</li>
+										</ul>
+									</div>
+								</div>
+								<div class="block words fragment fade-in" data-fragment-index="1">
+									<div class="block-title">En mots</div>
+									<div class="block-body">
+										<p>Un <strong>foncteur</strong> est une correspondance entre catégories qui <span class="fragment custom hl hl1" data-fragment-index="2">envoie les objets sur des objets</span> <span class="fragment custom hl hl2" data-fragment-index="3">et les morphismes sur des morphismes</span>, en préservant <span class="fragment custom hl hl3" data-fragment-index="4">les compositions</span> et <span class="fragment custom hl hl4" data-fragment-index="5">les identités</span>.</p>
+									</div>
+								</div>
+							</div>
+							<!-- (F1) in a picture: a commutative triangle goes to a commutative triangle -->
+							<div class="defpic fragment hl hl3" data-fragment-index="4">
+								<svg viewBox="0 0 640 170" style="width: 680px; overflow: visible;">
+									<defs>
+										<marker id="ahF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+											<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+										</marker>
+									</defs>
+									<g stroke="#1a1a1a" stroke-width="1.5" fill="none">
+										<line x1="62" y1="34" x2="176" y2="76" marker-end="url(#ahF)" />
+										<line x1="176" y1="96" x2="62" y2="136" marker-end="url(#ahF)" />
+										<line x1="40" y1="50" x2="40" y2="120" marker-end="url(#ahF)" />
+										<line x1="262" y1="76" x2="262" y2="94" />
+										<line x1="262" y1="85" x2="352" y2="85" marker-end="url(#ahF)" />
+										<line x1="472" y1="34" x2="566" y2="76" marker-end="url(#ahF)" />
+										<line x1="566" y1="96" x2="472" y2="136" marker-end="url(#ahF)" />
+										<line x1="440" y1="50" x2="440" y2="120" marker-end="url(#ahF)" />
+									</g>
+									<foreignObject x="10" y="10" width="60" height="36"><div class="fig-lbl" style="font-size: 28px;">$X$</div></foreignObject>
+									<foreignObject x="172" y="67" width="60" height="36"><div class="fig-lbl" style="font-size: 28px;">$Y$</div></foreignObject>
+									<foreignObject x="10" y="124" width="60" height="36"><div class="fig-lbl" style="font-size: 28px;">$Z$</div></foreignObject>
+									<foreignObject x="100" y="18" width="50" height="30"><div class="fig-lbl" style="font-size: 21px;">$f$</div></foreignObject>
+									<foreignObject x="100" y="122" width="50" height="30"><div class="fig-lbl" style="font-size: 21px;">$g$</div></foreignObject>
+									<foreignObject x="-20" y="70" width="60" height="30"><div class="fig-lbl" style="font-size: 21px;">$gf$</div></foreignObject>
+									<foreignObject x="282" y="50" width="50" height="30"><div class="fig-lbl" style="font-size: 24px;">$F$</div></foreignObject>
+									<foreignObject x="400" y="10" width="80" height="36"><div class="fig-lbl" style="font-size: 28px;">$FX$</div></foreignObject>
+									<foreignObject x="562" y="67" width="80" height="36"><div class="fig-lbl" style="font-size: 28px;">$FY$</div></foreignObject>
+									<foreignObject x="400" y="124" width="80" height="36"><div class="fig-lbl" style="font-size: 28px;">$FZ$</div></foreignObject>
+									<foreignObject x="505" y="16" width="60" height="30"><div class="fig-lbl" style="font-size: 21px;">$Ff$</div></foreignObject>
+									<foreignObject x="505" y="124" width="60" height="30"><div class="fig-lbl" style="font-size: 21px;">$Fg$</div></foreignObject>
+									<foreignObject x="360" y="70" width="80" height="30"><div class="fig-lbl" style="font-size: 21px;">$F(gf)$</div></foreignObject>
+								</svg>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- a functor (R, ≤) → vect_k: an interval module. Four presses: a point,
+				     a second point, the arrow between them, the arrow moving -->
+				<section>
+					<div class="frame">
+						<h3>Exemple : un foncteur $(\R, \leqslant) \to \operatorname{vect}_{\kk}$</h3>
+						<div class="frame-body">
+							<iframe data-src="interval.html#steps+shade" title="Le module d'intervalle de [a, b] : un point, puis deux, puis la flèche entre eux, puis la flèche qui glisse" style="width: 960px; height: 254px;"></iframe>
+							<!-- the same, formally: what it does to points comes in with the first
+							     point, what it does to arrows with the arrow -->
+							<div class="block ivdef fragment" data-fragment-index="0">
+								<div class="block-title">Le module d'intervalle $\kk^{[a,b]}\colon (\R, \leqslant) \to \operatorname{vect}_{\kk}$</div>
+								<div class="block-body">
+									<div>$$\kk^{[a,b]}(x) = \begin{cases} \kk &amp; \text{si } x \in [a,b] \\ 0 &amp; \text{sinon} \end{cases}$$</div>
+									<div class="fragment" data-fragment-index="2">$$\kk^{[a,b]}(x \to y) = \begin{cases} \operatorname{Id}_{\kk} &amp; \text{si } x, y \in [a,b] \\ 0 &amp; \text{sinon} \end{cases}$$</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- the applet's steps: a point, a second point, the arrow, the arrow moving -->
+					<span class="fragment" data-step data-fragment-index="0"></span>
+					<span class="fragment" data-step data-fragment-index="1"></span>
+					<span class="fragment" data-step data-fragment-index="2"></span>
+					<span class="fragment" data-step data-fragment-index="3"></span>
+				</section>
+
+				<!-- morphisms of persistence modules: what φ and ψ are in an interleaving.
+				     A module, then a morphism; on a press the category they form, then the fact
+				     about intervals -->
+				<section>
+					<div class="frame">
+						<h3>Morphismes de modules de persistance</h3>
+						<div class="frame-body">
+							<div class="block" style="width: 840px; font-size: 0.6em;">
+								<div class="block-title">Définition</div>
+								<div class="block-body">
+									<p>Un <strong>module de persistance</strong> est un foncteur $M\colon (\R, \leqslant) \to \operatorname{vect}_{\kk}$, comme $\kk^{[a,b]}$. Un <strong>morphisme</strong> $\varphi\colon M \to N$ est une famille d'applications linéaires $(\varphi_x\colon M(x) \to N(x))_{x\in \mathbb{\R}}$ telle que pour $x \leqslant y$ ce carré commute&#8239;:</p>
+									<svg viewBox="0 0 340 190" style="width: 300px; display: block; overflow: visible; margin: 0.4em auto 0.1em;">
+										<defs>
+											<marker id="ahSq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+												<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											</marker>
+										</defs>
+										<g stroke="#1a1a1a" stroke-width="1.5">
+											<line x1="100" y1="35" x2="236" y2="35" marker-end="url(#ahSq)" />
+											<line x1="100" y1="155" x2="236" y2="155" marker-end="url(#ahSq)" />
+											<line x1="62" y1="55" x2="62" y2="132" marker-end="url(#ahSq)" />
+											<line x1="278" y1="55" x2="278" y2="132" marker-end="url(#ahSq)" />
+										</g>
+										<foreignObject x="17.0" y="18" width="90" height="34"><div class="fig-lbl" style="font-size: 22px;">$M(x)$</div></foreignObject><foreignObject x="233.0" y="18" width="90" height="34"><div class="fig-lbl" style="font-size: 22px;">$M(y)$</div></foreignObject>
+										<foreignObject x="17.0" y="138" width="90" height="34"><div class="fig-lbl" style="font-size: 22px;">$N(x)$</div></foreignObject><foreignObject x="233.0" y="138" width="90" height="34"><div class="fig-lbl" style="font-size: 22px;">$N(y)$</div></foreignObject>
+										<foreignObject x="103.0" y="-2" width="130" height="34"><div class="fig-lbl" style="font-size: 17px;">$M(x \to y)$</div></foreignObject><foreignObject x="103.0" y="158" width="130" height="34"><div class="fig-lbl" style="font-size: 17px;">$N(x \to y)$</div></foreignObject>
+										<foreignObject x="16.0" y="77" width="40" height="34"><div class="fig-lbl" style="font-size: 18px;">$\varphi_x$</div></foreignObject><foreignObject x="284.0" y="77" width="40" height="34"><div class="fig-lbl" style="font-size: 18px;">$\varphi_y$</div></foreignObject>
+									</svg>
+								</div>
+							</div>
+							<div class="pair-small">
+								<div class="block fragment fade-in" data-fragment-index="0">
+									<div class="block-title">Une catégorie</div>
+									<div class="block-body">
+										<p>Les modules de persistance et leurs morphismes forment une catégorie, notée $\mathcal{P}$.</p>
+									</div>
+								</div>
+								<div class="block fragment fade-in" data-fragment-index="1">
+									<div class="block-title">Fait</div>
+									<div class="block-body">
+										<p>${\Hom\bigl(\kk^{[a,b]}, \kk^{[c,d]}\bigr) = \kk \iff c \leqslant a \leqslant d \leqslant b}$, <span style="white-space: nowrap;">et $0$ sinon.</span></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- ============ 3. Entrelacements & actions monoïdales ============ -->
+
+				<!-- the shift, before the interleavings that use it: its definition, then the
+				     picture of the board -->
+				<section>
+					<div class="frame">
+						<h3>Décalages</h3>
+						<div class="frame-body">
+							<div class="block" style="width: 760px; font-size: 0.66em;">
+								<div class="block-title">Définition</div>
+								<div class="block-body" style="text-align: center;">
+									<p>Pour $t \geqslant 0$, le <strong>décalage</strong> de $\kk^I$ par $t$ est $\kk^I[t] = \kk^{I - t}$.</p>
+								</div>
+							</div>
+							<svg class="shift-pic" viewBox="0 0 780 230" style="width: 780px; overflow: visible;" role="img" aria-label="L'intervalle [a, b] et son décalage [a − t, b − t], poussé de t vers la gauche">
+								<defs>
+									<marker id="ahT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+										<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+									</marker>
+								</defs>
+								<line x1="170" y1="62" x2="760" y2="62" stroke="#1a1a1a" stroke-width="1.6" /><path d="M752,55 L762,62 L752,69" fill="none" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+								<foreignObject x="30" y="46" width="120" height="32"><div class="fig-lbl" style="font-size: 24px; color: #0038ff; justify-content: flex-end;">$\kk^I$</div></foreignObject>
+								<rect x="470" y="46" width="150" height="32" fill="#0038ff" fill-opacity="0.12" /><path d="M479,44 H470 V80 H479" fill="none" stroke="#0038ff" stroke-width="2.5" stroke-linejoin="round" /><path d="M611,44 H620 V80 H611" fill="none" stroke="#0038ff" stroke-width="2.5" stroke-linejoin="round" />
+								<foreignObject x="450.0" y="80" width="40" height="32"><div class="fig-lbl" style="font-size: 19px; color: #0038ff; justify-content: center;">$a$</div></foreignObject><foreignObject x="600.0" y="80" width="40" height="32"><div class="fig-lbl" style="font-size: 19px; color: #0038ff; justify-content: center;">$b$</div></foreignObject>
+								<line x1="170" y1="172" x2="760" y2="172" stroke="#1a1a1a" stroke-width="1.6" /><path d="M752,165 L762,172 L752,179" fill="none" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+								<!-- the shifted interval -->
+								<g>
+									<foreignObject x="-10" y="156" width="160" height="32"><div class="fig-lbl" style="font-size: 24px; color: #e01b24; justify-content: flex-end;">$\kk^I[t]$</div></foreignObject>
+									<rect x="300" y="156" width="150" height="32" fill="#e01b24" fill-opacity="0.12" /><path d="M309,154 H300 V190 H309" fill="none" stroke="#e01b24" stroke-width="2.5" stroke-linejoin="round" /><path d="M441,154 H450 V190 H441" fill="none" stroke="#e01b24" stroke-width="2.5" stroke-linejoin="round" />
+									<foreignObject x="270.0" y="190" width="60" height="32"><div class="fig-lbl" style="font-size: 19px; color: #e01b24; justify-content: center;">$a - t$</div></foreignObject><foreignObject x="420.0" y="190" width="60" height="32"><div class="fig-lbl" style="font-size: 19px; color: #e01b24; justify-content: center;">$b - t$</div></foreignObject>
+									<line x1="304" y1="132" x2="466" y2="132" stroke="#1a1a1a" stroke-width="1.5" marker-start="url(#ahT)" marker-end="url(#ahT)" />
+									<line x1="470" y1="114" x2="470" y2="150" stroke="#9a9a9a" stroke-width="1.2" stroke-dasharray="3 4" />
+									<foreignObject x="365.0" y="100" width="40" height="32"><div class="fig-lbl" style="font-size: 20px; color: #1a1a1a; justify-content: center;">$t$</div></foreignObject>
+								</g>
+							</svg>
+						</div>
+					</div>
+				</section>
+
+
+				<section>
+					<div class="frame">
+						<h3>Entrelacements</h3>
+						<div class="stack">
+							<!-- one press forward: the formal definition fades out, then the
+							     picture of it fades in in the same place -->
+							<div class="frame-body fragment swap-out" data-fragment-index="0">
+								<!-- the box and its note stay together -->
+								<div>
+									<div class="block" style="width: 880px; font-size: 0.64em;">
+										<div class="block-title">Définition</div>
+										<div class="block-body">
+											<p>Un <strong>$t$-entrelacement</strong> de $\kk^I$ et $\kk^J$ est une paire de morphismes ${\phi\colon \kk^I \to \kk^J[t],\ \psi\colon \kk^J \to \kk^I[t]}$ qui font commuter les diagrammes suivants.</p>
+											<svg viewBox="0 -8 620 178" style="width: 600px; display: block; overflow: visible; margin: 0.5em auto;">
+												<defs>
+													<marker id="ahShift" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+														<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+													</marker>
+												</defs>
+												<g stroke="#1a1a1a" stroke-width="1.5">
+													<line x1="70" y1="32" x2="166" y2="32" marker-end="url(#ahShift)" />
+													<line x1="52" y1="50" x2="112" y2="124" marker-end="url(#ahShift)" />
+													<line x1="150" y1="124" x2="205" y2="50" marker-end="url(#ahShift)" />
+													<foreignObject x="-5" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I$</div></foreignObject>
+													<foreignObject x="157" y="14" width="130" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I[2t]$</div></foreignObject>
+													<foreignObject x="70" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J[t]$</div></foreignObject>
+													<foreignObject x="43" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\kk^I[0\to 2t]$</div></foreignObject>
+													<foreignObject x="46" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\phi$</div></foreignObject>
+													<foreignObject x="175" y="84" width="50" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi[t]$</div></foreignObject>
+													<line x1="400" y1="32" x2="496" y2="32" marker-end="url(#ahShift)" />
+													<line x1="382" y1="50" x2="442" y2="124" marker-end="url(#ahShift)" />
+													<line x1="480" y1="124" x2="535" y2="50" marker-end="url(#ahShift)" />
+													<foreignObject x="325" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J$</div></foreignObject>
+													<foreignObject x="487" y="14" width="130" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^J[2t]$</div></foreignObject>
+													<foreignObject x="400" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\kk^I[t]$</div></foreignObject>
+													<foreignObject x="373" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\kk^J[0\to 2t]$</div></foreignObject>
+													<foreignObject x="376" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi$</div></foreignObject>
+													<foreignObject x="505" y="84" width="50" height="36"><div class="fig-lbl" style="font-size: 17px;">$\phi[t]$</div></foreignObject>
+												</g>
+											</svg>
+											<p>La <strong>distance d'entrelacement</strong> est $$d(\kk^I, \kk^J) = \inf\{\, t \geqslant 0 \mid \kk^I \text{ et } \kk^J \text{ sont } t\text{-entrelacés} \,\}.$$</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="frame-body fragment swap-in" data-fragment-index="0">
+								<div class="block" style="width: 880px; font-size: 0.64em;">
+									<div class="block-title">Définition</div>
+									<div class="block-body">
+										<p>La <strong>distance d'entrelacement</strong> est $d(\kk^I, \kk^J) =$ « l'énergie <em>minimale</em> nécessaire pour aligner $I$ sur $J$ et $J$ sur $I$ ».</p>
+									</div>
+								</div>
+								<p style="font-size: 0.75em; margin: 0; white-space: nowrap;">$[c,d]$ est aligné sur $[a,b]$ $\iff c \leqslant a \leqslant d \leqslant b \iff \Hom\bigl(\kk^{[a,b]}, \kk^{[c,d]}\bigr) \neq 0$</p>
+								<iframe data-src="shift.html" title="Le foncteur de décalage agissant sur les modules d'intervalle, interactif" style="width: 900px; height: 410px;"></iframe>
+							</div>
+						</div>
+					</div>
+					<!-- after the swap, the next press forward sets t moving (m or pause start and stop it too) -->
+					<span class="fragment" data-roll data-fragment-index="1"></span>
+				</section>
+
+				<!-- the formal definition of a strict monoidal category, and the same in words
+				     (as written on the board): the box in words comes in on the first press,
+				     then each press lights up one part of each, in the same colours as for
+				     categories and functors -->
+				<section>
+					<div class="frame">
+						<h3>Catégories monoïdales strictes</h3>
+						<div class="frame-body">
+							<div class="defpair long roomy">
+								<div class="block">
+									<div class="block-title">Définition</div>
+									<div class="block-body">
+										<p>Une <strong>catégorie monoïdale stricte</strong> est une catégorie $\mathcal{M}$ munie&#8239;:</p>
+										<ul class="lettered wide">
+											<li class="fragment custom hl hl1" data-fragment-index="2"><span class="tag">(a)</span> d'un objet $e$ et d'un produit $x \otimes y$ des objets</li>
+											<li class="fragment custom hl hl2" data-fragment-index="3"><span class="tag">(b)</span> d'un produit des morphismes&#8239;: pour $f\colon x \to y$ et $f'\colon x' \to y'$, un morphisme ${f \otimes f'\colon x \otimes x' \to y \otimes y'}$</li>
+										</ul>
+										<p style="margin-top: 0.3em;">tels que&#8239;:</p>
+										<ul class="lettered wide">
+											<li class="fragment custom hl hl4" data-fragment-index="4"><span class="tag">(M1)</span> $(a \otimes b) \otimes c = a \otimes (b \otimes c)$ et $e \otimes a = a = a \otimes e$, pour les objets comme pour les morphismes</li>
+											<li class="fragment custom hl hl3" data-fragment-index="5"><span class="tag">(M2)</span> ${(g \circ f) \otimes (g' \circ f') = (g \otimes g') \circ (f \otimes f')}$ et ${\mathrm{Id}_x \otimes \mathrm{Id}_y = \mathrm{Id}_{x \otimes y}}$</li>
+										</ul>
+									</div>
+								</div>
+								<div class="block words fragment fade-in" data-fragment-index="1">
+									<div class="block-title">En mots</div>
+									<div class="block-body">
+										<p>Une <strong>catégorie monoïdale stricte</strong> est une catégorie où <span class="fragment custom hl hl1" data-fragment-index="2">on multiplie des objets</span> <span class="fragment custom hl hl2" data-fragment-index="3">et des flèches</span>, <span class="fragment custom hl hl4" data-fragment-index="4">de façon associative et avec une unité</span>, <span class="fragment custom hl hl3" data-fragment-index="5">en gardant la compatibilité avec la composition</span>.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- group action and monoidal action side by side: the second comes in on a
+				     press (the first is centred until then, as on the definition slides) -->
+				<section>
+					<div class="frame">
+						<h3>Des actions de groupe aux actions monoïdales</h3>
+						<div class="frame-body">
+							<div class="defpair actions">
+								<div class="block">
+									<div class="block-title">Action de groupe</div>
+									<div class="block-body">
+										<p class="formula">$\rho\colon G \longrightarrow \operatorname{Bij}(X)$</p>
+										<p>un homomorphisme de groupes</p>
+										<p class="rule">$\rho_{gh} = \rho_g \circ \rho_h, \quad \rho_e = \mathrm{Id}$</p>
+									</div>
+								</div>
+								<div class="block words fragment fade-in" data-fragment-index="1">
+									<div class="block-title">Action monoïdale</div>
+									<div class="block-body">
+										<p class="formula">$T\colon \mathcal{M} \longrightarrow \operatorname{End}(\mathcal{C})$</p>
+										<p>un foncteur monoïdal</p>
+										<p class="rule">$T_{x \otimes y} = T_x \circ T_y, \quad T_e = \mathrm{Id}$</p>
+									</div>
+								</div>
+							</div>
+							<p class="note fragment fade-in" data-fragment-index="1" style="margin: 0; text-align: center; font-size: 0.6em;">La paire $(\mathcal{C}, T)$ s'appelle une <em>actégorie</em>.</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- the same comparison, as the "tuxedo Pooh" meme: the picture with its words
+				     erased, ours written over it, all at once (a meme is never cut) -->
+				<section>
+					<div class="pooh">
+						<img src="images/pooh.png" alt="Winnie l'ourson, ordinaire puis en smoking" />
+						<div class="pooh-text pooh-upper">
+							<p>Action de groupe</p>
+							<p class="pooh-formula">$G \longrightarrow \operatorname{Bij}(X)$</p>
+						</div>
+						<div class="pooh-text pooh-lower">
+							<p>Action monoïdale</p>
+							<p class="pooh-formula">$\mathcal{M} \longrightarrow \operatorname{End}(\mathcal{C})$</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- ============ 4. L'ordre d'enroulement ============ -->
+
+				<!-- auto-animate between the two rolling slides: no slide transition, the title stays put -->
+				<section data-auto-animate data-auto-animate-id="rolling" data-auto-animate-unmatched="false">
+					<div class="frame">
+						<h3>Enrouler la droite sur le cercle</h3>
+						<div class="frame-body">
+							<iframe data-src="wrap.html" title="La droite se courbe en cercle et l'intervalle devient une corde" style="width: 960px; height: 610px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<!-- auto-animate between the two rolling slides: no slide transition, the title stays put -->
+				<section data-auto-animate data-auto-animate-id="rolling" data-auto-animate-unmatched="false">
+					<div class="frame">
+						<h3>Enrouler la droite sur le cercle</h3>
+						<div class="frame-body">
+							<iframe data-src="wrap.html#two" title="La droite se courbe en cercle et deux intervalles qui se chevauchent deviennent des cordes qui se croisent" style="width: 960px; height: 610px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<section>
+					<div class="frame">
+						<h3>Bijections admissibles</h3>
+						<div class="frame-body">
+							<iframe data-src="admissible.html" title="Bijections admissibles entre deux cordes, interactif" style="width: 900px; height: 600px;"></iframe>
+						</div>
+					</div>
+				</section>
+
+				<!-- ============ 5. La catégorie des cordes ============ -->
+
+				<section>
+					<div class="frame">
+						<h3>La composition</h3>
+						<div class="frame-body">
+							<iframe data-src="compose.html" title="La composée de deux morphismes entre cordes, nulle dès que A et C ne se croisent plus" style="width: 960px; height: 372px;"></iframe>
+						</div>
+					</div>
+					<!-- one press forward slides C until it no longer crosses A: the composite becomes 0 -->
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<!-- data-skip: passed over when presenting, see step() below -->
+				<section data-skip>
+					<div class="block">
+						<div class="block-title">Définition</div>
+						<div class="block-body">
+							La catégorie $\X$ est donnée par :
+							<ol class="roman">
+								<li>Objets : les sous-ensembles à deux éléments de $S^1$, appelés cordes.</li>
+								<li>
+									Morphismes : pour deux cordes $A$ et $B$, on définit $\Hom(A,B)$ comme le
+									$\kk$-espace vectoriel de base $\operatorname{Adm}(A,B)$. Le morphisme identité
+									de $A$ est la bijection admissible $\operatorname{Id}_A$.
+								</li>
+								<li>
+									Composition : pour deux morphismes de base $f \in \operatorname{Adm}(A,B)$ et
+									$g \in \operatorname{Adm}(B,C)$, on pose
+									$$g \circ f = \begin{cases} gf &amp; \text{si } gf \in \operatorname{Adm}(A,C), \\ 0 &amp; \text{sinon.} \end{cases}$$
+									On étend $\circ$ par bilinéarité.
+								</li>
+							</ol>
+						</div>
+					</div>
+				</section>
+
+				<!-- the product of two arrows of WS¹: the two slides end to end; one press
+				     makes the second one longer, until together they make a full turn: 0 -->
+				<section>
+					<div class="frame">
+						<h3>Le produit de deux flèches de $WS^1$</h3>
+						<div class="frame-body">
+							<iframe data-src="tensor.html" title="Le produit de deux flèches de WS¹ : les deux glissements bout à bout, nul dès qu'ils font un tour complet" style="width: 960px; height: 380px;"></iframe>
+							<!-- the same, formally: the grey point of the picture is x + y' -->
+							<div class="block ivdef">
+								<div class="block-title">Le produit des flèches de $WS^1$</div>
+								<div class="block-body">
+									<div>$$(x \to y) \otimes (x' \to y') = \begin{cases} x + x' \to y + y' &amp; \text{si } x + x' \wo x + y' \wo y + y' \\ 0 &amp; \text{sinon} \end{cases}$$</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<!-- ============ 6. Une action par rotation sur X ============ -->
+
+				<section>
+					<div class="frame">
+						<h3>Rotation d'une corde</h3>
+						<div class="frame-body">
+							<iframe data-src="rotate.html" title="Une corde et sa rotation de r, interactif" style="width: 810px; height: 540px;"></iframe>
+							<!-- τ is monoidal: the product of WS¹ (the sum) goes to composition -->
+							<p class="formula-line">$\tau_r(A) = A + r, \qquad \tau_{r + s} = \tau_r \circ \tau_s, \qquad \tau_0 = \mathrm{Id}$</p>
+						</div>
+					</div>
+					<!-- one press forward rotates the chord by π/2, as on the rolling slides -->
+					<span class="fragment" data-roll></span>
+				</section>
+
+				<!-- what τ does to an arrow r → s of WS¹: at each chord A, the slide
+				     A + r → A + s; one press moves s, until A + r and A + s stop crossing -->
+				<section>
+					<div class="frame">
+						<h3>L'action d'une flèche&#8239;: $\tau(r \to s)$</h3>
+						<div class="frame-body">
+							<iframe data-src="tau.html" title="Une flèche r → s de WS¹ et son image par τ : le glissement de A + r vers A + s, nul dès qu'elles ne se croisent plus" style="width: 960px; height: 406px;"></iframe>
+						</div>
+					</div>
+					<span class="fragment" data-roll></span>
+				</section>
+				<!-- the interleaving distance, on the circle: the same definition and the same two
+				     triangles as on ℝ, with τ in place of the shift; the weight w(g) is the
+				     counterclockwise length from 0 to g, in [0, 2π) -->
+				<section>
+					<div class="frame">
+						<h3>La distance d'entrelacement sur le cercle</h3>
+						<div class="frame-body">
+							<div>
+								<div class="block" style="width: 880px; font-size: 0.62em;">
+									<div class="block-title">Définition</div>
+									<div class="block-body">
+										<p>Soient $A, B$ deux cordes et $g, h \in S^1$. $A$ et $B$ sont <strong>$(g, h)$-entrelacées</strong> s'il existe ${\varphi\colon A \to \tau_g(B)}$ et ${\psi\colon B \to \tau_h(A)}$ dans $\X$, et des flèches ${\alpha\colon 0 \to g + h}$ et ${\beta\colon 0 \to h + g}$ dans $WS^1$, telles que ces triangles commutent&#8239;:</p>
+										<svg viewBox="0 -8 620 178" style="width: 600px; display: block; overflow: visible; margin: 0.5em auto;">
+											<defs>
+												<marker id="ahCirc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+													<path d="M1,1 L9,5 L1,9" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+												</marker>
+											</defs>
+											<g stroke="#1a1a1a" stroke-width="1.5">
+												<line x1="70" y1="32" x2="156" y2="32" marker-end="url(#ahCirc)" />
+												<line x1="52" y1="50" x2="112" y2="124" marker-end="url(#ahCirc)" />
+												<line x1="150" y1="124" x2="205" y2="50" marker-end="url(#ahCirc)" />
+												<foreignObject x="-5" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$A$</div></foreignObject>
+												<foreignObject x="147" y="14" width="150" height="36"><div class="fig-lbl" style="font-size: 20px;">$A + g + h$</div></foreignObject>
+												<foreignObject x="70" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\tau_g(B)$</div></foreignObject>
+												<foreignObject x="43" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\tau(\alpha)_A$</div></foreignObject>
+												<foreignObject x="46" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\varphi$</div></foreignObject>
+												<foreignObject x="172" y="84" width="60" height="36"><div class="fig-lbl" style="font-size: 15px;">$\tau_g(\psi)$</div></foreignObject>
+												<line x1="400" y1="32" x2="486" y2="32" marker-end="url(#ahCirc)" />
+												<line x1="382" y1="50" x2="442" y2="124" marker-end="url(#ahCirc)" />
+												<line x1="480" y1="124" x2="535" y2="50" marker-end="url(#ahCirc)" />
+												<foreignObject x="325" y="14" width="90" height="36"><div class="fig-lbl" style="font-size: 20px;">$B$</div></foreignObject>
+												<foreignObject x="477" y="14" width="150" height="36"><div class="fig-lbl" style="font-size: 20px;">$B + h + g$</div></foreignObject>
+												<foreignObject x="400" y="127" width="120" height="36"><div class="fig-lbl" style="font-size: 20px;">$\tau_h(A)$</div></foreignObject>
+												<foreignObject x="373" y="-8" width="150" height="36"><div class="fig-lbl" style="font-size: 15px;">$\tau(\beta)_B$</div></foreignObject>
+												<foreignObject x="376" y="84" width="40" height="36"><div class="fig-lbl" style="font-size: 17px;">$\psi$</div></foreignObject>
+												<foreignObject x="502" y="84" width="60" height="36"><div class="fig-lbl" style="font-size: 15px;">$\tau_h(\varphi)$</div></foreignObject>
+											</g>
+										</svg>
+										<p class="note" style="text-align: center; margin: 0.2em 0 0.4em; font-size: 0.85em;">$\tau(\alpha)_A$ est le glissement de $A$ par $g + h$.</p>
+										<p>La <strong>distance d'entrelacement</strong> est $$d_\tau(A, B) = \inf\{\, \max\{w(g), w(h)\} \mid A \text{ et } B \text{ sont } (g, h)\text{-entrelacées} \,\},$$ où $w(g) \in [0, 2\pi)$ est l'unique représentant de $g$ dans $[0, 2\pi)$.</p>
+									</div>
+								</div>
+								<p class="note">Sur $\R$&#8239;: le décalage $[t]$ joue le rôle de $\tau_g$, et la flèche $0 \leqslant 2t$ celui de $\alpha$.</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- the key moment: B is A with one endpoint slid by π/4 (almost A), yet with the
+				     group S¹ (only identities) the triangles force d = ∞; WS¹ has arrows 0 → π/4.
+				     One press each: the group, the punchline, WS¹. (φ: A → B, 0 ↦ π/4, π/2 ↦ π/2;
+				     ψ: B → A + π/4, π/4 ↦ π/4, π/2 ↦ 3π/4; both round trips are slides by π/4.
+				     On ℝ the matching example is [0, 2] and [1, 2], at distance 1.) -->
+				<section>
+					<div class="frame">
+						<h3>Pourquoi pas simplement le groupe $S^1$&#8239;?</h3>
+						<div class="frame-body">
+							<div class="why-head">
+								<svg viewBox="0 0 260 210" style="width: 300px; display: block; overflow: visible;" role="img" aria-label="Deux cordes sur un cercle : A de 0 à π/2, et B, qui est A avec son extrémité 0 glissée jusqu'à π/4">
+								<defs>
+									<marker id="ahN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+										<path d="M1,1 L9,5 L1,9" fill="none" stroke="#8f8f8f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+									</marker>
+								</defs>
+								<circle cx="130" cy="104" r="78" fill="none" stroke="#1a1a1a" stroke-width="3" />
+								<line x1="208.0" y1="104.0" x2="130.0" y2="26.0" stroke="#e01b24" stroke-width="4" stroke-linecap="round" /><line x1="185.2" y1="48.8" x2="130.0" y2="26.0" stroke="#0038ff" stroke-width="4" stroke-linecap="round" />
+								<circle cx="208.0" cy="104.0" r="5.5" fill="#e01b24" /><circle cx="185.2" cy="48.8" r="5.5" fill="#0038ff" /><circle cx="130.0" cy="26.0" r="5.5" fill="#1a1a1a" />
+								<path d="M220.6,95.8 A91,91 0 0 0 199.9,45.7" fill="none" stroke="#8f8f8f" stroke-width="1.8" stroke-linecap="round" marker-end="url(#ahN)" />
+								<foreignObject x="212.0" y="90.0" width="40" height="28"><div class="fig-lbl" style="font-size: 15px; color: #8a8a8a;">$0$</div></foreignObject><foreignObject x="181.4" y="13.6" width="50" height="28"><div class="fig-lbl" style="font-size: 15px; color: #8a8a8a;">$\pi/4$</div></foreignObject><foreignObject x="105.0" y="-8.0" width="50" height="28"><div class="fig-lbl" style="font-size: 15px; color: #8a8a8a;">$\pi/2$</div></foreignObject>
+								<foreignObject x="140.0" y="65.0" width="30" height="28"><div class="fig-lbl" style="font-size: 20px; color: #e01b24;">$A$</div></foreignObject><foreignObject x="154.0" y="-4.2" width="30" height="28"><div class="fig-lbl" style="font-size: 19px; color: #0038ff;">$B$</div></foreignObject>
+							</svg>
+								<p>$A = \{0, \pi/2\}$, et $B = \{\pi/4, \pi/2\}$&#8239;:<br />$B$, c'est $A$ avec une extrémité glissée de $\pi/4$.</p>
+							</div>
+							<div class="why">
+								<div class="block fragment fade-in" data-fragment-index="0">
+									<div class="block-title">Avec le groupe $S^1$</div>
+									<div class="block-body">
+										<p>Seules flèches&#8239;: les identités. Donc $\alpha = \mathrm{Id}$, et le triangle donne ${\tau_g(\psi) \circ \varphi = \mathrm{Id}_A}$. Par le Fait II, ${\tau_g(B) = A}$&#8239;: impossible, une rotation garde la longueur.</p>
+										<p class="why-end">$d(A, B) = \infty$</p>
+									</div>
+								</div>
+								<div class="block fragment fade-in" data-fragment-index="2">
+									<div class="block-title">Avec $WS^1$</div>
+									<div class="block-body">
+										<p>${\alpha = \beta = (0 \to \pi/4)} \neq 0$, avec ${\varphi\colon A \to B}$ $(0 \mapsto \pi/4)$ et ${\psi\colon B \to A + \pi/4}$ $(\pi/2 \mapsto 3\pi/4)$&#8239;: les deux triangles commutent.</p>
+										<p class="why-end">$A$ et $B$ sont $(0, \pi/4)$-entrelacées&#8239;: $d(A, B) \leqslant \pi/4$</p>
+									</div>
+								</div>
+							</div>
+							<p class="why-msg fragment fade-in" data-fragment-index="1">$B$ est presque $A$… et pourtant, pour le groupe, elles sont infiniment loin.</p>
+						</div>
+					</div>
+				</section>
+ 
+
+				<!-- the recap: the sentence to take home, then known / new on a press -->
+				<section>
+					<div class="frame">
+						<h3>En résumé</h3>
+						<div class="frame-body">
+							<div class="block takeaway">
+								<div class="block-title">À retenir</div>
+								<div class="block-body">
+									<p>Sur le cercle, les rotations seules ne suffisent pas pour comparer des cordes&#8239;; il faut des flèches entre les rotations, et c'est ce que fournit une catégorie monoïdale.</p>
+								</div>
+							</div>
+							<div class="recap fragment fade-in">
+								<span></span><p class="recap-head">Connu</p><p class="recap-head">Nouveau</p>
+								<p class="recap-row">objets</p><p>intervalles de $\R$</p><p>cordes de $S^1$</p>
+								<p class="recap-row">ce qui agit</p><p>$(\R_{\geqslant 0}, \leqslant, +)$</p><p>$WS^1$</p>
+								<p class="recap-row">l'action</p><p>décalage</p><p>rotation</p>
+								<p class="recap-row">la distance</p><p>formule connue</p><p>en cours</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="images/end.webp" data-background-size="cover"></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="dist/plugin/notes.js"></script>
+		<script src="dist/plugin/markdown.js"></script>
+		<script src="dist/plugin/highlight.js"></script>
+		<script src="vendor/katex/katex.min.js"></script>
+		<script src="vendor/katex/contrib/auto-render.min.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			// Slides marked data-skip are passed over when going forwards or backwards
+			// with the keyboard, a clicker, or the arrow keys inside an applet. They are
+			// still there: Esc (the overview) or G followed by the slide's number shows them.
+			function step(dir) {
+				const frag = Reveal.availableFragments();
+				if (dir > 0 ? frag.next : frag.prev) return dir > 0 ? Reveal.nextFragment() : Reveal.prevFragment();
+				const slides = Reveal.getHorizontalSlides();
+				let i = Reveal.getIndices().h;
+				do i += dir; while (slides[i] && slides[i].hasAttribute('data-skip'));
+				if (slides[i]) Reveal.slide(i);
+			}
+			const forward = () => step(1), backward = () => step(-1);
+
+			// Play or pause the applet on the current slide.
+			const toggleApplet = () => {
+				const frame = Reveal.getCurrentSlide().querySelector('iframe');
+				if (frame && frame.contentWindow) frame.contentWindow.postMessage({ applet: 'toggle' }, '*');
+			};
+			// Reveal's own pause keys (b, v, period: also what a clicker's "blank screen"
+			// button sends) start and stop the animation on a slide that has one, and
+			// black out the screen as usual on any other slide.
+			const pauseKey = () => (Reveal.getCurrentSlide().querySelector('iframe') ? toggleApplet() : Reveal.togglePause());
+
+			// The applets send their arrow keys up to the deck as {method: 'next'} and
+			// so on. Reveal's own handling of such messages is off (postMessage: false)
+			// so that these go through step() as well.
+			window.addEventListener('message', e => {
+				let m;
+				try { m = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (err) { return; }
+				if (!m || typeof m.method !== 'string') return;
+				if (m.method === 'next') forward();
+				else if (m.method === 'prev') backward();
+				else if (m.method === 'up' || m.method === 'down') Reveal[m.method]();
+			});
+
+			Reveal.initialize({
+				hash: true,
+				slideNumber: 'c',   // the slide's number, bottom right (hidden slides count too, as in the overview and with G)
+				controls: false,   // no navigation arrows in the corner
+				postMessage: false,
+				// right/left arrows, space (shift+space goes back), page down/up (what a clicker sends), n/p;
+				// b, v, period: pause (see pauseKey); enter: forward
+				keyboard: { 39: forward, 37: backward, 32: e => (e && e.shiftKey ? backward() : forward()), 34: forward, 33: backward, 78: forward, 80: backward,
+				            66: pauseKey, 86: pauseKey, 190: pauseKey, 13: () => (Reveal.isOverview() ? Reveal.toggleOverview(false) : forward()) },
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+			}).then(() => {
+				renderMathInElement(document.body, {
+					delimiters: [
+						{ left: '$$', right: '$$', display: true },
+						{ left: '$', right: '$', display: false },
+						{ left: '\\[', right: '\\]', display: true },
+						{ left: '\\(', right: '\\)', display: false },
+					],
+					// Macros from ../abstract/summary-RTA2026.tex, plus \wo for the winding order
+					macros: {
+						'\\R': '\\mathbb{R}',
+						'\\C': '\\mathbb{C}',
+						'\\Q': '\\mathbb{Q}',
+						'\\X': '\\mathbb{X}',
+						'\\kk': '\\mathbf{k}',
+						'\\Hom': '\\operatorname{Hom}',
+						'\\wo': '\\preccurlyeq',
+					},
+				});
+
+				// Leaving a slide unloads its applet (the iframe goes blank). If the keyboard
+				// focus was inside it, Space and the arrows would be lost there, so hand the
+				// focus back to the deck on every slide change.
+				Reveal.on('slidechanged', () => {
+					const a = document.activeElement;
+					if (a && a.tagName === 'IFRAME') {
+						a.blur();
+						window.focus();
+					}
+				});
+
+				// m, the Pause key and the play/pause media key also play or pause the applet.
+				Reveal.addKeyBinding({ keyCode: 77, key: 'm', description: 'Play or pause the applet' }, toggleApplet);
+				Reveal.addKeyBinding({ keyCode: 19, key: 'Pause', description: 'Play or pause the applet' }, toggleApplet);
+				Reveal.addKeyBinding({ keyCode: 179, key: '⏯', description: 'Play or pause the applet' }, toggleApplet);   // the play/pause media key
+
+				// The rolling slides each have one empty fragment (data-roll): going forward,
+				// the first press rolls the line up and only the next one leaves the
+				// slide; going back, the line unrolls first. Arriving on the slide, the
+				// line is flat (from before) or already rolled (from after).
+				document.querySelectorAll('.fragment[data-roll]').forEach(frag => {
+					const slide = frag.closest('section'), frame = slide.querySelector('iframe');
+					const send = instant => {
+						const state = frag.classList.contains('visible') ? 1 : 0;
+						if (frame.contentWindow) frame.contentWindow.postMessage({ applet: 'set', state, instant }, '*');
+					};
+					frame.addEventListener('load', () => send(true));
+					Reveal.on('slidechanged', e => { if (e.currentSlide === slide) send(true); });
+					const ours = e => (e.fragments || [e.fragment]).includes(frag);
+					Reveal.on('fragmentshown', e => { if (ours(e)) send(false); });
+					Reveal.on('fragmenthidden', e => { if (ours(e)) send(false); });
+				});
+
+				// The same for an applet with several steps: the slide has one empty
+				// fragment per step (data-step), and the applet is told how many of
+				// them are showing.
+				document.querySelectorAll('section').forEach(slide => {
+					const frags = [...slide.querySelectorAll(':scope .fragment[data-step]')];
+					const frame = slide.querySelector('iframe');
+					if (!frags.length || !frame) return;
+					const send = instant => {
+						const state = frags.filter(f => f.classList.contains('visible')).length;
+						if (frame.contentWindow) frame.contentWindow.postMessage({ applet: 'set', state, instant }, '*');
+					};
+					frame.addEventListener('load', () => send(true));
+					Reveal.on('slidechanged', e => { if (e.currentSlide === slide) send(true); });
+					// a press can show several fragments at once (e.fragments): look at all of them
+					const ours = e => (e.fragments || [e.fragment]).some(x => frags.includes(x));
+					Reveal.on('fragmentshown', e => { if (ours(e)) send(false); });
+					Reveal.on('fragmenthidden', e => { if (ours(e)) send(false); });
+				});
+			});
+		</script>
+	</body>
+</html>

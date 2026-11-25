@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composition de cordes</title>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #fig {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* KaTeX labels inside the SVG figure */
+  .lbl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<svg id="fig" viewBox="0 0 960 372" aria-label="La composée de deux morphismes entre cordes : elle est non nulle tant que A et C se croisent, et nulle dès qu'elles ne se croisent plus"></svg>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const PI = Math.PI;
+  const DURATION = 4500;   // ms for C to go from its first position to its second
+  const COLOR = { A: '#0038ff', B: '#e01b24', C: '#1a9e4b', ink: '#1a1a1a', arrow: '#8f8f8f' };
+
+  // Angles counterclockwise, 0 on the right. Each chord is [x, x'] with the
+  // morphisms sliding x to x and x' to x' counterclockwise:
+  //   f: A -> B,  π -> 7π/6,  5π/3 -> 2π + π/12
+  //   g: B -> C,  7π/6 -> c,  π/12 -> c'
+  // C goes from {3π/2, 5π/12} (it crosses A) to {11π/6, 2π/3} (it doesn't).
+  // It crosses B all along. g∘f slides π -> c and 5π/3 -> 2π + c', which is
+  // admissible (π ≼ c ≼ 5π/3 ≼ c') as long as c ≤ 5π/3: exactly while A and C
+  // cross, in the wide sense (at c = 5π/3 they share an endpoint).
+  const A = [PI, 5 * PI / 3];
+  const B = [7 * PI / 6, 2 * PI + PI / 12];
+  const C0 = [3 * PI / 2, 2 * PI + 5 * PI / 12], C1 = [11 * PI / 6, 2 * PI + 2 * PI / 3];
+  const Cat = t => [C0[0] + (C1[0] - C0[0]) * t, C0[1] + (C1[1] - C0[1]) * t];
+  const admissible = (x, y) => x[0] <= y[0] + 1e-9 && y[0] <= x[1] + 1e-9 && x[1] <= y[1] + 1e-9 && y[1] < x[0] + 2 * PI;
+
+  // ---------- layout ----------
+  // C∘(f) on the left, then f, then the composite, then "= 0" when it vanishes:
+  //   [B, C]  ∘  [A, B]  =  [A, C]  = 0
+  const R = 100, CY = 160;
+  const X = { g: 128, f: 418, gf: 708 };   // the row reads as one equation, "= 0" at its end
+
+  // ---------- figure ----------
+  const svg = document.getElementById('fig');
+  const el = (tag, attrs = {}, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const label = (tex, color, x, y, w = 80, h = 44, size) => {
+    const fo = el('foreignObject', { x: x - w / 2, y: y - h / 2, width: w, height: h });
+    const div = document.createElement('div');
+    div.className = 'lbl';
+    div.style.color = color;
+    if (size) div.style.fontSize = size + 'px';
+    katex.render(tex, div);
+    fo.appendChild(div);
+    return fo;
+  };
+
+  const defs = el('defs');
+  const marker = el('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+  el('path', { d: 'M1,1 L9,5 L1,9', fill: 'none', stroke: COLOR.arrow, 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, marker);
+
+  const at = (cx, a, r = R) => [cx + r * Math.cos(a), CY - r * Math.sin(a)];
+
+  // one circle with its chords and the arrows of a morphism between two of them
+  function panel(cx) {
+    el('circle', { cx, cy: CY, r: R, fill: 'none', stroke: COLOR.ink, 'stroke-width': 4 });
+    const g = el('g');
+    return {
+      cx,
+      arrows: el('g', { fill: 'none', stroke: COLOR.arrow, 'stroke-width': 1.8, 'stroke-linecap': 'round' }, g),
+      chords: {},
+      chord(name) {
+        const line = el('line', { stroke: COLOR[name], 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+        const dots = [0, 1].map(() => el('circle', { r: 6, fill: COLOR[name] }, g));
+        const lbl = label(name, COLOR[name], 0, 0, 40, 40, 28);
+        this.chords[name] = { line, dots, lbl };
+      },
+    };
+  }
+
+  // a chord, labelled near its endpoint `which`, on the side `side` of the line
+  function drawChord(p, name, ends, which, side) {
+    const c = p.chords[name];
+    const [a, b] = ends.map(x => at(p.cx, x));
+    c.line.setAttribute('x1', a[0]); c.line.setAttribute('y1', a[1]);
+    c.line.setAttribute('x2', b[0]); c.line.setAttribute('y2', b[1]);
+    [a, b].forEach((q, i) => { c.dots[i].setAttribute('cx', q[0]); c.dots[i].setAttribute('cy', q[1]); });
+    const [u, v] = which ? [b, a] : [a, b];
+    const len = Math.hypot(v[0] - u[0], v[1] - u[1]);
+    const nx = -(v[1] - u[1]) / len * side, ny = (v[0] - u[0]) / len * side;
+    const px = u[0] + (v[0] - u[0]) * 0.22 + 20 * nx, py = u[1] + (v[1] - u[1]) * 0.22 + 20 * ny;
+    c.lbl.setAttribute('x', px - 20); c.lbl.setAttribute('y', py - 20);
+  }
+
+  // the arrows of a morphism: each endpoint's slide, counterclockwise, as an
+  // arc just inside the circle
+  function drawArrows(p, from, to) {
+    p.arrows.textContent = '';
+    from.forEach((x, i) => {
+      const y = to[i], gap = 0.07;
+      if (y - x < 2 * gap + 0.05) return;
+      // just outside the circle, in grey: clear of the chords and their names
+      const r = R + 13, [x1, y1] = at(p.cx, x + gap, r), [x2, y2] = at(p.cx, y - gap, r);
+      const large = y - x - 2 * gap > PI ? 1 : 0;
+      el('path', { d: `M${x1},${y1} A${r},${r} 0 ${large} 0 ${x2},${y2}`, 'marker-end': 'url(#ah)' }, p.arrows);
+    });
+  }
+
+  const pg = panel(X.g), pf = panel(X.f), pgf = panel(X.gf);
+  pg.chord('B'); pg.chord('C');
+  pf.chord('B'); pf.chord('A');
+  pgf.chord('A'); pgf.chord('C');
+
+  label('\\circ', COLOR.ink, (X.g + X.f) / 2, CY, 60, 60, 34);
+  label('=', COLOR.ink, (X.f + X.gf) / 2, CY, 60, 60, 34);
+  const zero = el('g');
+  zero.style.opacity = 0;
+  // "= 0" on the line of ∘ and =, the same size; the reason under the third circle
+  zero.appendChild(label('= 0', COLOR.ink, X.gf + R + 62, CY, 110, 60, 34));
+  zero.appendChild(label('\\text{pas de croisement}', COLOR.ink, X.gf, CY + R + 48, 360, 40, 24));
+  // it comes in gently
+  zero.style.transition = 'opacity 0.7s ease';
+
+  // the parts that don't move
+  drawChord(pf, 'A', A, 0, -1);
+  drawChord(pf, 'B', B, 1, -1);
+  drawArrows(pf, A, B);
+  drawChord(pg, 'B', B, 0, 1);   // by its left end: C crosses near the right one
+  drawChord(pgf, 'A', A, 0, -1);
+
+  function draw(t) {
+    const C = Cat(t);
+    drawChord(pg, 'C', C, 1, -1);
+    drawChord(pgf, 'C', C, 1, -1);
+    drawArrows(pg, B, C);
+    const ok = admissible(A, C);
+    if (ok) drawArrows(pgf, A, C); else pgf.arrows.textContent = '';
+    zero.style.opacity = ok ? 0 : 1;
+  }
+
+  // ---------- animation ----------
+  // {applet: 'set', state: 1} moves C to its second position, state 0 back
+  // (instant: at once). m, or a click on the figure, toggles.
+  let progress = 0, target = 0, last = 0, frame = 0;
+  const ease = u => u * u * (3 - 2 * u);
+
+  function tick(now) {
+    frame = 0;
+    const dt = Math.min(now - last, 100);
+    last = now;
+    const step = dt / DURATION;
+    progress = target > progress ? Math.min(target, progress + step) : Math.max(target, progress - step);
+    draw(ease(progress));
+    if (progress !== target) frame = requestAnimationFrame(tick);
+  }
+  function run() {
+    if (!frame) {
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    }
+  }
+  function toggle() { target = target ? 0 : 1; run(); }
+  function set(state, instant) {
+    target = state;
+    if (instant) {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      progress = state;
+      draw(ease(progress));
+    } else run();
+  }
+
+  svg.addEventListener('click', toggle);
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (m && m.applet === 'toggle') toggle();
+    if (m && m.applet === 'set') set(m.state, m.instant);
+  });
+
+  // ---------- keyboard ----------
+  // Arrow keys are forwarded to reveal.js, so slides still advance
+  // after clicking inside the iframe.
+  const NAV = { ArrowRight: 'next', ArrowLeft: 'prev', ArrowDown: 'down', ArrowUp: 'up',
+                PageDown: 'next', PageUp: 'prev', ' ': 'next' };
+
+  window.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['m', 'M', 'b', 'B', 'v', 'V', '.', 'Pause', 'MediaPlayPause'].includes(e.key)) { toggle(); e.preventDefault(); return; }
+    if (NAV[e.key] && window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ method: NAV[e.key], args: [] }), '*');
+      e.preventDefault();
+    }
+  });
+
+  // compose.html#t=0.3 shows the still picture with C 30% of the way along
+  const still = location.hash.match(/t=([\d.]+)/);
+  draw(still ? Math.min(+still[1], 1) : 0);
+})();
+</script>
+</body>
+</html>
