@@ -21,6 +21,7 @@ I obtained my BSc in mathematics from [Yachay Tech University](https://yachaytec
 
 **Full name**: Kevin Christian Chávez Cadena  
 **Curriculum vitæ**: [English](/assets/docs/Christian-Chavez-CV-en.pdf) • [French](/assets/docs/Christian-Chavez-CV-fr.pdf) • [Spanish](/assets/docs/Christian-Chavez-CV-es.pdf)  
-**Email**: `christian.chavez@usherbrooke.ca` • `christian.chavez.math@gmail.com`  
+**Email**: `christian.chavez@usherbrooke.ca`  
+<span style="visibility: hidden" aria-hidden="true"><strong>Email</strong>: </span>`christian.chavez.math@gmail.com`  
 **Location**: office D4-1026  
 **Profiles**: [ORCID](https://orcid.org/0009-0005-1941-4873) • [Google Scholar](https://scholar.google.com/citations?user=z2cKwrQAAAAJ&hl=en)
